@@ -1,0 +1,58 @@
+{
+  "name": "QuoteItemComponent",
+  "type": "object",
+  "properties": {
+    "quote_item_id": {
+      "type": "string",
+      "description": "\u05de\u05d6\u05d4\u05d4 \u05d4\u05e4\u05e8\u05d9\u05d8 \u05d1\u05d4\u05e6\u05e2\u05d4"
+    },
+    "catalog_item_id": {
+      "type": "string",
+      "description": "\u05de\u05d6\u05d4\u05d4 \u05d4\u05e8\u05db\u05d9\u05d1 \u05d1\u05e7\u05d8\u05dc\u05d5\u05d2"
+    },
+    "name_snapshot": {
+      "type": "string",
+      "description": "\u05e9\u05dd \u05d4\u05e8\u05db\u05d9\u05d1 \u05d1\u05e2\u05ea \u05d4\u05d5\u05e1\u05e4\u05d4"
+    },
+    "category_snapshot": {
+      "type": "string",
+      "description": "\u05e7\u05d8\u05d2\u05d5\u05e8\u05d9\u05d4 \u05d1\u05e2\u05ea \u05d4\u05d5\u05e1\u05e4\u05d4"
+    },
+    "pricing_method_snapshot": {
+      "type": "string",
+      "enum": [
+        "sqm",
+        "meter",
+        "unit"
+      ],
+      "enumLabels": [
+        "\u05de\"\u05e8",
+        "\u05de\u05d8\u05e8 \u05e8\u05e5",
+        "\u05d9\u05d7\u05d9\u05d3\u05d4"
+      ],
+      "description": "\u05e9\u05d9\u05d8\u05ea \u05d7\u05d9\u05e9\u05d5\u05d1 \u05d1\u05e2\u05ea \u05d4\u05d5\u05e1\u05e4\u05d4"
+    },
+    "price_snapshot": {
+      "type": "number",
+      "description": "\u05de\u05d7\u05d9\u05e8 \u05d1\u05e2\u05ea \u05d4\u05d5\u05e1\u05e4\u05d4 (snapshot)"
+    },
+    "quantity": {
+      "type": "number",
+      "description": "\u05db\u05de\u05d5\u05ea \u05dc\u05e8\u05db\u05d9\u05d1 \u05d6\u05d4 (\u05e2\u05d5\u05e7\u05e3 \u05db\u05de\u05d5\u05ea \u05d4\u05e4\u05e8\u05d9\u05d8 \u05e2\u05d1\u05d5\u05e8 \u05e8\u05db\u05d9\u05d1\u05d9 \u05d9\u05d7\u05d9\u05d3\u05d4)"
+    },
+    "calculated_value": {
+      "type": "number",
+      "description": "\u05e2\u05e8\u05da \u05de\u05d7\u05d5\u05e9\u05d1"
+    },
+    "sort_order": {
+      "type": "number",
+      "description": "\u05e1\u05d3\u05e8 \u05ea\u05e6\u05d5\u05d2\u05d4"
+    }
+  },
+  "required": [
+    "quote_item_id",
+    "name_snapshot",
+    "pricing_method_snapshot",
+    "price_snapshot"
+  ]
+}

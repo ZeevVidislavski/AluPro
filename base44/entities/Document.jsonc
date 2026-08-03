@@ -1,0 +1,50 @@
+{
+  "name": "Document",
+  "type": "object",
+  "properties": {
+    "project_id": {
+      "type": "string",
+      "description": "\u05de\u05d6\u05d4\u05d4 \u05e4\u05e8\u05d5\u05d9\u05e7\u05d8"
+    },
+    "project_name": {
+      "type": "string",
+      "description": "\u05e9\u05dd \u05e4\u05e8\u05d5\u05d9\u05e7\u05d8"
+    },
+    "document_type": {
+      "type": "string",
+      "enum": [
+        "contract",
+        "plan",
+        "invoice",
+        "photo",
+        "delivery"
+      ],
+      "enumLabels": [
+        "\u05d7\u05d5\u05d6\u05d4",
+        "\u05ea\u05d5\u05db\u05e0\u05d9\u05ea",
+        "\u05d7\u05e9\u05d1\u05d5\u05e0\u05d9\u05ea",
+        "\u05ea\u05de\u05d5\u05e0\u05d4",
+        "\u05ea\u05e2\u05d5\u05d3\u05ea \u05de\u05e9\u05dc\u05d5\u05d7"
+      ],
+      "description": "\u05e1\u05d5\u05d2 \u05de\u05e1\u05de\u05da"
+    },
+    "name": {
+      "type": "string",
+      "description": "\u05e9\u05dd \u05d4\u05de\u05e1\u05de\u05da"
+    },
+    "file_url": {
+      "type": "string",
+      "description": "\u05e7\u05d9\u05e9\u05d5\u05e8 \u05dc\u05e7\u05d5\u05d1\u05e5"
+    },
+    "notes": {
+      "type": "string",
+      "description": "\u05d4\u05e2\u05e8\u05d5\u05ea"
+    }
+  },
+  "required": [
+    "project_id",
+    "document_type",
+    "name",
+    "file_url"
+  ]
+}

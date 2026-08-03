@@ -1,0 +1,104 @@
+{
+  "name": "AgentAlert",
+  "type": "object",
+  "properties": {
+    "alert_key": {
+      "type": "string",
+      "description": "\u05de\u05e4\u05ea\u05d7 \u05d9\u05d9\u05d7\u05d5\u05d3\u05d9: project_id|alert_type"
+    },
+    "project_id": {
+      "type": "string",
+      "description": "\u05de\u05d6\u05d4\u05d4 \u05e4\u05e8\u05d5\u05d9\u05e7\u05d8"
+    },
+    "project_name": {
+      "type": "string",
+      "description": "\u05e9\u05dd \u05e4\u05e8\u05d5\u05d9\u05e7\u05d8"
+    },
+    "alert_type": {
+      "type": "string",
+      "enum": [
+        "profitability",
+        "collection",
+        "cash_flow",
+        "workload",
+        "strategic"
+      ],
+      "enumLabels": [
+        "\u05e8\u05d5\u05d5\u05d7\u05d9\u05d5\u05ea",
+        "\u05d2\u05d1\u05d9\u05d9\u05d4",
+        "\u05ea\u05d6\u05e8\u05d9\u05dd \u05de\u05d6\u05d5\u05de\u05e0\u05d9\u05dd",
+        "\u05e2\u05d5\u05de\u05e1 \u05e2\u05d1\u05d5\u05d3\u05d4",
+        "\u05d0\u05e1\u05d8\u05e8\u05d8\u05d2\u05d9"
+      ],
+      "description": "\u05e1\u05d5\u05d2 \u05d4\u05ea\u05e8\u05d0\u05d4"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "enumLabels": [
+        "\u05e0\u05de\u05d5\u05da",
+        "\u05d1\u05d9\u05e0\u05d5\u05e0\u05d9",
+        "\u05d2\u05d1\u05d5\u05d4",
+        "\u05e7\u05e8\u05d9\u05d8\u05d9"
+      ],
+      "description": "\u05e8\u05de\u05ea \u05d7\u05d5\u05de\u05e8\u05d4"
+    },
+    "message": {
+      "type": "string",
+      "description": "\u05d4\u05d5\u05d3\u05e2\u05ea \u05d4\u05d4\u05ea\u05e8\u05d0\u05d4"
+    },
+    "details": {
+      "type": "string",
+      "description": "\u05e4\u05e8\u05d8\u05d9\u05dd \u05e0\u05d5\u05e1\u05e4\u05d9\u05dd JSON"
+    },
+    "is_handled": {
+      "type": "boolean",
+      "default": false,
+      "description": "\u05d4\u05d0\u05dd \u05d8\u05d5\u05e4\u05dc\u05d4"
+    },
+    "priority_score": {
+      "type": "number",
+      "description": "\u05e0\u05d9\u05e7\u05d5\u05d3 \u05e2\u05d3\u05d9\u05e4\u05d5\u05ea 0-100"
+    },
+    "action_type": {
+      "type": "string",
+      "enum": [
+        "collect",
+        "follow_up",
+        "fix_profit",
+        "order_material",
+        "supplier_payment",
+        "general"
+      ],
+      "enumLabels": [
+        "\u05d2\u05d1\u05d9\u05d9\u05d4",
+        "\u05de\u05e2\u05e7\u05d1",
+        "\u05ea\u05d9\u05e7\u05d5\u05df \u05e8\u05d5\u05d5\u05d7\u05d9\u05d5\u05ea",
+        "\u05d4\u05d6\u05de\u05e0\u05ea \u05d7\u05d5\u05de\u05e8",
+        "\u05ea\u05e9\u05dc\u05d5\u05dd \u05e1\u05e4\u05e7",
+        "\u05db\u05dc\u05dc\u05d9"
+      ],
+      "description": "\u05e1\u05d5\u05d2 \u05e4\u05e2\u05d5\u05dc\u05d4 \u05e0\u05d3\u05e8\u05e9\u05ea"
+    },
+    "action_link": {
+      "type": "string",
+      "description": "\u05e7\u05d9\u05e9\u05d5\u05e8 \u05dc\u05e2\u05de\u05d5\u05d3 \u05e8\u05dc\u05d5\u05d5\u05e0\u05d8\u05d9"
+    },
+    "due_date": {
+      "type": "string",
+      "format": "date",
+      "description": "\u05ea\u05d0\u05e8\u05d9\u05da \u05d9\u05e2\u05d3 \u05dc\u05d8\u05d9\u05e4\u05d5\u05dc"
+    }
+  },
+  "required": [
+    "alert_key",
+    "alert_type",
+    "severity",
+    "message"
+  ]
+}

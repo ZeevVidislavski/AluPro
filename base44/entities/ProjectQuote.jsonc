@@ -1,0 +1,101 @@
+{
+  "name": "ProjectQuote",
+  "type": "object",
+  "properties": {
+    "project_id": {
+      "type": "string",
+      "description": "\u05de\u05d6\u05d4\u05d4 \u05e4\u05e8\u05d5\u05d9\u05e7\u05d8"
+    },
+    "project_name": {
+      "type": "string",
+      "description": "\u05e9\u05dd \u05e4\u05e8\u05d5\u05d9\u05e7\u05d8"
+    },
+    "customer_name": {
+      "type": "string",
+      "description": "\u05e9\u05dd \u05dc\u05e7\u05d5\u05d7"
+    },
+    "quote_number": {
+      "type": "string",
+      "description": "\u05de\u05e1\u05e4\u05e8 \u05d4\u05e6\u05e2\u05d4"
+    },
+    "addition_number": {
+      "type": "number",
+      "description": "\u05de\u05e1\u05e4\u05e8 \u05ea\u05d5\u05e1\u05e4\u05ea (0 = \u05d4\u05e6\u05e2\u05d4 \u05e8\u05d0\u05e9\u05d5\u05e0\u05d9\u05ea, 1+ = \u05ea\u05d5\u05e1\u05e4\u05d5\u05ea)"
+    },
+    "quote_date": {
+      "type": "string",
+      "format": "date",
+      "description": "\u05ea\u05d0\u05e8\u05d9\u05da \u05d4\u05e6\u05e2\u05d4"
+    },
+    "valid_until": {
+      "type": "string",
+      "format": "date",
+      "description": "\u05d1\u05ea\u05d5\u05e7\u05e3 \u05e2\u05d3"
+    },
+    "amount": {
+      "type": "number",
+      "description": "\u05e1\u05db\u05d5\u05dd \u05d4\u05e6\u05e2\u05d4/\u05ea\u05d5\u05e1\u05e4\u05ea"
+    },
+    "subtotal": {
+      "type": "number",
+      "description": "\u05e1\u05db\u05d5\u05dd \u05dc\u05e4\u05e0\u05d9 \u05de\u05e2\"\u05de"
+    },
+    "discount_percent": {
+      "type": "number",
+      "default": 0,
+      "description": "\u05d4\u05e0\u05d7\u05d4 (%)"
+    },
+    "vat_percent": {
+      "type": "number",
+      "default": 17,
+      "description": "\u05d0\u05d7\u05d5\u05d6 \u05de\u05e2\"\u05de"
+    },
+    "vat_amount": {
+      "type": "number",
+      "description": "\u05e1\u05db\u05d5\u05dd \u05de\u05e2\"\u05de"
+    },
+    "total_with_vat": {
+      "type": "number",
+      "description": "\u05e1\u05d4\"\u05db \u05db\u05d5\u05dc\u05dc \u05de\u05e2\"\u05de"
+    },
+    "changes_description": {
+      "type": "string",
+      "description": "\u05ea\u05d9\u05d0\u05d5\u05e8 \u05e9\u05d9\u05e0\u05d5\u05d9\u05d9\u05dd"
+    },
+    "notes": {
+      "type": "string",
+      "description": "\u05d4\u05e2\u05e8\u05d5\u05ea"
+    },
+    "file_url": {
+      "type": "string",
+      "description": "\u05e7\u05d9\u05e9\u05d5\u05e8 \u05dc\u05e7\u05d5\u05d1\u05e5 PDF"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "sent",
+        "approved",
+        "rejected"
+      ],
+      "enumLabels": [
+        "\u05d8\u05d9\u05d5\u05d8\u05d4",
+        "\u05e0\u05e9\u05dc\u05d7",
+        "\u05d0\u05d5\u05e9\u05e8",
+        "\u05e0\u05d3\u05d7\u05d4"
+      ],
+      "default": "draft",
+      "description": "\u05e1\u05d8\u05d8\u05d5\u05e1"
+    },
+    "is_detailed": {
+      "type": "boolean",
+      "default": false,
+      "description": "\u05d4\u05d0\u05dd \u05d4\u05e6\u05e2\u05d4 \u05de\u05e4\u05d5\u05e8\u05d8\u05ea \u05e2\u05dd \u05e9\u05d5\u05e8\u05d5\u05ea"
+    }
+  },
+  "required": [
+    "project_id",
+    "addition_number",
+    "amount"
+  ]
+}

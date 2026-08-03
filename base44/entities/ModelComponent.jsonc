@@ -1,0 +1,168 @@
+{
+  "name": "ModelComponent",
+  "type": "object",
+  "properties": {
+    "model_id": {
+      "type": "string",
+      "description": "\u05de\u05d6\u05d4\u05d4 \u05d4\u05d3\u05d2\u05dd (ModelPricing)"
+    },
+    "component_type": {
+      "type": "string",
+      "enum": [
+        "profile",
+        "glass",
+        "hardware",
+        "accessory"
+      ],
+      "enumLabels": [
+        "\u05e4\u05e8\u05d5\u05e4\u05d9\u05dc",
+        "\u05d6\u05db\u05d5\u05db\u05d9\u05ea",
+        "\u05e4\u05e8\u05d6\u05d5\u05dc",
+        "\u05d0\u05d1\u05d9\u05d6\u05e8"
+      ],
+      "description": "\u05e1\u05d5\u05d2 \u05d4\u05e8\u05db\u05d9\u05d1"
+    },
+    "item_code": {
+      "type": "string",
+      "description": "\u05e7\u05d5\u05d3 \u05e4\u05e8\u05d9\u05d8"
+    },
+    "quantity": {
+      "type": "number",
+      "description": "\u05db\u05de\u05d5\u05ea"
+    },
+    "length_base": {
+      "type": "string",
+      "enum": [
+        "opening_width",
+        "opening_height",
+        "fixed"
+      ],
+      "enumLabels": [
+        "\u05e8\u05d5\u05d7\u05d1 \u05e4\u05ea\u05d9\u05d7\u05d4",
+        "\u05d2\u05d5\u05d1\u05d4 \u05e4\u05ea\u05d9\u05d7\u05d4",
+        "\u05e2\u05e8\u05da \u05e7\u05d1\u05d5\u05e2"
+      ],
+      "description": "\u05d1\u05e1\u05d9\u05e1 \u05d7\u05d9\u05e9\u05d5\u05d1 \u05d0\u05d5\u05e8\u05da"
+    },
+    "length_op1": {
+      "type": "string",
+      "enum": [
+        "none",
+        "add",
+        "subtract",
+        "multiply",
+        "divide"
+      ],
+      "enumLabels": [
+        "\u05dc\u05dc\u05d0",
+        "\u05d7\u05d9\u05d1\u05d5\u05e8",
+        "\u05d7\u05d9\u05e1\u05d5\u05e8",
+        "\u05db\u05e4\u05dc",
+        "\u05d7\u05d9\u05dc\u05d5\u05e7"
+      ],
+      "description": "\u05e4\u05e2\u05d5\u05dc\u05d4 \u05e8\u05d0\u05e9\u05d5\u05e0\u05d4 \u05dc\u05d0\u05d5\u05e8\u05da"
+    },
+    "length_val1": {
+      "type": "number",
+      "description": "\u05e2\u05e8\u05da \u05dc\u05e4\u05e2\u05d5\u05dc\u05d4 \u05e8\u05d0\u05e9\u05d5\u05e0\u05d4 (\u05d0\u05d5 \u05e2\u05e8\u05da \u05e7\u05d1\u05d5\u05e2)"
+    },
+    "length_op2": {
+      "type": "string",
+      "enum": [
+        "none",
+        "add",
+        "subtract",
+        "multiply",
+        "divide"
+      ],
+      "enumLabels": [
+        "\u05dc\u05dc\u05d0",
+        "\u05d7\u05d9\u05d1\u05d5\u05e8",
+        "\u05d7\u05d9\u05e1\u05d5\u05e8",
+        "\u05db\u05e4\u05dc",
+        "\u05d7\u05d9\u05dc\u05d5\u05e7"
+      ],
+      "description": "\u05e4\u05e2\u05d5\u05dc\u05d4 \u05e9\u05e0\u05d9\u05d9\u05d4 \u05dc\u05d0\u05d5\u05e8\u05da"
+    },
+    "length_val2": {
+      "type": "number",
+      "description": "\u05e2\u05e8\u05da \u05dc\u05e4\u05e2\u05d5\u05dc\u05d4 \u05e9\u05e0\u05d9\u05d9\u05d4"
+    },
+    "width_base": {
+      "type": "string",
+      "enum": [
+        "opening_width",
+        "opening_height",
+        "fixed"
+      ],
+      "enumLabels": [
+        "\u05e8\u05d5\u05d7\u05d1 \u05e4\u05ea\u05d9\u05d7\u05d4",
+        "\u05d2\u05d5\u05d1\u05d4 \u05e4\u05ea\u05d9\u05d7\u05d4",
+        "\u05e2\u05e8\u05da \u05e7\u05d1\u05d5\u05e2"
+      ],
+      "description": "\u05d1\u05e1\u05d9\u05e1 \u05d7\u05d9\u05e9\u05d5\u05d1 \u05e8\u05d5\u05d7\u05d1 (\u05d0\u05d5\u05e4\u05e6\u05d9\u05d5\u05e0\u05dc\u05d9)"
+    },
+    "width_op1": {
+      "type": "string",
+      "enum": [
+        "none",
+        "add",
+        "subtract",
+        "multiply",
+        "divide"
+      ],
+      "enumLabels": [
+        "\u05dc\u05dc\u05d0",
+        "\u05d7\u05d9\u05d1\u05d5\u05e8",
+        "\u05d7\u05d9\u05e1\u05d5\u05e8",
+        "\u05db\u05e4\u05dc",
+        "\u05d7\u05d9\u05dc\u05d5\u05e7"
+      ],
+      "description": "\u05e4\u05e2\u05d5\u05dc\u05d4 \u05e8\u05d0\u05e9\u05d5\u05e0\u05d4 \u05dc\u05e8\u05d5\u05d7\u05d1"
+    },
+    "width_val1": {
+      "type": "number",
+      "description": "\u05e2\u05e8\u05da \u05dc\u05e4\u05e2\u05d5\u05dc\u05d4 \u05e8\u05d0\u05e9\u05d5\u05e0\u05d4 \u05dc\u05e8\u05d5\u05d7\u05d1 (\u05d0\u05d5 \u05e2\u05e8\u05da \u05e7\u05d1\u05d5\u05e2)"
+    },
+    "width_op2": {
+      "type": "string",
+      "enum": [
+        "none",
+        "add",
+        "subtract",
+        "multiply",
+        "divide"
+      ],
+      "enumLabels": [
+        "\u05dc\u05dc\u05d0",
+        "\u05d7\u05d9\u05d1\u05d5\u05e8",
+        "\u05d7\u05d9\u05e1\u05d5\u05e8",
+        "\u05db\u05e4\u05dc",
+        "\u05d7\u05d9\u05dc\u05d5\u05e7"
+      ],
+      "description": "\u05e4\u05e2\u05d5\u05dc\u05d4 \u05e9\u05e0\u05d9\u05d9\u05d4 \u05dc\u05e8\u05d5\u05d7\u05d1"
+    },
+    "width_val2": {
+      "type": "number",
+      "description": "\u05e2\u05e8\u05da \u05dc\u05e4\u05e2\u05d5\u05dc\u05d4 \u05e9\u05e0\u05d9\u05d9\u05d4 \u05dc\u05e8\u05d5\u05d7\u05d1"
+    },
+    "calculated_length": {
+      "type": "number",
+      "description": "\u05d0\u05d5\u05e8\u05da \u05de\u05d7\u05d5\u05e9\u05d1 (\u05e1\"\u05de)"
+    },
+    "calculated_width": {
+      "type": "number",
+      "description": "\u05e8\u05d5\u05d7\u05d1 \u05de\u05d7\u05d5\u05e9\u05d1 (\u05e1\"\u05de)"
+    },
+    "notes": {
+      "type": "string",
+      "description": "\u05d4\u05e2\u05e8\u05d5\u05ea"
+    }
+  },
+  "required": [
+    "model_id",
+    "component_type",
+    "item_code",
+    "quantity"
+  ]
+}

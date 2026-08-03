@@ -1,0 +1,75 @@
+{
+  "name": "ClientPayment",
+  "type": "object",
+  "properties": {
+    "project_id": {
+      "type": "string",
+      "description": "\u05de\u05d6\u05d4\u05d4 \u05e4\u05e8\u05d5\u05d9\u05e7\u05d8"
+    },
+    "project_name": {
+      "type": "string",
+      "description": "\u05e9\u05dd \u05e4\u05e8\u05d5\u05d9\u05e7\u05d8"
+    },
+    "payment_type": {
+      "type": "string",
+      "enum": [
+        "advance",
+        "interim",
+        "final"
+      ],
+      "enumLabels": [
+        "\u05de\u05e7\u05d3\u05de\u05d4",
+        "\u05ea\u05e9\u05dc\u05d5\u05dd \u05d1\u05d9\u05e0\u05d9\u05d9\u05dd",
+        "\u05ea\u05e9\u05dc\u05d5\u05dd \u05e1\u05d5\u05e4\u05d9"
+      ],
+      "description": "\u05e1\u05d5\u05d2 \u05ea\u05e9\u05dc\u05d5\u05dd"
+    },
+    "amount": {
+      "type": "number",
+      "description": "\u05e1\u05db\u05d5\u05dd"
+    },
+    "payment_date": {
+      "type": "string",
+      "format": "date",
+      "description": "\u05ea\u05d0\u05e8\u05d9\u05da \u05e7\u05d1\u05dc\u05d4"
+    },
+    "payment_method": {
+      "type": "string",
+      "enum": [
+        "cash",
+        "check",
+        "transfer",
+        "credit"
+      ],
+      "enumLabels": [
+        "\u05de\u05d6\u05d5\u05de\u05df",
+        "\u05e6'\u05e7",
+        "\u05d4\u05e2\u05d1\u05e8\u05d4 \u05d1\u05e0\u05e7\u05d0\u05d9\u05ea",
+        "\u05d0\u05e9\u05e8\u05d0\u05d9"
+      ],
+      "description": "\u05d0\u05de\u05e6\u05e2\u05d9 \u05ea\u05e9\u05dc\u05d5\u05dd"
+    },
+    "received_by_partner_id": {
+      "type": "string",
+      "description": "\u05de\u05d6\u05d4\u05d4 \u05d4\u05e9\u05d5\u05ea\u05e3 \u05e9\u05e7\u05d9\u05d1\u05dc \u05d0\u05ea \u05d4\u05ea\u05e9\u05dc\u05d5\u05dd"
+    },
+    "received_by_partner_name": {
+      "type": "string",
+      "description": "\u05e9\u05dd \u05d4\u05e9\u05d5\u05ea\u05e3 \u05e9\u05e7\u05d9\u05d1\u05dc \u05d0\u05ea \u05d4\u05ea\u05e9\u05dc\u05d5\u05dd"
+    },
+    "reference": {
+      "type": "string",
+      "description": "\u05d0\u05e1\u05de\u05db\u05ea\u05d0"
+    },
+    "notes": {
+      "type": "string",
+      "description": "\u05d4\u05e2\u05e8\u05d5\u05ea"
+    }
+  },
+  "required": [
+    "project_id",
+    "payment_type",
+    "amount",
+    "payment_date"
+  ]
+}

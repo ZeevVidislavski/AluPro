@@ -1,0 +1,88 @@
+{
+  "name": "SupplierOrder",
+  "type": "object",
+  "properties": {
+    "project_id": {
+      "type": "string",
+      "description": "\u05de\u05d6\u05d4\u05d4 \u05e4\u05e8\u05d5\u05d9\u05e7\u05d8"
+    },
+    "project_name": {
+      "type": "string",
+      "description": "\u05e9\u05dd \u05e4\u05e8\u05d5\u05d9\u05e7\u05d8"
+    },
+    "order_type": {
+      "type": "string",
+      "enum": [
+        "aluminum",
+        "hardware",
+        "glass",
+        "extras"
+      ],
+      "enumLabels": [
+        "\u05d0\u05dc\u05d5\u05de\u05d9\u05e0\u05d9\u05d5\u05dd",
+        "\u05e4\u05e8\u05d6\u05d5\u05dc",
+        "\u05d6\u05db\u05d5\u05db\u05d9\u05ea",
+        "\u05ea\u05d5\u05e1\u05e4\u05d5\u05ea"
+      ],
+      "description": "\u05e1\u05d5\u05d2 \u05d4\u05d6\u05de\u05e0\u05d4"
+    },
+    "supplier_name": {
+      "type": "string",
+      "description": "\u05e1\u05e4\u05e7"
+    },
+    "description": {
+      "type": "string",
+      "description": "\u05ea\u05d9\u05d0\u05d5\u05e8"
+    },
+    "order_amount": {
+      "type": "number",
+      "description": "\u05e1\u05db\u05d5\u05dd \u05d4\u05d6\u05de\u05e0\u05d4"
+    },
+    "paid_amount": {
+      "type": "number",
+      "default": 0,
+      "description": "\u05e1\u05db\u05d5\u05dd \u05e9\u05e0\u05e9\u05dc\u05dd"
+    },
+    "order_date": {
+      "type": "string",
+      "format": "date",
+      "description": "\u05ea\u05d0\u05e8\u05d9\u05da \u05d4\u05d6\u05de\u05e0\u05d4"
+    },
+    "payment_date": {
+      "type": "string",
+      "format": "date",
+      "description": "\u05ea\u05d0\u05e8\u05d9\u05da \u05ea\u05e9\u05dc\u05d5\u05dd"
+    },
+    "paid_by_partner_id": {
+      "type": "string",
+      "description": "\u05de\u05d6\u05d4\u05d4 \u05d4\u05e9\u05d5\u05ea\u05e3 \u05e9\u05e9\u05d9\u05dc\u05dd"
+    },
+    "paid_by_partner_name": {
+      "type": "string",
+      "description": "\u05e9\u05dd \u05d4\u05e9\u05d5\u05ea\u05e3 \u05e9\u05e9\u05d9\u05dc\u05dd"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "ordered",
+        "partial",
+        "paid",
+        "received"
+      ],
+      "enumLabels": [
+        "\u05d4\u05d5\u05d6\u05de\u05df",
+        "\u05e9\u05d5\u05dc\u05dd \u05d7\u05dc\u05e7\u05d9\u05ea",
+        "\u05e9\u05d5\u05dc\u05dd \u05de\u05dc\u05d0",
+        "\u05d4\u05ea\u05e7\u05d1\u05dc"
+      ],
+      "default": "ordered",
+      "description": "\u05e1\u05d8\u05d8\u05d5\u05e1"
+    }
+  },
+  "required": [
+    "project_id",
+    "order_type",
+    "supplier_name",
+    "order_amount"
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "name": "Customer",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "\u05e9\u05dd \u05d4\u05dc\u05e7\u05d5\u05d7"
+    },
+    "customer_type": {
+      "type": "string",
+      "enum": [
+        "private",
+        "contractor"
+      ],
+      "enumLabels": [
+        "\u05e4\u05e8\u05d8\u05d9",
+        "\u05e7\u05d1\u05dc\u05df"
+      ],
+      "description": "\u05e1\u05d5\u05d2 \u05dc\u05e7\u05d5\u05d7"
+    },
+    "phone": {
+      "type": "string",
+      "description": "\u05d8\u05dc\u05e4\u05d5\u05df"
+    },
+    "email": {
+      "type": "string",
+      "description": "\u05d0\u05d9\u05de\u05d9\u05d9\u05dc"
+    },
+    "address": {
+      "type": "string",
+      "description": "\u05db\u05ea\u05d5\u05d1\u05ea"
+    },
+    "notes": {
+      "type": "string",
+      "description": "\u05d4\u05e2\u05e8\u05d5\u05ea"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive"
+      ],
+      "enumLabels": [
+        "\u05e4\u05e2\u05d9\u05dc",
+        "\u05dc\u05d0 \u05e4\u05e2\u05d9\u05dc"
+      ],
+      "default": "active",
+      "description": "\u05e1\u05d8\u05d8\u05d5\u05e1 \u05dc\u05e7\u05d5\u05d7"
+    }
+  },
+  "required": [
+    "name",
+    "customer_type",
+    "phone"
+  ]
+}
