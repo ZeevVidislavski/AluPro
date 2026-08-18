@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
+import { ProjectService, CustomerService, ClientPaymentService, SupplierOrderService, ProjectQuoteService } from "@/services";
+import { toast } from "@/components/ui/use-toast";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { format } from "date-fns";
@@ -65,67 +66,88 @@ export default function Projects() {
   const [customerFilter, setCustomerFilter] = useState('all');
   const [dialogOpen, setDialogOpen] = useState(false);
   const [formData, setFormData] = useState(emptyProject);
-  
+  const [lockedCustomerId, setLockedCustomerId] = useState(null);
 
   const queryClient = useQueryClient();
 
-  // Check URL params for customer filter
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const customerId = params.get('customer');
-    if (customerId) {
-      setCustomerFilter(customerId);
-    }
-  }, []);
-
   const { data: projects = [], isLoading } = useQuery({
     queryKey: ['projects'],
-    queryFn: () => base44.entities.Project.list('-created_date')
+    queryFn: () => ProjectService.list()
   });
 
   const { data: customers = [] } = useQuery({
     queryKey: ['customers'],
-    queryFn: () => base44.entities.Customer.list()
+    queryFn: () => CustomerService.list()
   });
+
+  // Coming from a customer's profile (Customers.jsx links here with
+  // ?customer=<id>) should both filter the list AND pre-fill/lock the
+  // "new project" dialog to that customer, and open it directly — not
+  // just filter, which left the create flow ignoring where the user came
+  // from. Depends on `customers` being loaded to resolve the name, so it
+  // runs after that query settles rather than on mount.
+  useEffect(() => {
+    if (customers.length === 0) return;
+    const params = new URLSearchParams(window.location.search);
+    const customerId = params.get('customer');
+    if (!customerId) return;
+
+    setCustomerFilter(customerId);
+
+    const customer = customers.find(c => c.id === customerId);
+    if (customer) {
+      setFormData({ ...emptyProject, customer_id: customer.id, customer_name: customer.name });
+      setLockedCustomerId(customer.id);
+      setDialogOpen(true);
+    }
+  }, [customers]);
 
   const { data: allPayments = [] } = useQuery({
     queryKey: ['all-payments'],
-    queryFn: () => base44.entities.ClientPayment.list()
+    queryFn: () => ClientPaymentService.list()
   });
 
   const { data: allOrders = [] } = useQuery({
     queryKey: ['all-orders'],
-    queryFn: () => base44.entities.SupplierOrder.list()
+    queryFn: () => SupplierOrderService.list()
   });
 
+  // ProjectQuote hasn't migrated yet — still Base44 (deferred separately,
+  // see docs/PHASE_3_IMPLEMENTATION_PLAN.md section 0).
   const { data: allQuotes = [] } = useQuery({
     queryKey: ['all-quotes'],
-    queryFn: () => base44.entities.ProjectQuote.list()
+    queryFn: () => ProjectQuoteService.list()
   });
 
   const createMutation = useMutation({
-    mutationFn: async (data) => {
-      // Generate project number
-      const projectNumber = `P${Date.now().toString().slice(-6)}`;
-      return base44.entities.Project.create({ 
-        ...data, 
-        project_number: projectNumber
-      });
-    },
+    // project_number is no longer generated client-side (was
+    // `P${Date.now().toString().slice(-6)}`, not uniqueness-safe) — the
+    // DB assigns it atomically via a sequence. See
+    // supabase/migrations/0003_projects.sql section 1.
+    mutationFn: (data) => ProjectService.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['projects'] });
       closeDialog();
+    },
+    onError: (err) => {
+      toast({
+        variant: "destructive",
+        title: "שגיאה",
+        description: err?.message || "אירעה שגיאה, נסה שוב"
+      });
     }
   });
 
   const openCreateDialog = () => {
     setFormData(emptyProject);
+    setLockedCustomerId(null);
     setDialogOpen(true);
   };
 
   const closeDialog = () => {
     setDialogOpen(false);
     setFormData(emptyProject);
+    setLockedCustomerId(null);
   };
 
   const handleSubmit = (e) => {
@@ -312,9 +334,10 @@ export default function Projects() {
 
             <div className="space-y-2">
               <Label htmlFor="customer">לקוח *</Label>
-              <Select 
-                value={formData.customer_id} 
+              <Select
+                value={formData.customer_id}
                 onValueChange={handleCustomerChange}
+                disabled={!!lockedCustomerId}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="בחר לקוח" />

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
+import { ModelComponentService } from "@/services";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -132,22 +132,22 @@ export default function ModelComponentsTab({ modelId }) {
 
   const { data: components = [], isLoading } = useQuery({
     queryKey: ["model-components", modelId],
-    queryFn: () => base44.entities.ModelComponent.filter({ model_id: modelId }),
+    queryFn: () => ModelComponentService.listByModel(modelId),
     enabled: !!modelId
   });
 
   const createMutation = useMutation({
-    mutationFn: (data) => base44.entities.ModelComponent.create({ ...data, model_id: modelId }),
+    mutationFn: (data) => ModelComponentService.create(modelId, data),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["model-components", modelId] }); setDialogOpen(false); setFormData(emptyForm); }
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.ModelComponent.update(id, data),
+    mutationFn: ({ id, data }) => ModelComponentService.update(id, data),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["model-components", modelId] }); setDialogOpen(false); setEditingId(null); setFormData(emptyForm); }
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => base44.entities.ModelComponent.delete(id),
+    mutationFn: (id) => ModelComponentService.delete(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["model-components", modelId] })
   });
 
@@ -198,12 +198,13 @@ export default function ModelComponentsTab({ modelId }) {
   const handleSaveCalcResults = async () => {
     if (!calcResults) return;
     setCalcSaving(true);
-    await Promise.all(calcResults.map(comp =>
-      base44.entities.ModelComponent.update(comp.id, {
+    await ModelComponentService.updateMany(calcResults.map(comp => ({
+      id: comp.id,
+      data: {
         calculated_length: comp.calculated_length,
         calculated_width: comp.calculated_width
-      })
-    ));
+      }
+    })));
     queryClient.invalidateQueries({ queryKey: ["model-components", modelId] });
     setCalcSaving(false);
     setCalcOpen(false);

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
+import { MaterialOrderService, MaterialOrderItemService } from "@/services";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -29,32 +29,35 @@ export default function MaterialOrdersTab({ projectId, projectName }) {
 
   const { data: orders = [], isLoading } = useQuery({
     queryKey: ["material-orders", projectId],
-    queryFn: () => base44.entities.MaterialOrder.filter({ project_id: projectId }),
+    queryFn: () => MaterialOrderService.listByProject(projectId),
     enabled: !!projectId,
   });
 
+  // Keyed by the actual order ids (not just projectId) so this becomes a
+  // genuinely new query whenever "עדכן הזמנות" replaces the underlying
+  // orders — otherwise React Query treated pre- and post-regeneration
+  // fetches as "the same" cached query, and a race between the orders
+  // query refetching (new ids) and this one refetching (still old/empty
+  // ids at that instant) could leave allItems stuck at an empty result
+  // until a full page reload forced a clean refetch. Found in manual
+  // testing 2026-08-18.
+  const orderIds = orders.map(o => o.id);
   const { data: allItems = [] } = useQuery({
-    queryKey: ["material-order-items", projectId],
-    queryFn: async () => {
-      if (!orders.length) return [];
-      const results = await Promise.all(
-        orders.map(o => base44.entities.MaterialOrderItem.filter({ material_order_id: o.id }))
-      );
-      return results.flat();
-    },
-    enabled: orders.length > 0,
+    queryKey: ["material-order-items", projectId, orderIds],
+    queryFn: () => MaterialOrderItemService.listByOrders(orderIds),
+    enabled: orderIds.length > 0,
   });
 
   const updateStatusMutation = useMutation({
-    mutationFn: ({ id, status }) => base44.entities.MaterialOrder.update(id, { status }),
+    mutationFn: ({ id, status }) => MaterialOrderService.update(id, { status }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["material-orders", projectId] }),
   });
 
   const deleteOrderMutation = useMutation({
     mutationFn: async (orderId) => {
       const items = allItems.filter(i => i.material_order_id === orderId);
-      await Promise.all(items.map(i => base44.entities.MaterialOrderItem.delete(i.id)));
-      await base44.entities.MaterialOrder.delete(orderId);
+      await Promise.all(items.map(i => MaterialOrderItemService.delete(i.id)));
+      await MaterialOrderService.delete(orderId);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["material-orders", projectId] });

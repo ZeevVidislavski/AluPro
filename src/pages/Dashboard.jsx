@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
-import { 
+import { ProjectService, ClientPaymentService, SupplierOrderService, ReminderService, ProjectQuoteService } from "@/services";
+import {
   TrendingUp, 
   TrendingDown, 
   Wallet, 
@@ -20,27 +20,27 @@ import { useMemo } from "react";
 export default function Dashboard() {
   const { data: projects = [], isLoading: loadingProjects } = useQuery({
     queryKey: ['projects'],
-    queryFn: () => base44.entities.Project.list('-created_date')
+    queryFn: () => ProjectService.list()
   });
 
   const { data: allPayments = [], isLoading: loadingPayments } = useQuery({
     queryKey: ['all-payments'],
-    queryFn: () => base44.entities.ClientPayment.list()
+    queryFn: () => ClientPaymentService.list()
   });
 
   const { data: allOrders = [], isLoading: loadingOrders } = useQuery({
     queryKey: ['all-orders'],
-    queryFn: () => base44.entities.SupplierOrder.list()
+    queryFn: () => SupplierOrderService.list()
   });
 
   const { data: reminders = [], isLoading: loadingReminders } = useQuery({
     queryKey: ['reminders'],
-    queryFn: () => base44.entities.Reminder.list()
+    queryFn: () => ReminderService.list()
   });
 
   const { data: allQuotes = [], isLoading: loadingQuotes } = useQuery({
     queryKey: ['all-quotes'],
-    queryFn: () => base44.entities.ProjectQuote.list()
+    queryFn: () => ProjectQuoteService.list()
   });
 
   const isLoading = loadingProjects || loadingPayments || loadingOrders || loadingReminders || loadingQuotes;

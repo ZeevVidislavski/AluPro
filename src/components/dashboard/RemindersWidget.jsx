@@ -2,7 +2,7 @@ import { format, isPast, isToday } from "date-fns";
 import { he } from "date-fns/locale";
 import { Bell, CheckCircle, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { base44 } from "@/api/base44Client";
+import { ReminderService } from "@/services";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const priorityConfig = {
@@ -15,7 +15,7 @@ export default function RemindersWidget({ reminders }) {
   const queryClient = useQueryClient();
 
   const markDone = useMutation({
-    mutationFn: (id) => base44.entities.Reminder.update(id, { status: 'done' }),
+    mutationFn: (id) => ReminderService.update(id, { status: 'done' }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['reminders'] })
   });
 

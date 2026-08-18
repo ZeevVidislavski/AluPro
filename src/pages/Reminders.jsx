@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
+import { ReminderService, ProjectService } from "@/services";
 import { format, isPast, isToday, isTomorrow } from "date-fns";
 import { he } from "date-fns/locale";
 import { 
@@ -63,16 +63,16 @@ export default function Reminders() {
 
   const { data: reminders = [], isLoading } = useQuery({
     queryKey: ['all-reminders'],
-    queryFn: () => base44.entities.Reminder.list('-created_date')
+    queryFn: () => ReminderService.list()
   });
 
   const { data: projects = [] } = useQuery({
     queryKey: ['projects'],
-    queryFn: () => base44.entities.Project.list()
+    queryFn: () => ProjectService.list()
   });
 
   const createMutation = useMutation({
-    mutationFn: (data) => base44.entities.Reminder.create(data),
+    mutationFn: (data) => ReminderService.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['all-reminders'] });
       queryClient.invalidateQueries({ queryKey: ['reminders'] });
@@ -90,7 +90,7 @@ export default function Reminders() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.Reminder.update(id, data),
+    mutationFn: ({ id, data }) => ReminderService.update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['all-reminders'] });
       queryClient.invalidateQueries({ queryKey: ['reminders'] });

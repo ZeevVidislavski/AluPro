@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
+import { QuoteTemplateComponentService } from "@/services";
 import { Input } from "@/components/ui/input";
 import { Plus, Trash2, Pencil } from "lucide-react";
 import CatalogPickerModal from "@/components/quotes/CatalogPickerModal";
@@ -20,18 +20,18 @@ export default function TemplateComponentsManager({ templateId, comps, catalogIt
   const invalidate = () => queryClient.invalidateQueries({ queryKey: ["all-template-components"] });
 
   const updateCompMutation = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.QuoteTemplateComponent.update(id, data),
+    mutationFn: ({ id, data }) => QuoteTemplateComponentService.update(id, data),
     onSuccess: invalidate
   });
 
   const deleteCompMutation = useMutation({
-    mutationFn: (id) => base44.entities.QuoteTemplateComponent.delete(id),
+    mutationFn: (id) => QuoteTemplateComponentService.delete(id),
     onSuccess: invalidate
   });
 
   const handleAddFromCatalog = async (selectedItems) => {
     await Promise.all(selectedItems.map((item, idx) =>
-      base44.entities.QuoteTemplateComponent.create({
+      QuoteTemplateComponentService.create({
         template_id: templateId,
         catalog_item_id: item.id,
         name_snapshot: item.model_name,

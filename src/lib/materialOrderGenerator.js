@@ -1,4 +1,11 @@
-import { base44 } from "@/api/base44Client";
+import {
+  ProjectQuoteService,
+  QuoteItemService,
+  QuoteItemComponentService,
+  ModelComponentService,
+  MaterialOrderService,
+  MaterialOrderItemService,
+} from "@/services";
 
 // component_type → order_type mapping
 const TYPE_MAP = {
@@ -15,19 +22,19 @@ const TYPE_MAP = {
  */
 export async function generateMaterialOrders(projectId, projectName) {
   // 1. Load all quote items for this project
-  const quotes = await base44.entities.ProjectQuote.filter({ project_id: projectId });
+  const quotes = await ProjectQuoteService.listByProject(projectId);
   if (!quotes.length) throw new Error("אין הצעות מחיר לפרויקט זה");
 
   const allQuoteItems = (
-    await Promise.all(quotes.map(q => base44.entities.QuoteItem.filter({ quote_id: q.id })))
+    await Promise.all(quotes.map(q => QuoteItemService.listByQuote(q.id)))
   ).flat();
 
   if (!allQuoteItems.length) throw new Error("אין פריטים בהצעות המחיר");
 
   // 2. Load QuoteItemComponents to find which catalog items are used
-  const allQuoteItemComponents = (
-    await Promise.all(allQuoteItems.map(qi => base44.entities.QuoteItemComponent.filter({ quote_item_id: qi.id })))
-  ).flat();
+  const allQuoteItemComponents = await QuoteItemComponentService.listByQuoteItems(
+    allQuoteItems.map(qi => qi.id)
+  );
 
   // 3. For each quote item we need its dimensions to calculate lengths
   const quoteItemMap = Object.fromEntries(allQuoteItems.map(qi => [qi.id, qi]));
@@ -37,7 +44,7 @@ export async function generateMaterialOrders(projectId, projectName) {
   if (!catalogItemIds.length) throw new Error("אין רכיבי קטלוג מקושרים לפריטי ההצעה");
 
   const allModelComponents = (
-    await Promise.all(catalogItemIds.map(id => base44.entities.ModelComponent.filter({ model_id: id })))
+    await Promise.all(catalogItemIds.map(id => ModelComponentService.listByModel(id)))
   ).flat();
 
   if (!allModelComponents.length) throw new Error("אין רכיבי ייצור מוגדרים לדגמים בפרויקט זה");
@@ -84,13 +91,13 @@ export async function generateMaterialOrders(projectId, projectName) {
   if (!Object.keys(aggregation).length) throw new Error("לא נמצאו רכיבים להזמנה");
 
   // 6. Delete existing draft orders for this project
-  const existingOrders = await base44.entities.MaterialOrder.filter({ project_id: projectId });
-  await Promise.all(existingOrders.map(o => base44.entities.MaterialOrder.delete(o.id)));
+  const existingOrders = await MaterialOrderService.listByProject(projectId);
+  await Promise.all(existingOrders.map(o => MaterialOrderService.delete(o.id)));
 
   // 7. Create new MaterialOrders + Items
   const createdOrders = [];
   for (const [orderType, itemMap] of Object.entries(aggregation)) {
-    const order = await base44.entities.MaterialOrder.create({
+    const order = await MaterialOrderService.create({
       project_id: projectId,
       project_name: projectName,
       order_type: orderType,
@@ -104,7 +111,7 @@ export async function generateMaterialOrders(projectId, projectName) {
       total_length: vals.total_length ? Math.round(vals.total_length * 100) / 100 : null,
     }));
 
-    await Promise.all(items.map(item => base44.entities.MaterialOrderItem.create(item)));
+    await Promise.all(items.map(item => MaterialOrderItemService.create(item)));
     createdOrders.push(order);
   }
 

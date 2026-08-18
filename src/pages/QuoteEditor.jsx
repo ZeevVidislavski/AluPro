@@ -1,6 +1,15 @@
 import { useState, useEffect, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
+import {
+  ProjectQuoteService,
+  QuoteItemService,
+  QuoteItemComponentService,
+  ModelPricingService,
+  QuoteTemplateService,
+  QuoteTemplateComponentService,
+  CompanyHeaderService,
+  ProjectService,
+} from "@/services";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -71,9 +80,8 @@ export default function QuoteEditor() {
   // ─── Data queries ────────────────────────────────────────────────────────────
   const { data: quote, isLoading: loadingQuote } = useQuery({
     queryKey: ["quote", quoteId],
-    queryFn: () => base44.entities.ProjectQuote.filter({ id: quoteId }),
-    enabled: !!quoteId,
-    select: d => d[0]
+    queryFn: () => ProjectQuoteService.get(quoteId),
+    enabled: !!quoteId
   });
 
   useEffect(() => {
@@ -91,21 +99,13 @@ export default function QuoteEditor() {
 
   const { data: savedItems = [], isLoading: loadingItems } = useQuery({
     queryKey: ["quote-items", quoteId],
-    queryFn: () => base44.entities.QuoteItem.filter({ quote_id: quoteId }),
+    queryFn: () => QuoteItemService.listByQuote(quoteId),
     enabled: !!quoteId
   });
 
   const { data: allComponents = [], isLoading: loadingComponents } = useQuery({
     queryKey: ["quote-item-components", quoteId],
-    queryFn: async () => {
-      const itemIds = savedItems.map(i => i.id);
-      if (itemIds.length === 0) return [];
-      // fetch all components for all items of this quote
-      const results = await Promise.all(
-        itemIds.map(id => base44.entities.QuoteItemComponent.filter({ quote_item_id: id }))
-      );
-      return results.flat();
-    },
+    queryFn: () => QuoteItemComponentService.listByQuoteItems(savedItems.map(i => i.id)),
     enabled: savedItems.length > 0
   });
 
@@ -132,24 +132,23 @@ export default function QuoteEditor() {
 
   const { data: catalogItems = [] } = useQuery({
     queryKey: ["catalog-items"],
-    queryFn: () => base44.entities.ModelPricing.list()
+    queryFn: () => ModelPricingService.list()
   });
 
   const { data: templates = [] } = useQuery({
     queryKey: ["quote-templates"],
-    queryFn: () => base44.entities.QuoteTemplate.list()
+    queryFn: () => QuoteTemplateService.list()
   });
 
   const { data: companyHeaders = [] } = useQuery({
     queryKey: ["company-headers"],
-    queryFn: () => base44.entities.CompanyHeader.list()
+    queryFn: () => CompanyHeaderService.list()
   });
 
   const { data: project } = useQuery({
     queryKey: ["project", quote?.project_id],
-    queryFn: () => base44.entities.Project.filter({ id: quote?.project_id }),
-    enabled: !!quote?.project_id,
-    select: d => d[0]
+    queryFn: () => ProjectService.get(quote?.project_id),
+    enabled: !!quote?.project_id
   });
 
   // ─── Item helpers ─────────────────────────────────────────────────────────────
@@ -174,8 +173,8 @@ export default function QuoteEditor() {
     if (item?.id) {
       // delete all components first
       const comps = componentsMap[key] || [];
-      await Promise.all(comps.filter(c => c.id).map(c => base44.entities.QuoteItemComponent.delete(c.id)));
-      await base44.entities.QuoteItem.delete(item.id);
+      await Promise.all(comps.filter(c => c.id).map(c => QuoteItemComponentService.delete(c.id)));
+      await QuoteItemService.delete(item.id);
       queryClient.invalidateQueries({ queryKey: ["quote-items", quoteId] });
     }
     setItems(prev => prev.filter(i => getItemKey(i) !== key));
@@ -256,10 +255,10 @@ export default function QuoteEditor() {
         };
 
         if (item.id) {
-          savedItem = await base44.entities.QuoteItem.update(item.id, itemData);
+          savedItem = await QuoteItemService.update(item.id, itemData);
           savedItem = { ...item, ...itemData };
         } else {
-          savedItem = await base44.entities.QuoteItem.create(itemData);
+          savedItem = await QuoteItemService.create(itemData);
         }
 
         savedItemsMap[key] = savedItem.id;
@@ -278,9 +277,9 @@ export default function QuoteEditor() {
             sort_order: comp.sort_order || 0
           };
           if (comp.id) {
-            await base44.entities.QuoteItemComponent.update(comp.id, compData);
+            await QuoteItemComponentService.update(comp.id, compData);
           } else {
-            const saved = await base44.entities.QuoteItemComponent.create(compData);
+            const saved = await QuoteItemComponentService.create(compData);
             // update local map with real id
             setComponentsMap(prev => ({
               ...prev,
@@ -299,7 +298,7 @@ export default function QuoteEditor() {
 
       // Recalculate totals using updatedItems (not stale state)
       const t = calcQuoteTotals(updatedItems, componentsMap, quoteForm.discount_percent, quoteForm.vat_percent);
-      await base44.entities.ProjectQuote.update(quoteId, {
+      await ProjectQuoteService.update(quoteId, {
         ...quoteForm,
         subtotal: t.subtotal,
         vat_amount: t.vatAmount,
@@ -320,10 +319,10 @@ export default function QuoteEditor() {
   const handleSaveTemplate = async (itemKey, { name, description }) => {
     setSavingTemplate(true);
     try {
-      const tmpl = await base44.entities.QuoteTemplate.create({ name, description });
+      const tmpl = await QuoteTemplateService.create({ name, description });
       const comps = componentsMap[itemKey] || [];
       await Promise.all(comps.map((comp, idx) =>
-        base44.entities.QuoteTemplateComponent.create({
+        QuoteTemplateComponentService.create({
           template_id: tmpl.id,
           catalog_item_id: comp.catalog_item_id || null,
           name_snapshot: comp.name_snapshot,
@@ -342,7 +341,7 @@ export default function QuoteEditor() {
 
   // ─── Load template ────────────────────────────────────────────────────────────
   const handleLoadTemplate = async (templateId, priceMode) => {
-    const templateComps = await base44.entities.QuoteTemplateComponent.filter({ template_id: templateId });
+    const templateComps = await QuoteTemplateComponentService.listByTemplate(templateId);
     const template = templates.find(t => t.id === templateId);
 
     const tempItemId = `_tmp_${Date.now()}`;
@@ -390,7 +389,12 @@ export default function QuoteEditor() {
   };
 
   const startPDF = async (header) => {
-    setSelectedHeader(header);
+    // company_headers.logo_url is a Storage path, not a displayable URL
+    // (Phase 6) — resolve it to a signed URL BEFORE rendering
+    // QuotePrintView, since html2canvas screenshots the DOM synchronously
+    // and can't wait for an <img> to finish loading asynchronously.
+    const logoUrl = header?.logo_url ? await CompanyHeaderService.getLogoUrl(header.logo_url) : null;
+    setSelectedHeader(header ? { ...header, resolvedLogoUrl: logoUrl } : null);
     await handleSave();
     setShowPrint(true);
     setTimeout(async () => {

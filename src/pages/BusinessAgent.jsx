@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
+import { ProjectService, CustomerService, ClientPaymentService, SupplierOrderService, AgentSettingsService, AgentAlertService, ProjectQuoteService } from "@/services";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -67,51 +67,51 @@ export default function BusinessAgent() {
   // Fetch data
   const { data: alerts = [], isLoading: loadingAlerts } = useQuery({
     queryKey: ['agent-alerts'],
-    queryFn: () => base44.entities.AgentAlert.list('-created_date')
+    queryFn: () => AgentAlertService.list()
   });
 
   const { data: settings = [], isLoading: loadingSettings } = useQuery({
     queryKey: ['agent-settings'],
-    queryFn: () => base44.entities.AgentSettings.list()
+    queryFn: () => AgentSettingsService.list()
   });
 
   const { data: projects = [] } = useQuery({
     queryKey: ['projects'],
-    queryFn: () => base44.entities.Project.list()
+    queryFn: () => ProjectService.list()
   });
 
   const { data: customers = [] } = useQuery({
     queryKey: ['customers'],
-    queryFn: () => base44.entities.Customer.list()
+    queryFn: () => CustomerService.list()
   });
 
   const { data: allQuotes = [] } = useQuery({
     queryKey: ['quotes'],
-    queryFn: () => base44.entities.ProjectQuote.list()
+    queryFn: () => ProjectQuoteService.list()
   });
 
   const { data: allPayments = [] } = useQuery({
     queryKey: ['payments'],
-    queryFn: () => base44.entities.ClientPayment.list()
+    queryFn: () => ClientPaymentService.list()
   });
 
   const { data: allOrders = [] } = useQuery({
     queryKey: ['orders'],
-    queryFn: () => base44.entities.SupplierOrder.list()
+    queryFn: () => SupplierOrderService.list()
   });
 
   // Mutations
   const markHandledMutation = useMutation({
-    mutationFn: (alertId) => base44.entities.AgentAlert.update(alertId, { is_handled: true }),
+    mutationFn: (alertId) => AgentAlertService.update(alertId, { is_handled: true }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['agent-alerts'] })
   });
 
   const updateSettingsMutation = useMutation({
     mutationFn: (data) => {
       if (settings.length > 0) {
-        return base44.entities.AgentSettings.update(settings[0].id, data);
+        return AgentSettingsService.update(settings[0].id, data);
       } else {
-        return base44.entities.AgentSettings.create(data);
+        return AgentSettingsService.create(data);
       }
     },
     onSuccess: () => {
@@ -142,13 +142,13 @@ export default function BusinessAgent() {
           const existing = alerts.find(a => a.alert_key === alertData.alert_key && !a.is_handled);
           
           if (existing) {
-            await base44.entities.AgentAlert.update(existing.id, {
+            await AgentAlertService.update(existing.id, {
               severity: alertData.severity,
               message: alertData.message,
               details: alertData.details
             });
           } else {
-            await base44.entities.AgentAlert.create(alertData);
+            await AgentAlertService.create(alertData);
           }
         }
 
@@ -156,7 +156,7 @@ export default function BusinessAgent() {
         const projectAlertsList = alerts.filter(a => a.project_id === project.id && !a.is_handled);
         for (const alert of projectAlertsList) {
           if (shouldResolveAlert(alert, financials, currentSettings, activeProjects.length)) {
-            await base44.entities.AgentAlert.update(alert.id, { is_handled: true });
+            await AgentAlertService.update(alert.id, { is_handled: true });
           }
         }
       }
@@ -175,9 +175,9 @@ export default function BusinessAgent() {
         };
 
         if (existingWorkload) {
-          await base44.entities.AgentAlert.update(existingWorkload.id, workloadAlert);
+          await AgentAlertService.update(existingWorkload.id, workloadAlert);
         } else {
-          await base44.entities.AgentAlert.create(workloadAlert);
+          await AgentAlertService.create(workloadAlert);
         }
       }
     },

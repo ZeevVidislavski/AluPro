@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
+import { ProjectService, ProjectQuoteService } from "@/services";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,16 +30,24 @@ export default function Quotes() {
 
   const { data: quotes = [], isLoading } = useQuery({
     queryKey: ["all-quotes"],
-    queryFn: () => base44.entities.ProjectQuote.list("-created_date")
+    queryFn: () => ProjectQuoteService.list()
   });
 
+  // Feeds the "new quote" project picker AND is the source create() uses
+  // for project_id. Used to be deliberately Base44-sourced (see git
+  // history / PHASE_4_IMPLEMENTATION_PLAN.md section 9) because
+  // QuoteEditor.jsx hadn't migrated — a Supabase-created quote would hand
+  // it a UUID Base44 couldn't find. Now that QuoteEditor.jsx is fully on
+  // Supabase (Phase 11), that risk no longer applies: both this screen's
+  // create() and QuoteEditor.jsx's navigation now agree on Supabase
+  // UUIDs throughout. Switched to ProjectService in Phase 11's cleanup.
   const { data: projects = [] } = useQuery({
     queryKey: ["projects"],
-    queryFn: () => base44.entities.Project.list()
+    queryFn: () => ProjectService.list()
   });
 
   const deleteQuoteMutation = useMutation({
-    mutationFn: (id) => base44.entities.ProjectQuote.delete(id),
+    mutationFn: (id) => ProjectQuoteService.delete(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["all-quotes"] })
   });
 
@@ -47,7 +55,7 @@ export default function Quotes() {
     mutationFn: (projectId) => {
       const project = projects.find(p => p.id === projectId);
       const projectQuotes = quotes.filter(q => q.project_id === projectId);
-      return base44.entities.ProjectQuote.create({
+      return ProjectQuoteService.create({
         project_id: projectId,
         project_name: project?.name || "",
         customer_name: project?.customer_name || "",

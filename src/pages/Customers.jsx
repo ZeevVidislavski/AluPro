@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
+import { CustomerService, ProjectService } from "@/services";
+import { toast } from "@/components/ui/use-toast";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { 
@@ -63,33 +64,44 @@ export default function Customers() {
 
   const { data: customers = [], isLoading } = useQuery({
     queryKey: ['customers'],
-    queryFn: () => base44.entities.Customer.list('-created_date')
+    queryFn: () => CustomerService.list()
   });
 
   const { data: projects = [] } = useQuery({
     queryKey: ['projects'],
-    queryFn: () => base44.entities.Project.list()
+    queryFn: () => ProjectService.list()
   });
 
+  const onMutationError = (err) => {
+    toast({
+      variant: "destructive",
+      title: "שגיאה",
+      description: err?.message || "אירעה שגיאה, נסה שוב"
+    });
+  };
+
   const createMutation = useMutation({
-    mutationFn: (data) => base44.entities.Customer.create(data),
+    mutationFn: (data) => CustomerService.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['customers'] });
       closeDialog();
-    }
+    },
+    onError: onMutationError
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.Customer.update(id, data),
+    mutationFn: ({ id, data }) => CustomerService.update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['customers'] });
       closeDialog();
-    }
+    },
+    onError: onMutationError
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => base44.entities.Customer.delete(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['customers'] })
+    mutationFn: (id) => CustomerService.delete(id),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['customers'] }),
+    onError: onMutationError
   });
 
   const openCreateDialog = () => {

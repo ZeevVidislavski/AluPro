@@ -1,6 +1,14 @@
 import { useState, useEffect, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
+import {
+  ProjectService,
+  ClientPaymentService,
+  SupplierOrderService,
+  ProjectQuoteService,
+  DocumentService,
+  ReminderService,
+  PartnerService,
+} from "@/services";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { format } from "date-fns";
@@ -68,6 +76,55 @@ const statusOptions = [
   { value: 'invoiced', label: 'סגור חשבונית' }
 ];
 
+// file_url on both ProjectQuote and Document is now an internal Storage
+// path, not a displayable/public URL — these resolve a path to a
+// time-limited signed URL on demand. Same pattern as
+// CompanyHeaders.jsx's useLogoSignedUrl/HeaderLogo (Phase 6), duplicated
+// here (not imported cross-page) since each caller uses a different
+// Service (ProjectQuoteService vs DocumentService) for the signed-URL
+// lookup.
+function QuoteFileLink({ path }) {
+  const [url, setUrl] = useState(null);
+  useEffect(() => {
+    let cancelled = false;
+    if (!path) return;
+    ProjectQuoteService.getFileUrl(path).then((signedUrl) => {
+      if (!cancelled) setUrl(signedUrl);
+    });
+    return () => { cancelled = true; };
+  }, [path]);
+
+  if (!url) {
+    return <span className="p-2"><Loader2 className="w-4 h-4 animate-spin text-slate-300" /></span>;
+  }
+  return (
+    <a href={url} target="_blank" rel="noopener noreferrer" className="p-2 hover:bg-slate-100 rounded-lg text-blue-600 hover:text-blue-700">
+      <ExternalLink className="w-4 h-4" />
+    </a>
+  );
+}
+
+function DocumentFileLink({ path }) {
+  const [url, setUrl] = useState(null);
+  useEffect(() => {
+    let cancelled = false;
+    if (!path) return;
+    DocumentService.getFileUrl(path).then((signedUrl) => {
+      if (!cancelled) setUrl(signedUrl);
+    });
+    return () => { cancelled = true; };
+  }, [path]);
+
+  if (!url) {
+    return <span className="p-2"><Loader2 className="w-4 h-4 animate-spin text-slate-300" /></span>;
+  }
+  return (
+    <a href={url} target="_blank" rel="noopener noreferrer" className="p-2 hover:bg-slate-100 rounded-lg text-slate-600 hover:text-slate-900">
+      <Download className="w-4 h-4" />
+    </a>
+  );
+}
+
 export default function ProjectDetails() {
   const [projectId, setProjectId] = useState(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -93,48 +150,47 @@ export default function ProjectDetails() {
 
   const { data: project, isLoading } = useQuery({
     queryKey: ['project', projectId],
-    queryFn: () => base44.entities.Project.filter({ id: projectId }),
-    enabled: !!projectId,
-    select: (data) => data[0]
+    queryFn: () => ProjectService.get(projectId),
+    enabled: !!projectId
   });
 
   const { data: payments = [] } = useQuery({
     queryKey: ['project-payments', projectId],
-    queryFn: () => base44.entities.ClientPayment.filter({ project_id: projectId }),
+    queryFn: () => ClientPaymentService.listByProject(projectId),
     enabled: !!projectId
   });
 
   const { data: orders = [] } = useQuery({
     queryKey: ['project-orders', projectId],
-    queryFn: () => base44.entities.SupplierOrder.filter({ project_id: projectId }),
+    queryFn: () => SupplierOrderService.listByProject(projectId),
     enabled: !!projectId
   });
 
   const { data: documents = [] } = useQuery({
     queryKey: ['project-documents', projectId],
-    queryFn: () => base44.entities.Document.filter({ project_id: projectId }),
+    queryFn: () => DocumentService.listByProject(projectId),
     enabled: !!projectId
   });
 
   const { data: reminders = [] } = useQuery({
     queryKey: ['project-reminders', projectId],
-    queryFn: () => base44.entities.Reminder.filter({ project_id: projectId }),
+    queryFn: () => ReminderService.list().then(all => all.filter(r => r.project_id === projectId)),
     enabled: !!projectId
   });
 
   const { data: quotes = [] } = useQuery({
     queryKey: ['project-quotes', projectId],
-    queryFn: () => base44.entities.ProjectQuote.filter({ project_id: projectId }),
+    queryFn: () => ProjectQuoteService.listByProject(projectId),
     enabled: !!projectId
   });
 
   const { data: partners = [] } = useQuery({
     queryKey: ['partners'],
-    queryFn: () => base44.entities.Partner.list()
+    queryFn: () => PartnerService.list()
   });
 
   const updateProjectMutation = useMutation({
-    mutationFn: (data) => base44.entities.Project.update(projectId, data),
+    mutationFn: (data) => ProjectService.update(projectId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['project', projectId] });
       queryClient.invalidateQueries({ queryKey: ['projects'] });
@@ -143,11 +199,7 @@ export default function ProjectDetails() {
   });
 
   const closeSettlementMutation = useMutation({
-    mutationFn: () => base44.entities.Project.update(projectId, {
-      settlement_status: "closed",
-      closed_at: new Date().toISOString().split('T')[0],
-      closed_by: "מנהל"
-    }),
+    mutationFn: () => ProjectService.closeSettlement(projectId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['project', projectId] });
       queryClient.invalidateQueries({ queryKey: ['projects'] });
@@ -155,7 +207,7 @@ export default function ProjectDetails() {
   });
 
   const deleteProjectMutation = useMutation({
-    mutationFn: () => base44.entities.Project.delete(projectId),
+    mutationFn: () => ProjectService.delete(projectId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['projects'] });
       window.location.href = createPageUrl("Projects");
@@ -163,11 +215,7 @@ export default function ProjectDetails() {
   });
 
   const reopenSettlementMutation = useMutation({
-    mutationFn: () => base44.entities.Project.update(projectId, {
-      settlement_status: "open",
-      closed_at: null,
-      closed_by: null
-    }),
+    mutationFn: () => ProjectService.reopenSettlement(projectId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['project', projectId] });
       queryClient.invalidateQueries({ queryKey: ['projects'] });
@@ -673,7 +721,7 @@ function PaymentsSection({ payments, projectId, projectName, dialogOpen, setDial
   const queryClient = useQueryClient();
 
   const createMutation = useMutation({
-    mutationFn: (data) => base44.entities.ClientPayment.create({
+    mutationFn: (data) => ClientPaymentService.create({
       ...data,
       project_id: projectId,
       project_name: projectName
@@ -697,7 +745,7 @@ function PaymentsSection({ payments, projectId, projectName, dialogOpen, setDial
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.ClientPayment.update(id, data),
+    mutationFn: ({ id, data }) => ClientPaymentService.update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['project-payments', projectId] });
       queryClient.invalidateQueries({ queryKey: ['project', projectId] });
@@ -707,7 +755,7 @@ function PaymentsSection({ payments, projectId, projectName, dialogOpen, setDial
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => base44.entities.ClientPayment.delete(id),
+    mutationFn: (id) => ClientPaymentService.delete(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['project-payments', projectId] })
   });
 
@@ -916,7 +964,7 @@ function OrdersSection({ orders, projectId, projectName, dialogOpen, setDialogOp
   const queryClient = useQueryClient();
 
   const createMutation = useMutation({
-    mutationFn: (data) => base44.entities.SupplierOrder.create({
+    mutationFn: (data) => SupplierOrderService.create({
       ...data,
       project_id: projectId,
       project_name: projectName
@@ -930,7 +978,7 @@ function OrdersSection({ orders, projectId, projectName, dialogOpen, setDialogOp
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.SupplierOrder.update(id, data),
+    mutationFn: ({ id, data }) => SupplierOrderService.update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['project-orders', projectId] });
       queryClient.invalidateQueries({ queryKey: ['project', projectId] });
@@ -940,7 +988,7 @@ function OrdersSection({ orders, projectId, projectName, dialogOpen, setDialogOp
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => base44.entities.SupplierOrder.delete(id),
+    mutationFn: (id) => SupplierOrderService.delete(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['project-orders', projectId] })
   });
 
@@ -1143,7 +1191,7 @@ function QuotesSection({ quotes, projectId, projectName, dialogOpen, setDialogOp
   const queryClient = useQueryClient();
 
   const createMutation = useMutation({
-    mutationFn: (data) => base44.entities.ProjectQuote.create({
+    mutationFn: (data) => ProjectQuoteService.create({
       ...data,
       project_id: projectId,
       project_name: projectName
@@ -1157,7 +1205,7 @@ function QuotesSection({ quotes, projectId, projectName, dialogOpen, setDialogOp
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.ProjectQuote.update(id, data),
+    mutationFn: ({ id, data }) => ProjectQuoteService.update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['project-quotes', projectId] });
       queryClient.invalidateQueries({ queryKey: ['project', projectId] });
@@ -1167,20 +1215,36 @@ function QuotesSection({ quotes, projectId, projectName, dialogOpen, setDialogOp
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => base44.entities.ProjectQuote.delete(id),
+    mutationFn: (id) => ProjectQuoteService.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['project-quotes', projectId] });
       queryClient.invalidateQueries({ queryKey: ['project', projectId] });
     }
   });
 
+  // file_url now stores an internal Storage path, not a public URL.
+  // Uploading requires a real quote id first — for a brand-new quote
+  // (editingQuote === null), create the record (without a file) to get
+  // an id, then upload under it. Same "create first, then upload"
+  // sequencing as CompanyHeaders.jsx's handleUpload (Phase 6). This is a
+  // real behavior change from Base44 (an extra round-trip on first
+  // upload for a brand-new quote), not just a rename.
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
     setUploading(true);
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
-    setFormData({ ...formData, file_url });
-    setUploading(false);
+    try {
+      let quoteId = editingQuote?.id;
+      if (!quoteId) {
+        const created = await createMutation.mutateAsync({ ...formData, file_url: null });
+        quoteId = created.id;
+        setEditingQuote(created);
+      }
+      const path = await ProjectQuoteService.uploadFile(file, quoteId);
+      setFormData(f => ({ ...f, file_url: path }));
+    } finally {
+      setUploading(false);
+    }
   };
 
   const formatCurrency = (amount) => {
@@ -1217,11 +1281,7 @@ function QuotesSection({ quotes, projectId, projectName, dialogOpen, setDialogOp
               {quote.changes_description && <p className="text-sm text-slate-500">{quote.changes_description}</p>}
             </div>
             <div className="flex items-center gap-2">
-              {quote.file_url && (
-                <a href={quote.file_url} target="_blank" rel="noopener noreferrer" className="p-2 hover:bg-slate-100 rounded-lg text-blue-600 hover:text-blue-700">
-                  <ExternalLink className="w-4 h-4" />
-                </a>
-              )}
+              {quote.file_url && <QuoteFileLink path={quote.file_url} />}
               <Button
                 variant="ghost"
                 size="icon"
@@ -1358,7 +1418,7 @@ function DocumentsSection({ documents, projectId, projectName, dialogOpen, setDi
   const queryClient = useQueryClient();
 
   const createMutation = useMutation({
-    mutationFn: (data) => base44.entities.Document.create({
+    mutationFn: (data) => DocumentService.create({
       ...data,
       project_id: projectId,
       project_name: projectName
@@ -1371,7 +1431,7 @@ function DocumentsSection({ documents, projectId, projectName, dialogOpen, setDi
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.Document.update(id, data),
+    mutationFn: ({ id, data }) => DocumentService.update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['project-documents', projectId] });
       setDialogOpen(false);
@@ -1380,17 +1440,28 @@ function DocumentsSection({ documents, projectId, projectName, dialogOpen, setDi
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => base44.entities.Document.delete(id),
+    mutationFn: (id) => DocumentService.delete(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['project-documents', projectId] })
   });
 
+  // file_url on documents is required at insert time (same as Base44's
+  // original schema), so a document can't be created with a null file
+  // first the way ProjectQuoteService's flow does. Instead, uploads for
+  // a not-yet-created document use a client-generated random id as the
+  // Storage path segment — the real document row (created on submit)
+  // never needs to "know" about this id, it just stores the resulting
+  // path as file_url like any other field.
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
     setUploading(true);
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
-    setFormData({ ...formData, file_url, name: formData.name || file.name });
-    setUploading(false);
+    try {
+      const scopeId = editingDocument?.id || `pending_${Date.now()}`;
+      const path = await DocumentService.uploadFile(file, scopeId);
+      setFormData(f => ({ ...f, file_url: path, name: f.name || file.name }));
+    } finally {
+      setUploading(false);
+    }
   };
 
   const docTypeLabels = { contract: 'חוזה', plan: 'תוכנית', invoice: 'חשבונית', photo: 'תמונה', delivery: 'תעודת משלוח' };
@@ -1415,9 +1486,7 @@ function DocumentsSection({ documents, projectId, projectName, dialogOpen, setDi
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <a href={doc.file_url} target="_blank" rel="noopener noreferrer" className="p-2 hover:bg-slate-100 rounded-lg text-slate-600 hover:text-slate-900">
-                <Download className="w-4 h-4" />
-              </a>
+              <DocumentFileLink path={doc.file_url} />
               <Button
                 variant="ghost"
                 size="icon"
@@ -1535,7 +1604,7 @@ function RemindersSection({ reminders, projectId, projectName, dialogOpen, setDi
   const queryClient = useQueryClient();
 
   const createMutation = useMutation({
-    mutationFn: (data) => base44.entities.Reminder.create({
+    mutationFn: (data) => ReminderService.create({
       ...data,
       project_id: projectId,
       project_name: projectName
@@ -1549,7 +1618,7 @@ function RemindersSection({ reminders, projectId, projectName, dialogOpen, setDi
   });
 
   const updateReminder = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.Reminder.update(id, data),
+    mutationFn: ({ id, data }) => ReminderService.update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['project-reminders', projectId] });
       queryClient.invalidateQueries({ queryKey: ['reminders'] });
@@ -1559,7 +1628,7 @@ function RemindersSection({ reminders, projectId, projectName, dialogOpen, setDi
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.Reminder.update(id, data),
+    mutationFn: ({ id, data }) => ReminderService.update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['project-reminders', projectId] });
       queryClient.invalidateQueries({ queryKey: ['reminders'] });
@@ -1567,7 +1636,7 @@ function RemindersSection({ reminders, projectId, projectName, dialogOpen, setDi
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => base44.entities.Reminder.delete(id),
+    mutationFn: (id) => ReminderService.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['project-reminders', projectId] });
       queryClient.invalidateQueries({ queryKey: ['reminders'] });

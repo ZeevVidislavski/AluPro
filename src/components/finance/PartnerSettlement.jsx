@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
+import { PartnerService, GeneralExpenseService } from "@/services";
 import { format } from "date-fns";
 import { he } from "date-fns/locale";
 import {
@@ -31,12 +31,12 @@ export default function PartnerSettlement({ allPayments, allOrders, allQuotes, p
 
   const { data: partners = [], isLoading: loadingPartners } = useQuery({
     queryKey: ["partners"],
-    queryFn: () => base44.entities.Partner.list()
+    queryFn: () => PartnerService.list()
   });
 
   const { data: generalExpenses = [], isLoading: loadingExpenses } = useQuery({
     queryKey: ["general-expenses"],
-    queryFn: () => base44.entities.GeneralExpense.list()
+    queryFn: () => GeneralExpenseService.list()
   });
 
   const isLoading = loadingPartners || loadingExpenses;
@@ -72,15 +72,15 @@ export default function PartnerSettlement({ allPayments, allOrders, allQuotes, p
   const [partnerForm, setPartnerForm] = useState({ name: "", profit_share_percent: 50, active: true });
 
   const createPartner = useMutation({
-    mutationFn: (data) => base44.entities.Partner.create(data),
+    mutationFn: (data) => PartnerService.create(data),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["partners"] }); setPartnerDialogOpen(false); }
   });
   const updatePartner = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.Partner.update(id, data),
+    mutationFn: ({ id, data }) => PartnerService.update(id, data),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["partners"] }); setPartnerDialogOpen(false); setEditingPartner(null); }
   });
   const deletePartner = useMutation({
-    mutationFn: (id) => base44.entities.Partner.delete(id),
+    mutationFn: (id) => PartnerService.delete(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["partners"] })
   });
 
@@ -92,15 +92,15 @@ export default function PartnerSettlement({ allPayments, allOrders, allQuotes, p
   });
 
   const createExpense = useMutation({
-    mutationFn: (data) => base44.entities.GeneralExpense.create(data),
+    mutationFn: (data) => GeneralExpenseService.create(data),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["general-expenses"] }); setExpenseDialogOpen(false); }
   });
   const updateExpense = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.GeneralExpense.update(id, data),
+    mutationFn: ({ id, data }) => GeneralExpenseService.update(id, data),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["general-expenses"] }); setExpenseDialogOpen(false); setEditingExpense(null); }
   });
   const deleteExpense = useMutation({
-    mutationFn: (id) => base44.entities.GeneralExpense.delete(id),
+    mutationFn: (id) => GeneralExpenseService.delete(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["general-expenses"] })
   });
 

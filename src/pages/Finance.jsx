@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
+import { ProjectService, CustomerService, ClientPaymentService, SupplierOrderService, ProjectQuoteService } from "@/services";
 import { format, startOfMonth, endOfMonth, subMonths } from "date-fns";
 import { he } from "date-fns/locale";
 import { 
@@ -53,27 +53,27 @@ export default function Finance() {
 
   const { data: projects = [], isLoading: loadingProjects } = useQuery({
     queryKey: ['projects'],
-    queryFn: () => base44.entities.Project.list()
+    queryFn: () => ProjectService.list()
   });
 
   const { data: payments = [], isLoading: loadingPayments } = useQuery({
     queryKey: ['all-payments'],
-    queryFn: () => base44.entities.ClientPayment.list()
+    queryFn: () => ClientPaymentService.list()
   });
 
   const { data: orders = [], isLoading: loadingOrders } = useQuery({
     queryKey: ['all-orders'],
-    queryFn: () => base44.entities.SupplierOrder.list()
+    queryFn: () => SupplierOrderService.list()
   });
 
   const { data: customers = [] } = useQuery({
     queryKey: ['customers'],
-    queryFn: () => base44.entities.Customer.list()
+    queryFn: () => CustomerService.list()
   });
 
   const { data: allQuotes = [] } = useQuery({
     queryKey: ['all-quotes'],
-    queryFn: () => base44.entities.ProjectQuote.list()
+    queryFn: () => ProjectQuoteService.list()
   });
 
   const isLoading = loadingProjects || loadingPayments || loadingOrders;

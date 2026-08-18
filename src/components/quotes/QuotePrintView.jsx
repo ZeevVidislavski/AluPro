@@ -37,8 +37,13 @@ export default function QuotePrintView({ quote, items = [], componentsMap = {}, 
         {/* Left: logo / company name */}
         {companyHeader && (
           <div style={{ display: "flex", alignItems: "center", gap: "12px", direction: "ltr" }}>
-            {companyHeader.logo_url && (
-              <img src={companyHeader.logo_url} alt="logo" style={{ height: "56px", width: "auto", objectFit: "contain" }} />
+            {/* resolvedLogoUrl is a pre-resolved signed URL, set by
+                QuoteEditor.jsx's startPDF() before rendering this view —
+                company_headers.logo_url itself is a Storage path, not a
+                displayable URL (Phase 6), and html2canvas can't wait for
+                an async <img> load, so resolution happens beforehand. */}
+            {companyHeader.resolvedLogoUrl && (
+              <img src={companyHeader.resolvedLogoUrl} alt="logo" style={{ height: "56px", width: "auto", objectFit: "contain" }} />
             )}
             <div style={{ textAlign: "left" }}>
               {companyHeader.company_name && (

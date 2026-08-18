@@ -1,8 +1,31 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Printer } from "lucide-react";
+import { Printer, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { CompanyHeaderService } from "@/services";
+
+// company_headers.logo_url is an internal Storage path, not a
+// displayable URL (see docs/PHASE_6_IMPLEMENTATION_PLAN.md section 3) —
+// this resolves it to a signed URL on demand. This bug (rendering the
+// raw path as <img src>) predated Phase 11; it existed since Phase 6
+// because this file wasn't in that phase's scope — see
+// docs/PHASE_11_IMPLEMENTATION_PLAN.md section 5.1.
+function HeaderThumbnail({ path }) {
+  const [url, setUrl] = useState(null);
+  useEffect(() => {
+    let cancelled = false;
+    if (!path) return;
+    CompanyHeaderService.getLogoUrl(path).then((signedUrl) => {
+      if (!cancelled) setUrl(signedUrl);
+    });
+    return () => { cancelled = true; };
+  }, [path]);
+
+  if (!path) return null;
+  if (!url) return <Loader2 className="w-4 h-4 animate-spin text-slate-300 shrink-0" />;
+  return <img src={url} alt="" className="h-10 w-auto object-contain rounded" />;
+}
 
 export default function SelectHeaderModal({ open, onClose, headers, onConfirm }) {
   const defaultHeader = headers.find(h => h.is_default);
@@ -46,9 +69,7 @@ export default function SelectHeaderModal({ open, onClose, headers, onConfirm })
                   : "border-slate-100 hover:bg-slate-50"
               )}
             >
-              {h.logo_url && (
-                <img src={h.logo_url} alt="" className="h-10 w-auto object-contain rounded" />
-              )}
+              <HeaderThumbnail path={h.logo_url} />
               <div>
                 <p className="font-medium text-slate-800">{h.name}</p>
                 {h.company_name && <p className="text-xs text-slate-500">{h.company_name}</p>}

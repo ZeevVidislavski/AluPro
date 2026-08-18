@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
+import { CompanyHeaderService } from "@/services";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,6 +9,36 @@ import { Plus, Pencil, Trash2, Star, Loader2, Upload } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 
 const empty = { name: "", company_name: "", logo_url: "", subtitle: "", is_default: false };
+
+// logo_url now stores an internal Storage path, not a displayable URL —
+// this resolves it to a time-limited signed URL for <img src>. Returns
+// null while resolving/if there's no path, so callers can fall back to
+// the "no logo" placeholder without a broken image flash. See
+// docs/PHASE_6_IMPLEMENTATION_PLAN.md section 3 for why this changed
+// from Base44's permanent public URL.
+function useLogoSignedUrl(path) {
+  const [url, setUrl] = useState(null);
+  useEffect(() => {
+    let cancelled = false;
+    if (!path) { setUrl(null); return; }
+    CompanyHeaderService.getLogoUrl(path).then((signedUrl) => {
+      if (!cancelled) setUrl(signedUrl);
+    });
+    return () => { cancelled = true; };
+  }, [path]);
+  return url;
+}
+
+function HeaderLogo({ path, className }) {
+  const url = useLogoSignedUrl(path);
+  if (!path) {
+    return <div className={className + " border-dashed flex items-center justify-center text-slate-300 text-xs"}>אין לוגו</div>;
+  }
+  if (!url) {
+    return <div className={className + " flex items-center justify-center"}><Loader2 className="w-4 h-4 animate-spin text-slate-300" /></div>;
+  }
+  return <img src={url} alt="" className={className + " object-contain"} />;
+}
 
 export default function CompanyHeaders() {
   const [open, setOpen] = useState(false);
@@ -19,26 +49,24 @@ export default function CompanyHeaders() {
 
   const { data: headers = [], isLoading } = useQuery({
     queryKey: ["company-headers"],
-    queryFn: () => base44.entities.CompanyHeader.list()
+    queryFn: () => CompanyHeaderService.list()
   });
 
   const save = useMutation({
     mutationFn: async (data) => {
-      if (editId) return base44.entities.CompanyHeader.update(editId, data);
-      return base44.entities.CompanyHeader.create(data);
+      if (editId) return CompanyHeaderService.update(editId, data);
+      return CompanyHeaderService.create(data);
     },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["company-headers"] }); closeDialog(); }
   });
 
   const remove = useMutation({
-    mutationFn: (id) => base44.entities.CompanyHeader.delete(id),
+    mutationFn: (id) => CompanyHeaderService.delete(id),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["company-headers"] })
   });
 
   const setDefault = useMutation({
-    mutationFn: async (id) => {
-      await Promise.all(headers.map(h => base44.entities.CompanyHeader.update(h.id, { is_default: h.id === id })));
-    },
+    mutationFn: (id) => CompanyHeaderService.setDefault(id),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["company-headers"] })
   });
 
@@ -46,13 +74,30 @@ export default function CompanyHeaders() {
   const openEdit = (h) => { setForm({ name: h.name, company_name: h.company_name || "", logo_url: h.logo_url || "", subtitle: h.subtitle || "", is_default: h.is_default || false }); setEditId(h.id); setOpen(true); };
   const closeDialog = () => { setOpen(false); setEditId(null); setForm(empty); };
 
+  // uploadLogo(file, headerId) needs a headerId — Base44's flow uploaded
+  // first and got a permanent URL back with nothing else required.
+  // Storage paths here are scoped under {tenant}/company-headers/
+  // {headerId}/..., so a NEW header (editId === null) is saved once
+  // (without a logo) to get an id, then updated with the uploaded path.
+  // Editing an existing header uploads directly under its known id. This
+  // is a real behavior change from Base44 (an extra round-trip on first
+  // upload for brand-new headers), not just a rename.
   const handleUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
     setUploading(true);
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
-    setForm(f => ({ ...f, logo_url: file_url }));
-    setUploading(false);
+    try {
+      let headerId = editId;
+      if (!headerId) {
+        const created = await CompanyHeaderService.create({ ...form, logo_url: null });
+        headerId = created.id;
+        setEditId(headerId);
+      }
+      const path = await CompanyHeaderService.uploadLogo(file, headerId);
+      setForm(f => ({ ...f, logo_url: path }));
+    } finally {
+      setUploading(false);
+    }
   };
 
   return (
@@ -79,10 +124,7 @@ export default function CompanyHeaders() {
           <div className="space-y-3">
             {headers.map(h => (
               <div key={h.id} className="bg-white rounded-2xl border border-slate-200 p-4 flex items-center gap-4">
-                {h.logo_url
-                  ? <img src={h.logo_url} alt="" className="h-14 w-24 object-contain rounded border border-slate-100" />
-                  : <div className="h-14 w-24 rounded border border-dashed border-slate-200 flex items-center justify-center text-slate-300 text-xs">אין לוגו</div>
-                }
+                <HeaderLogo path={h.logo_url} className="h-14 w-24 rounded border border-slate-100" />
                 <div className="flex-1">
                   <p className="font-semibold text-slate-800">{h.name}</p>
                   {h.company_name && <p className="text-sm text-slate-600">{h.company_name}</p>}
@@ -125,7 +167,7 @@ export default function CompanyHeaders() {
             <div className="space-y-2">
               <Label>לוגו</Label>
               {form.logo_url && (
-                <img src={form.logo_url} alt="" className="h-16 object-contain rounded border border-slate-200" />
+                <HeaderLogo path={form.logo_url} className="h-16 rounded border border-slate-200" />
               )}
               <label className="flex items-center gap-2 cursor-pointer text-sm text-blue-600 hover:text-blue-700">
                 {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}

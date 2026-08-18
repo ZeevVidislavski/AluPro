@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
+import { ProjectService, ClientPaymentService, SupplierOrderService, AgentSettingsService, AgentAlertService, ProjectQuoteService } from "@/services";
 import { TrendingUp, AlertTriangle, DollarSign, CheckCircle2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { calculateProjectFinancials } from "@/components/lib/projectFinancials";
@@ -20,32 +20,32 @@ export default function MorningSummary() {
 
   const { data: settings = [] } = useQuery({
     queryKey: ['agent-settings'],
-    queryFn: () => base44.entities.AgentSettings.list()
+    queryFn: () => AgentSettingsService.list()
   });
 
   const { data: projects = [] } = useQuery({
     queryKey: ['projects'],
-    queryFn: () => base44.entities.Project.list()
+    queryFn: () => ProjectService.list()
   });
 
   const { data: allQuotes = [] } = useQuery({
     queryKey: ['quotes'],
-    queryFn: () => base44.entities.ProjectQuote.list()
+    queryFn: () => ProjectQuoteService.list()
   });
 
   const { data: allPayments = [] } = useQuery({
     queryKey: ['payments'],
-    queryFn: () => base44.entities.ClientPayment.list()
+    queryFn: () => ClientPaymentService.list()
   });
 
   const { data: allOrders = [] } = useQuery({
     queryKey: ['orders'],
-    queryFn: () => base44.entities.SupplierOrder.list()
+    queryFn: () => SupplierOrderService.list()
   });
 
   const { data: alerts = [] } = useQuery({
     queryKey: ['agent-alerts'],
-    queryFn: () => base44.entities.AgentAlert.list()
+    queryFn: () => AgentAlertService.list()
   });
 
   const currentSettings = settings[0] || { enable_morning_summary: true };

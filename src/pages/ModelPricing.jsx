@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
+import { ModelPricingService, ModelComponentService, QuoteTemplateService, QuoteTemplateComponentService } from "@/services";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -58,12 +58,15 @@ export default function ModelPricing() {
   // ── Catalog queries ──────────────────────────────────────────────────────────
   const { data: items = [], isLoading } = useQuery({
     queryKey: ["catalog-items"],
-    queryFn: () => base44.entities.ModelPricing.list()
+    queryFn: () => ModelPricingService.list()
   });
 
   const { data: allModelComponents = [] } = useQuery({
     queryKey: ["all-model-components"],
-    queryFn: () => base44.entities.ModelComponent.list(),
+    queryFn: async () => {
+      const results = await Promise.all(items.map(i => ModelComponentService.listByModel(i.id)));
+      return results.flat();
+    },
     enabled: items.length > 0
   });
 
@@ -73,7 +76,7 @@ export default function ModelPricing() {
   }, {});
 
   const createMutation = useMutation({
-    mutationFn: (data) => base44.entities.ModelPricing.create(data),
+    mutationFn: (data) => ModelPricingService.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["catalog-items"] });
       queryClient.invalidateQueries({ queryKey: ["model-pricing"] });
@@ -83,7 +86,7 @@ export default function ModelPricing() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.ModelPricing.update(id, data),
+    mutationFn: ({ id, data }) => ModelPricingService.update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["catalog-items"] });
       queryClient.invalidateQueries({ queryKey: ["model-pricing"] });
@@ -94,7 +97,7 @@ export default function ModelPricing() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => base44.entities.ModelPricing.delete(id),
+    mutationFn: (id) => ModelPricingService.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["catalog-items"] });
       queryClient.invalidateQueries({ queryKey: ["model-pricing"] });
@@ -104,7 +107,7 @@ export default function ModelPricing() {
   // ── Template queries ─────────────────────────────────────────────────────────
   const { data: templates = [] } = useQuery({
     queryKey: ["quote-templates"],
-    queryFn: () => base44.entities.QuoteTemplate.list()
+    queryFn: () => QuoteTemplateService.list()
   });
 
   const { data: allTemplateComps = [] } = useQuery({
@@ -112,7 +115,7 @@ export default function ModelPricing() {
     queryFn: async () => {
       if (templates.length === 0) return [];
       const results = await Promise.all(
-        templates.map(t => base44.entities.QuoteTemplateComponent.filter({ template_id: t.id }))
+        templates.map(t => QuoteTemplateComponentService.listByTemplate(t.id))
       );
       return results.flat();
     },
@@ -120,16 +123,16 @@ export default function ModelPricing() {
   });
 
   const createTemplateMutation = useMutation({
-    mutationFn: (data) => base44.entities.QuoteTemplate.create(data),
+    mutationFn: (data) => QuoteTemplateService.create(data),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["quote-templates"] })
   });
 
   const handleCreateNewTemplate = async (selectedItems, { name, description }) => {
     setSavingNewTemplate(true);
     try {
-      const tmpl = await base44.entities.QuoteTemplate.create({ name, description });
+      const tmpl = await QuoteTemplateService.create({ name, description });
       await Promise.all(selectedItems.map((item, idx) =>
-        base44.entities.QuoteTemplateComponent.create({
+        QuoteTemplateComponentService.create({
           template_id: tmpl.id,
           catalog_item_id: item.id,
           name_snapshot: item.model_name,
@@ -147,7 +150,7 @@ export default function ModelPricing() {
   };
 
   const updateTemplateMutation = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.QuoteTemplate.update(id, data),
+    mutationFn: ({ id, data }) => QuoteTemplateService.update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["quote-templates"] });
       setEditTemplateDialog(false);
@@ -155,7 +158,7 @@ export default function ModelPricing() {
   });
 
   const deleteTemplateMutation = useMutation({
-    mutationFn: (id) => base44.entities.QuoteTemplate.delete(id),
+    mutationFn: (id) => QuoteTemplateService.delete(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["quote-templates"] })
   });
 
