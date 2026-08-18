@@ -7,17 +7,37 @@ import { Label } from "@/components/ui/label";
 import { Loader2 } from "lucide-react";
 
 export default function Login() {
-  const { login, isAuthenticated } = useAuth();
+  const { login, isAuthenticated, resetPasswordForEmail } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [resetMessage, setResetMessage] = useState(null);
+  const [isSendingReset, setIsSendingReset] = useState(false);
 
   if (isAuthenticated) {
     navigate("/", { replace: true });
     return null;
   }
+
+  const handleForgotPassword = async () => {
+    setError(null);
+    setResetMessage(null);
+    if (!email) {
+      setError("יש להזין קודם כתובת אימייל");
+      return;
+    }
+    setIsSendingReset(true);
+    try {
+      await resetPasswordForEmail(email);
+      setResetMessage("נשלח מייל לאיפוס סיסמה, אנא בדקי את תיבת הדואר שלך");
+    } catch (err) {
+      setError(err.message || "שגיאה בשליחת מייל איפוס");
+    } finally {
+      setIsSendingReset(false);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -67,10 +87,22 @@ export default function Login() {
           {error && (
             <p className="text-sm text-red-600 bg-red-50 rounded-md px-3 py-2">{error}</p>
           )}
+          {resetMessage && (
+            <p className="text-sm text-green-700 bg-green-50 rounded-md px-3 py-2">{resetMessage}</p>
+          )}
 
           <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700" disabled={isSubmitting}>
             {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : "התחבר"}
           </Button>
+
+          <button
+            type="button"
+            onClick={handleForgotPassword}
+            disabled={isSendingReset}
+            className="w-full text-sm text-blue-600 hover:underline text-center"
+          >
+            {isSendingReset ? "שולח..." : "שכחתי סיסמה"}
+          </button>
         </form>
       </div>
     </div>
