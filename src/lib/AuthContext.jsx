@@ -60,8 +60,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   const resetPasswordForEmail = async (email) => {
+    const redirectOrigin = import.meta.env.VITE_APP_URL || window.location.origin;
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/reset-password`,
+      redirectTo: `${redirectOrigin}/reset-password`,
     });
     if (error) throw error;
   };
