@@ -33,7 +33,11 @@ export default function Login() {
       await resetPasswordForEmail(email);
       setResetMessage("נשלח מייל לאיפוס סיסמה, אנא בדקי את תיבת הדואר שלך");
     } catch (err) {
-      setError(err.message || "שגיאה בשליחת מייל איפוס");
+      if (err.message?.toLowerCase().includes("rate limit")) {
+        setError("נעשו יותר מדי ניסיונות, יש לנסות שוב בעוד כמה דקות");
+      } else {
+        setError(err.message || "שגיאה בשליחת מייל איפוס");
+      }
     } finally {
       setIsSendingReset(false);
     }
