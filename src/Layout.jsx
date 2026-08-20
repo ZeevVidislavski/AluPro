@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { createPageUrl } from "@/utils";
 import { PlatformAdminService } from "@/services/platformAdminService";
+import { useAuth } from "@/lib/AuthContext";
 import {
   LayoutDashboard,
   Users,
@@ -16,7 +17,8 @@ import {
   FileText,
   Tag,
   Stamp,
-  ShieldCheck
+  ShieldCheck,
+  LogOut
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -34,6 +36,13 @@ const navigation = [
 
 export default function Layout({ children, currentPageName }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await logout();
+    navigate("/login", { replace: true });
+  };
 
   // Shown only to Zeev — see PlatformAdminGuard.jsx for the actual
   // enforcement (this is just so he has a visible link; hiding it here is
@@ -56,20 +65,20 @@ export default function Layout({ children, currentPageName }) {
 
       {/* Sidebar */}
       <aside className={cn(
-        "fixed top-0 right-0 z-50 h-full w-64 bg-white border-l border-slate-200 transform transition-transform duration-300 lg:translate-x-0",
+        "fixed top-0 right-0 z-50 h-full w-64 bg-white border-l border-slate-200 transform transition-transform duration-300 lg:translate-x-0 flex flex-col",
         sidebarOpen ? "translate-x-0" : "translate-x-full lg:translate-x-0"
       )}>
-        <div className="flex items-center justify-between h-16 px-6 border-b border-slate-100">
+        <div className="flex items-center justify-between h-16 px-6 border-b border-slate-100 shrink-0">
           <h1 className="text-xl font-bold text-slate-900">ניהול פרויקטים</h1>
-          <button 
+          <button
             onClick={() => setSidebarOpen(false)}
             className="lg:hidden p-2 rounded-lg hover:bg-slate-100"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
-        
-        <nav className="p-4 space-y-1">
+
+        <nav className="p-4 space-y-1 flex-1 overflow-y-auto">
           {navigation.map((item) => {
             const isActive = currentPageName === item.href;
             return (
@@ -113,6 +122,16 @@ export default function Layout({ children, currentPageName }) {
             </>
           )}
         </nav>
+
+        <div className="p-4 border-t border-slate-100 shrink-0">
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-600 hover:bg-red-50 hover:text-red-600 transition-all"
+          >
+            <LogOut className="w-5 h-5" />
+            יציאה
+          </button>
+        </div>
       </aside>
 
       {/* Main content */}
