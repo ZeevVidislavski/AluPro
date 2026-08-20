@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import { createPageUrl } from "@/utils";
-import { 
-  LayoutDashboard, 
-  Users, 
-  Building2, 
+import { PlatformAdminService } from "@/services/platformAdminService";
+import {
+  LayoutDashboard,
+  Users,
+  Building2,
   Wallet,
   Bell,
   Brain,
@@ -13,7 +15,8 @@ import {
   ChevronLeft,
   FileText,
   Tag,
-  Stamp
+  Stamp,
+  ShieldCheck
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -31,6 +34,15 @@ const navigation = [
 
 export default function Layout({ children, currentPageName }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // Shown only to Zeev — see PlatformAdminGuard.jsx for the actual
+  // enforcement (this is just so he has a visible link; hiding it here is
+  // not the security boundary, RLS is).
+  const { data: isPlatformAdmin } = useQuery({
+    queryKey: ["platform-admin-self"],
+    queryFn: () => PlatformAdminService.checkSelf(),
+    staleTime: 5 * 60 * 1000,
+  });
 
   return (
     <div className="min-h-screen bg-slate-50" dir="rtl">
@@ -81,6 +93,25 @@ export default function Layout({ children, currentPageName }) {
               </Link>
             );
           })}
+
+          {isPlatformAdmin && (
+            <>
+              <div className="my-2 border-t border-slate-100" />
+              <Link
+                to="/admin/tenants"
+                onClick={() => setSidebarOpen(false)}
+                className={cn(
+                  "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all",
+                  currentPageName === "admin/tenants"
+                    ? "bg-blue-50 text-blue-700"
+                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                )}
+              >
+                <ShieldCheck className="w-5 h-5 text-slate-400" />
+                מסוף ניהול פלטפורמה
+              </Link>
+            </>
+          )}
         </nav>
       </aside>
 
