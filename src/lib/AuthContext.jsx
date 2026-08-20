@@ -67,6 +67,11 @@ export const AuthProvider = ({ children }) => {
     if (error) throw error;
   };
 
+  const updatePassword = async (newPassword) => {
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
+    if (error) throw error;
+  };
+
   const logout = async () => {
     // IMPORTANT: supabase.auth.signOut() only clears Supabase's own
     // session keys (sb-*) from localStorage — it must NOT touch the
@@ -92,6 +97,7 @@ export const AuthProvider = ({ children }) => {
       login,
       logout,
       resetPasswordForEmail,
+      updatePassword,
       navigateToLogin,
       checkUserAuth
     }}>

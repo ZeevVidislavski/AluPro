@@ -18,7 +18,8 @@ import {
   Tag,
   Stamp,
   ShieldCheck,
-  LogOut
+  LogOut,
+  UserCircle
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -36,7 +37,7 @@ const navigation = [
 
 export default function Layout({ children, currentPageName }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -123,7 +124,20 @@ export default function Layout({ children, currentPageName }) {
           )}
         </nav>
 
-        <div className="p-4 border-t border-slate-100 shrink-0">
+        <div className="p-4 border-t border-slate-100 shrink-0 space-y-1">
+          <Link
+            to={createPageUrl("Profile")}
+            onClick={() => setSidebarOpen(false)}
+            className={cn(
+              "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all",
+              currentPageName === "Profile"
+                ? "bg-blue-50 text-blue-700"
+                : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+            )}
+          >
+            <UserCircle className="w-5 h-5 text-slate-400" />
+            <span className="truncate">{user?.email ?? "אזור אישי"}</span>
+          </Link>
           <button
             onClick={handleLogout}
             className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-600 hover:bg-red-50 hover:text-red-600 transition-all"
