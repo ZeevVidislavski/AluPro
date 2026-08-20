@@ -12,6 +12,10 @@ import Login from './pages/Login';
 import ResetPassword from './pages/ResetPassword';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
+import PlatformAdminGuard from '@/lib/PlatformAdminGuard';
+import PlatformAdminLayout from './pages/admin/PlatformAdminLayout';
+import PlatformTenantList from './pages/admin/PlatformTenantList';
+import PlatformTenantDetail from './pages/admin/PlatformTenantDetail';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -69,6 +73,16 @@ const AuthenticatedApp = () => {
       <Route path="/QuoteEditor" element={<LayoutWrapper currentPageName="QuoteEditor"><QuoteEditor /></LayoutWrapper>} />
       <Route path="/ModelPricing" element={<LayoutWrapper currentPageName="ModelPricing"><ModelPricing /></LayoutWrapper>} />
       <Route path="/CompanyHeaders" element={<LayoutWrapper currentPageName="CompanyHeaders"><CompanyHeaders /></LayoutWrapper>} />
+      <Route path="/admin/tenants" element={
+        <PlatformAdminGuard>
+          <PlatformAdminLayout><PlatformTenantList /></PlatformAdminLayout>
+        </PlatformAdminGuard>
+      } />
+      <Route path="/admin/tenants/:tenantId" element={
+        <PlatformAdminGuard>
+          <PlatformAdminLayout><PlatformTenantDetail /></PlatformAdminLayout>
+        </PlatformAdminGuard>
+      } />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
