@@ -14,12 +14,23 @@ function slugify(name) {
     .replace(/^-+|-+$/g, "");
 }
 
+function generatePassword() {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789";
+  let result = "";
+  for (let i = 0; i < 12; i++) {
+    result += chars[Math.floor(Math.random() * chars.length)];
+  }
+  return result;
+}
+
 export default function PlatformTenantCreate() {
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [slug, setSlug] = useState("");
   const [slugTouched, setSlugTouched] = useState(false);
+  const [ownerFullName, setOwnerFullName] = useState("");
   const [ownerEmail, setOwnerEmail] = useState("");
+  const [ownerPassword, setOwnerPassword] = useState(generatePassword());
   const [error, setError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -33,7 +44,13 @@ export default function PlatformTenantCreate() {
     setError(null);
     setIsSubmitting(true);
     try {
-      const tenantId = await PlatformAdminService.createTenant({ name, slug, ownerEmail });
+      const { tenantId } = await PlatformAdminService.createTenantWithNewUser({
+        name,
+        slug,
+        ownerEmail,
+        ownerPassword,
+        ownerFullName,
+      });
       navigate(`/admin/tenants/${tenantId}`, { replace: true });
     } catch (err) {
       setError(err.message || "שגיאה ביצירת החברה");
@@ -71,19 +88,44 @@ export default function PlatformTenantCreate() {
           />
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="ownerEmail">אימייל של בעל החברה</Label>
-          <Input
-            id="ownerEmail"
-            type="email"
-            value={ownerEmail}
-            onChange={(e) => setOwnerEmail(e.target.value)}
-            required
-            dir="ltr"
-          />
-          <p className="text-xs text-slate-400">
-            יש ליצור את המשתמש תחילה ב-Supabase Authentication לפני יצירת החברה כאן.
-          </p>
+        <div className="border-t border-slate-100 pt-4 space-y-4">
+          <p className="text-sm font-medium text-slate-700">משתמש הבעלים הראשון של החברה</p>
+
+          <div className="space-y-2">
+            <Label htmlFor="ownerFullName">שם מלא</Label>
+            <Input id="ownerFullName" value={ownerFullName} onChange={(e) => setOwnerFullName(e.target.value)} />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="ownerEmail">אימייל</Label>
+            <Input
+              id="ownerEmail"
+              type="email"
+              value={ownerEmail}
+              onChange={(e) => setOwnerEmail(e.target.value)}
+              required
+              dir="ltr"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="ownerPassword">סיסמה זמנית</Label>
+            <div className="flex gap-2">
+              <Input
+                id="ownerPassword"
+                value={ownerPassword}
+                onChange={(e) => setOwnerPassword(e.target.value)}
+                required
+                dir="ltr"
+              />
+              <Button type="button" variant="outline" onClick={() => setOwnerPassword(generatePassword())}>
+                חדש
+              </Button>
+            </div>
+            <p className="text-xs text-slate-400">
+              יש למסור סיסמה זו ללקוח — הוא יוכל להחליף אותה מאוחר יותר דרך "שכחתי סיסמה" או האזור האישי שלו.
+            </p>
+          </div>
         </div>
 
         {error && (
@@ -91,7 +133,7 @@ export default function PlatformTenantCreate() {
         )}
 
         <Button type="submit" className="w-full" disabled={isSubmitting}>
-          {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : "צור חברה"}
+          {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : "צור חברה ומשתמש"}
         </Button>
       </form>
     </div>

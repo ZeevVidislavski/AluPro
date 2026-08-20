@@ -51,6 +51,10 @@ export const PlatformAdminService = {
     return data;
   },
 
+  // Links an owner who ALREADY has a Supabase Auth account. Kept as a
+  // fallback path; the normal flow is createTenantWithNewUser below,
+  // which also creates the auth user itself so Zeev never touches
+  // Supabase directly.
   async createTenant({ name, slug, ownerEmail }) {
     const { data, error } = await supabase.rpc('platform_create_tenant', {
       p_name: name,
@@ -59,6 +63,20 @@ export const PlatformAdminService = {
     });
     if (error) throw error;
     return data; // new tenant id
+  },
+
+  // Creates the owner's auth user AND the tenant AND the owner
+  // membership in one call, via the platform-create-tenant-with-user
+  // Edge Function (see supabase/functions/ — this needs the service_role
+  // key to create an auth user, which a browser-callable SQL RPC cannot
+  // hold).
+  async createTenantWithNewUser({ name, slug, ownerEmail, ownerPassword, ownerFullName }) {
+    const { data, error } = await supabase.functions.invoke('platform-create-tenant-with-user', {
+      body: { name, slug, ownerEmail, ownerPassword, ownerFullName },
+    });
+    if (error) throw error;
+    if (data?.error) throw new Error(data.error);
+    return data; // { tenantId, ownerId }
   },
 
   async setTenantStatus(tenantId, status) {
