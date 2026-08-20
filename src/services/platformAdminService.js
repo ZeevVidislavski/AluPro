@@ -1,12 +1,13 @@
 import { supabase } from './client';
 
-// Reads only in M1 (see docs/SAAS_ARCHITECTURE.md deviation table + the
-// approved plan) — billing edits and tenant creation land in M2. Every
-// method here relies on the platform-admin RLS bypass added in
-// supabase/migrations/0018_platform_admin_rls_bypass.sql and the
-// SECURITY DEFINER functions in 0016/0017; a non-platform-admin caller
-// gets empty results (or an RLS-denied error on write attempts later),
-// never another tenant's data.
+// M1 shipped reads only; M2 (0019_platform_create_tenant.sql) adds the
+// writes below: tenant creation, status changes, and billing edits. Every
+// method here relies on the platform-admin RLS bypass/RPCs added in
+// supabase/migrations/0018_platform_admin_rls_bypass.sql,
+// 0019_platform_create_tenant.sql and the SECURITY DEFINER functions in
+// 0016/0017/0019; a non-platform-admin caller gets empty results (or an
+// RLS-denied/RPC exception on write attempts), never another tenant's
+// data.
 export const PlatformAdminService = {
   async checkSelf() {
     const { data, error } = await supabase.rpc('is_platform_admin');
@@ -46,6 +47,34 @@ export const PlatformAdminService = {
       .eq('tenant_id', tenantId)
       .is('deleted_at', null)
       .order('created_at', { ascending: true });
+    if (error) throw error;
+    return data;
+  },
+
+  async createTenant({ name, slug, ownerEmail }) {
+    const { data, error } = await supabase.rpc('platform_create_tenant', {
+      p_name: name,
+      p_slug: slug,
+      p_owner_email: ownerEmail,
+    });
+    if (error) throw error;
+    return data; // new tenant id
+  },
+
+  async setTenantStatus(tenantId, status) {
+    const { error } = await supabase.rpc('platform_set_tenant_status', {
+      p_tenant_id: tenantId,
+      p_status: status,
+    });
+    if (error) throw error;
+  },
+
+  async updateSubscription(tenantId, fields) {
+    const { data, error } = await supabase
+      .from('tenant_subscriptions')
+      .upsert({ tenant_id: tenantId, ...fields }, { onConflict: 'tenant_id' })
+      .select()
+      .single();
     if (error) throw error;
     return data;
   },

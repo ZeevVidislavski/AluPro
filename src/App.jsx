@@ -17,6 +17,7 @@ import PlatformAdminGuard from '@/lib/PlatformAdminGuard';
 import PlatformAdminLayout from './pages/admin/PlatformAdminLayout';
 import PlatformTenantList from './pages/admin/PlatformTenantList';
 import PlatformTenantDetail from './pages/admin/PlatformTenantDetail';
+import PlatformTenantCreate from './pages/admin/PlatformTenantCreate';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -78,6 +79,11 @@ const AuthenticatedApp = () => {
       <Route path="/admin/tenants" element={
         <PlatformAdminGuard>
           <PlatformAdminLayout><PlatformTenantList /></PlatformAdminLayout>
+        </PlatformAdminGuard>
+      } />
+      <Route path="/admin/tenants/new" element={
+        <PlatformAdminGuard>
+          <PlatformAdminLayout><PlatformTenantCreate /></PlatformAdminLayout>
         </PlatformAdminGuard>
       } />
       <Route path="/admin/tenants/:tenantId" element={

@@ -2,7 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { PlatformAdminService } from "@/services/platformAdminService";
 import { PLAN_LIMITS, isApproachingLimit } from "@/lib/planLimits";
-import { Loader2, AlertTriangle, ChevronLeft } from "lucide-react";
+import { Loader2, AlertTriangle, ChevronLeft, Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const STATUS_LABELS = {
@@ -72,7 +73,15 @@ export default function PlatformTenantList() {
 
   return (
     <div className="max-w-6xl mx-auto">
-      <h1 className="text-2xl font-bold text-slate-900 mb-6">חברות במערכת</h1>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-2xl font-bold text-slate-900">חברות במערכת</h1>
+        <Link to="/admin/tenants/new">
+          <Button className="gap-2">
+            <Plus className="w-4 h-4" />
+            חברה חדשה
+          </Button>
+        </Link>
+      </div>
 
       <div className="bg-white rounded-xl border border-slate-200 overflow-x-auto">
         <table className="w-full text-sm">
