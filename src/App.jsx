@@ -11,6 +11,7 @@ import CompanyHeaders from './pages/CompanyHeaders';
 import Login from './pages/Login';
 import ResetPassword from './pages/ResetPassword';
 import Profile from './pages/Profile';
+import Team from './pages/Team';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import PlatformAdminGuard from '@/lib/PlatformAdminGuard';
@@ -76,6 +77,7 @@ const AuthenticatedApp = () => {
       <Route path="/ModelPricing" element={<LayoutWrapper currentPageName="ModelPricing"><ModelPricing /></LayoutWrapper>} />
       <Route path="/CompanyHeaders" element={<LayoutWrapper currentPageName="CompanyHeaders"><CompanyHeaders /></LayoutWrapper>} />
       <Route path="/Profile" element={<LayoutWrapper currentPageName="Profile"><Profile /></LayoutWrapper>} />
+      <Route path="/Team" element={<LayoutWrapper currentPageName="Team"><Team /></LayoutWrapper>} />
       <Route path="/admin/tenants" element={
         <PlatformAdminGuard>
           <PlatformAdminLayout><PlatformTenantList /></PlatformAdminLayout>

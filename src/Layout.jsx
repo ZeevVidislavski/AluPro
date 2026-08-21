@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { createPageUrl } from "@/utils";
 import { PlatformAdminService } from "@/services/platformAdminService";
+import { TeamService } from "@/services/teamService";
 import { useAuth } from "@/lib/AuthContext";
 import {
   LayoutDashboard,
@@ -19,7 +20,8 @@ import {
   Stamp,
   ShieldCheck,
   LogOut,
-  UserCircle
+  UserCircle,
+  UserPlus
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -53,6 +55,18 @@ export default function Layout({ children, currentPageName }) {
     queryFn: () => PlatformAdminService.checkSelf(),
     staleTime: 5 * 60 * 1000,
   });
+
+  // Tenant-scoped (not platform-scoped) — separate from isPlatformAdmin
+  // above. Shows the "צוות" nav link only to the owner/admin of the
+  // CURRENT tenant, so they can invite teammates. Convenience gate only;
+  // the real boundary is is_tenant_admin() inside the tenant-invite-member
+  // Edge Function.
+  const { data: tenantContext } = useQuery({
+    queryKey: ["active-tenant-context"],
+    queryFn: () => TeamService.getActiveTenantContext(),
+    staleTime: 5 * 60 * 1000,
+  });
+  const canManageTeam = tenantContext?.role === "owner" || tenantContext?.role === "admin";
 
   return (
     <div className="min-h-screen bg-slate-50" dir="rtl">
@@ -103,6 +117,23 @@ export default function Layout({ children, currentPageName }) {
               </Link>
             );
           })}
+
+          {canManageTeam && (
+            <Link
+              to={createPageUrl("Team")}
+              onClick={() => setSidebarOpen(false)}
+              className={cn(
+                "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all",
+                currentPageName === "Team"
+                  ? "bg-blue-50 text-blue-700"
+                  : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+              )}
+            >
+              <UserPlus className={cn("w-5 h-5", currentPageName === "Team" ? "text-blue-600" : "text-slate-400")} />
+              צוות
+              {currentPageName === "Team" && <ChevronLeft className="w-4 h-4 mr-auto" />}
+            </Link>
+          )}
 
           {isPlatformAdmin && (
             <>
