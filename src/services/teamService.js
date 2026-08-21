@@ -7,11 +7,13 @@ import { supabase } from './client';
 // (supabase/migrations/0001_poc_core.sql) — no RLS bypass involved, since
 // a tenant admin only ever needs to see/manage their own tenant's team.
 export const TeamService = {
-  // Returns the caller's own tenant + role in it, not just tenant_id —
-  // the Team page needs the role too, to decide whether to show the
-  // invite form at all (see PlatformAdminGuard.jsx for the equivalent
-  // "convenience gate, not the real boundary" reasoning; the real
-  // boundary here is is_tenant_admin() inside the Edge Function).
+  // Returns the caller's own tenant + role + plan — not just tenant_id.
+  // Layout.jsx uses this single query for everything it needs to decide
+  // what to show: the Team invite form (role), and plan-gated nav items
+  // like BusinessAgent (plan). See PlatformAdminGuard.jsx for the
+  // equivalent "convenience gate, not the real boundary" reasoning; the
+  // real boundaries are is_tenant_admin() inside the invite Edge Function
+  // and RLS itself for data access.
   async getActiveTenantContext() {
     const { data: { user }, error: userError } = await supabase.auth.getUser();
     if (userError || !user) throw userError || new Error('Not authenticated');
@@ -25,7 +27,19 @@ export const TeamService = {
       .single();
 
     if (error || !data) throw new Error('No active tenant membership found for this user');
-    return data;
+
+    // Separate query, not an embed — tenant_memberships has no direct FK
+    // to tenant_subscriptions (it goes through tenants). Missing row
+    // (.maybeSingle(), not .single()) defaults to 'starter' rather than
+    // throwing, so a tenant without a subscription row yet doesn't break
+    // the whole nav — gated features simply stay hidden, the safe default.
+    const { data: subscription } = await supabase
+      .from('tenant_subscriptions')
+      .select('plan')
+      .eq('tenant_id', data.tenant_id)
+      .maybeSingle();
+
+    return { ...data, plan: subscription?.plan ?? 'starter' };
   },
 
   async listMembers(tenantId) {

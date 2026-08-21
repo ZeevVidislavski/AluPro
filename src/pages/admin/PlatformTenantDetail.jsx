@@ -3,7 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { PlatformAdminService } from "@/services/platformAdminService";
 import { PLAN_LIMITS, isApproachingLimit } from "@/lib/planLimits";
-import { Loader2, ChevronRight, AlertTriangle, Ban, PlayCircle } from "lucide-react";
+import { Loader2, ChevronRight, AlertTriangle, Ban, PlayCircle, HardDrive } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -182,6 +182,10 @@ export default function PlatformTenantDetail() {
     },
   });
 
+  const storageMutation = useMutation({
+    mutationFn: () => PlatformAdminService.calculateTenantStorageUsage(tenantId),
+  });
+
   const invalidateAll = () => {
     queryClient.invalidateQueries({ queryKey: ["platform-tenant", tenantId] });
     queryClient.invalidateQueries({ queryKey: ["platform-tenants"] });
@@ -281,6 +285,33 @@ export default function PlatformTenantDetail() {
           ) : (
             <Loader2 className="w-4 h-4 animate-spin text-slate-400" />
           )}
+
+          <div className="mt-4 pt-4 border-t border-slate-100">
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-2"
+              disabled={storageMutation.isPending}
+              onClick={() => storageMutation.mutate()}
+            >
+              {storageMutation.isPending ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <HardDrive className="w-4 h-4" />
+              )}
+              חשב שימוש אחסון
+            </Button>
+            {storageMutation.data && (
+              <p className="text-sm text-slate-600 mt-2">
+                שימוש אחסון: <span className="font-medium text-slate-900">{storageMutation.data.gb.toFixed(2)} GB</span>
+              </p>
+            )}
+            {storageMutation.isError && (
+              <p className="text-sm text-red-600 mt-2">
+                {storageMutation.error?.message || "שגיאה בחישוב שימוש אחסון"}
+              </p>
+            )}
+          </div>
         </div>
 
         <div className="bg-white rounded-xl border border-slate-200 p-5">

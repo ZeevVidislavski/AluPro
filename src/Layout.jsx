@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { createPageUrl } from "@/utils";
 import { PlatformAdminService } from "@/services/platformAdminService";
 import { TeamService } from "@/services/teamService";
+import { planHasFeature } from "@/lib/planLimits";
 import { useAuth } from "@/lib/AuthContext";
 import {
   LayoutDashboard,
@@ -67,6 +68,10 @@ export default function Layout({ children, currentPageName }) {
     staleTime: 5 * 60 * 1000,
   });
   const canManageTeam = tenantContext?.role === "owner" || tenantContext?.role === "admin";
+  const hasBusinessAgent = planHasFeature(tenantContext?.plan, "businessAgent");
+  const visibleNavigation = navigation.filter(
+    (item) => item.href !== "BusinessAgent" || hasBusinessAgent
+  );
 
   return (
     <div className="min-h-screen bg-slate-50" dir="rtl">
@@ -94,7 +99,7 @@ export default function Layout({ children, currentPageName }) {
         </div>
 
         <nav className="p-4 space-y-1 flex-1 overflow-y-auto">
-          {navigation.map((item) => {
+          {visibleNavigation.map((item) => {
             const isActive = currentPageName === item.href;
             return (
               <Link

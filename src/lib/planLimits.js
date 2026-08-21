@@ -16,3 +16,17 @@ export function isApproachingLimit(usageValue, limitValue) {
   if (!Number.isFinite(limitValue)) return false;
   return usageValue >= limitValue * THRESHOLD_WARNING_RATIO;
 }
+
+// Feature gating by plan — separate concept from PLAN_LIMITS above (that
+// one is a display-only quota warning; this one controls whether a
+// feature/nav item is shown at all). Plain lookup object, not a rules
+// engine — extend by adding a key per gated feature as needed.
+export const PLAN_FEATURES = {
+  starter: { businessAgent: false },
+  pro: { businessAgent: true },
+  enterprise: { businessAgent: true },
+};
+
+export function planHasFeature(plan, featureKey) {
+  return PLAN_FEATURES[plan]?.[featureKey] ?? PLAN_FEATURES.starter[featureKey] ?? false;
+}

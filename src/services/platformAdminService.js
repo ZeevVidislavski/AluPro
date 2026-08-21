@@ -1,5 +1,41 @@
 import { supabase } from './client';
 
+const STORAGE_BUCKETS = ['project-files', 'company-logos'];
+const LIST_PAGE_SIZE = 100;
+
+// Recursively sums metadata.size (bytes) for every object under `prefix`
+// in `bucket`. Supabase Storage's list() is NOT recursive (only returns
+// immediate children of a folder) and is paginated (~100/page by
+// default), so this walks folders depth-first and pages through each
+// folder's results. A "folder" entry has no `id`/`metadata` (this is the
+// documented way the Supabase JS client distinguishes a folder
+// placeholder from a real file in list() responses) — unverified against
+// a live project, flagged the same way 0008/0012 flag untested
+// Storage-API assumptions.
+async function sumFolderBytes(bucket, prefix) {
+  let total = 0;
+  let offset = 0;
+  for (;;) {
+    const { data, error } = await supabase.storage
+      .from(bucket)
+      .list(prefix, { limit: LIST_PAGE_SIZE, offset });
+    if (error) throw error;
+    if (!data || data.length === 0) break;
+
+    for (const entry of data) {
+      if (entry.id === null) {
+        total += await sumFolderBytes(bucket, `${prefix}/${entry.name}`);
+      } else {
+        total += entry.metadata?.size ?? 0;
+      }
+    }
+
+    if (data.length < LIST_PAGE_SIZE) break;
+    offset += LIST_PAGE_SIZE;
+  }
+  return total;
+}
+
 // M1 shipped reads only; M2 (0019_platform_create_tenant.sql) adds the
 // writes below: tenant creation, status changes, and billing edits. Every
 // method here relies on the platform-admin RLS bypass/RPCs added in
@@ -95,5 +131,22 @@ export const PlatformAdminService = {
       .single();
     if (error) throw error;
     return data;
+  },
+
+  // On-demand only (not scheduled) — recomputes on every call, no
+  // caching/persistence. Relies on the platform-admin Storage RLS
+  // bypass (supabase/migrations/0021_storage_platform_admin_bypass.sql)
+  // — a plain anon-key client call is sufficient, no Edge Function
+  // needed, since Storage listing is checked against storage.objects
+  // RLS, not service_role.
+  async calculateTenantStorageUsage(tenantId) {
+    let totalBytes = 0;
+    for (const bucket of STORAGE_BUCKETS) {
+      totalBytes += await sumFolderBytes(bucket, tenantId);
+    }
+    return {
+      bytes: totalBytes,
+      gb: totalBytes / 1024 ** 3,
+    };
   },
 };
