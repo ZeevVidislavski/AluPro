@@ -4,6 +4,14 @@ import { PlatformAdminService } from "@/services/platformAdminService";
 import { Loader2, PackagePlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Dialog,
   DialogContent,
@@ -33,6 +41,7 @@ function AddModelsForm({ targetTenantId, onDone }) {
   const sourceTenantId = BASE_CATALOG_TENANT_ID;
   const [selected, setSelected] = useState(new Set());
   const [result, setResult] = useState(null);
+  const [category, setCategory] = useState("all");
 
   const { data: sourceModels, isLoading: loadingSource } = useQuery({
     queryKey: ["platform-tenant-models", sourceTenantId],
@@ -57,9 +66,19 @@ function AddModelsForm({ targetTenantId, onDone }) {
       return next;
     });
 
-  const allSelected = available.length > 0 && available.every((m) => selected.has(m.id));
+  const categories = [...new Set(available.map((m) => m.category))];
+  const visible = category === "all" ? available : available.filter((m) => m.category === category);
+
+  // "Select all" acts on what the filter currently shows, so picking
+  // "glass" then "select all" adds only the glass models; selections made
+  // under another filter are kept.
+  const allSelected = visible.length > 0 && visible.every((m) => selected.has(m.id));
   const toggleAll = () =>
-    setSelected(allSelected ? new Set() : new Set(available.map((m) => m.id)));
+    setSelected((prev) => {
+      const next = new Set(prev);
+      visible.forEach((m) => (allSelected ? next.delete(m.id) : next.add(m.id)));
+      return next;
+    });
 
   const mutation = useMutation({
     mutationFn: () =>
@@ -67,6 +86,7 @@ function AddModelsForm({ targetTenantId, onDone }) {
     onSuccess: (count) => {
       setResult(count);
       setSelected(new Set());
+      setCategory("all");
       queryClient.invalidateQueries({ queryKey: ["platform-tenant-models", targetTenantId] });
     },
   });
@@ -86,13 +106,26 @@ function AddModelsForm({ targetTenantId, onDone }) {
         available.length === 0 ? (
           <p className="text-sm text-slate-400">אין דגמים נוספים להוספה מהקטלוג הבסיסי.</p>
         ) : (
+          <div className="space-y-3">
+            <div className="space-y-1">
+              <Label>סינון לפי קטגוריה</Label>
+              <Select value={category} onValueChange={setCategory}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">כל הקטגוריות</SelectItem>
+                  {categories.map((c) => (
+                    <SelectItem key={c} value={c}>{CATEGORY_LABELS[c] ?? c}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           <div className="border border-slate-200 rounded-lg">
             <label className="flex items-center gap-2 px-3 py-2 border-b border-slate-100 text-sm font-medium cursor-pointer">
               <Checkbox checked={allSelected} onCheckedChange={toggleAll} />
-              בחר הכל ({available.length})
+              בחר הכל ({visible.length})
             </label>
             <div className="max-h-72 overflow-y-auto divide-y divide-slate-100">
-              {available.map((m) => (
+              {visible.map((m) => (
                 <label key={m.id} className="flex items-center gap-2 px-3 py-2 text-sm cursor-pointer">
                   <Checkbox checked={selected.has(m.id)} onCheckedChange={() => toggle(m.id)} />
                   <span className="flex-1">{m.model_name}</span>
@@ -102,6 +135,7 @@ function AddModelsForm({ targetTenantId, onDone }) {
                 </label>
               ))}
             </div>
+          </div>
           </div>
         )
       )}
