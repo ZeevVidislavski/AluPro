@@ -4,7 +4,6 @@ import { PlatformAdminService } from "@/services/platformAdminService";
 import { Loader2, PackagePlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
 import {
   Dialog,
   DialogContent,
@@ -12,13 +11,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 const CATEGORY_LABELS = {
   product: "מוצר",
@@ -32,22 +24,19 @@ const CATEGORY_LABELS = {
   other: "אחר",
 };
 
+// The base catalog: models are always copied from AluPro Demo, never from
+// another customer's company (whose names/prices they have edited).
+export const BASE_CATALOG_TENANT_ID = "0fb62128-e262-4541-90e0-144e1820d0a1";
+
 function AddModelsForm({ targetTenantId, onDone }) {
   const queryClient = useQueryClient();
-  const [sourceTenantId, setSourceTenantId] = useState("");
+  const sourceTenantId = BASE_CATALOG_TENANT_ID;
   const [selected, setSelected] = useState(new Set());
   const [result, setResult] = useState(null);
-
-  const { data: tenants } = useQuery({
-    queryKey: ["platform-tenants"],
-    queryFn: () => PlatformAdminService.listTenants(),
-  });
-  const sourceOptions = (tenants ?? []).filter((t) => t.id !== targetTenantId);
 
   const { data: sourceModels, isLoading: loadingSource } = useQuery({
     queryKey: ["platform-tenant-models", sourceTenantId],
     queryFn: () => PlatformAdminService.listTenantModels(sourceTenantId),
-    enabled: !!sourceTenantId,
   });
 
   const { data: targetModels } = useQuery({
@@ -85,36 +74,17 @@ function AddModelsForm({ targetTenantId, onDone }) {
   return (
     <div className="space-y-4">
       <p className="text-sm text-slate-500">
-        בחר חברת מקור וסמן את הדגמים להעתקה. הדגמים (כולל רכיבי הייצור שלהם) יועתקו לחברה
-        כעותק עצמאי. דגמים שכבר קיימים אצלה בשם זהה לא יופיעו ברשימה.
+        בחר דגמים מהקטלוג הבסיסי (AluPro Demo). הדגמים, כולל רכיבי הייצור שלהם, יועתקו
+        לחברה כעותק עצמאי. דגמים שכבר קיימים אצלה בשם זהה לא יופיעו ברשימה.
       </p>
 
-      <div className="space-y-1">
-        <Label>העתק מתוך חברה</Label>
-        <Select
-          value={sourceTenantId}
-          onValueChange={(value) => {
-            setSourceTenantId(value);
-            setSelected(new Set());
-            setResult(null);
-          }}
-        >
-          <SelectTrigger><SelectValue placeholder="בחר חברת מקור" /></SelectTrigger>
-          <SelectContent>
-            {sourceOptions.map((t) => (
-              <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
-      {sourceTenantId && loadingSource && (
+      {loadingSource && (
         <Loader2 className="w-5 h-5 animate-spin text-slate-400" />
       )}
 
-      {sourceTenantId && !loadingSource && (
+      {!loadingSource && (
         available.length === 0 ? (
-          <p className="text-sm text-slate-400">אין דגמים להוספה מחברה זו.</p>
+          <p className="text-sm text-slate-400">אין דגמים נוספים להוספה מהקטלוג הבסיסי.</p>
         ) : (
           <div className="border border-slate-200 rounded-lg">
             <label className="flex items-center gap-2 px-3 py-2 border-b border-slate-100 text-sm font-medium cursor-pointer">
@@ -167,6 +137,7 @@ function AddModelsForm({ targetTenantId, onDone }) {
 
 export default function AddModelsDialog({ tenantId, tenantName, size = "sm" }) {
   const [open, setOpen] = useState(false);
+  if (tenantId === BASE_CATALOG_TENANT_ID) return null;
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
