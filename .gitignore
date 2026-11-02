@@ -33,3 +33,6 @@ base44/.app.jsonc
 
 # Supabase CLI local state (project ref, org id) — not project source
 supabase/.temp/
+
+.vercel
+.env*

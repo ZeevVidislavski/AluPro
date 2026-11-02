@@ -44,6 +44,13 @@ async function sumFolderBytes(bucket, prefix) {
 // 0016/0017/0019; a non-platform-admin caller gets empty results (or an
 // RLS-denied/RPC exception on write attempts), never another tenant's
 // data.
+// tenant_subscriptions has a unique(tenant_id), so PostgREST embeds it as a
+// single object rather than an array; the screens read it as `[0]`.
+function withSubscriptionArray(tenant) {
+  const sub = tenant.tenant_subscriptions;
+  return { ...tenant, tenant_subscriptions: Array.isArray(sub) ? sub : sub ? [sub] : [] };
+}
+
 export const PlatformAdminService = {
   async checkSelf() {
     const { data, error } = await supabase.rpc('is_platform_admin');
@@ -57,7 +64,7 @@ export const PlatformAdminService = {
       .select('*, tenant_subscriptions(*)')
       .order('created_at', { ascending: false });
     if (error) throw error;
-    return data;
+    return data.map(withSubscriptionArray);
   },
 
   async getTenant(tenantId) {
@@ -67,7 +74,7 @@ export const PlatformAdminService = {
       .eq('id', tenantId)
       .single();
     if (error) throw error;
-    return data;
+    return withSubscriptionArray(data);
   },
 
   async getTenantUsage(tenantId) {
