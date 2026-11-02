@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { supabase } from '@/lib/supabaseClient';
+import { queryClientInstance } from '@/lib/query-client';
 
 const AuthContext = createContext();
 
@@ -80,6 +81,9 @@ export const AuthProvider = ({ children }) => {
     // condition for this migration strategy). Never call
     // localStorage.clear() here.
     await supabase.auth.signOut();
+    // Cached per-user queries (platform-admin-self, active-tenant-context)
+    // would otherwise leak into the next login in the same tab.
+    queryClientInstance.clear();
     setUser(null);
     setIsAuthenticated(false);
   };

@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import AddModelsDialog from "./AddModelsDialog";
 import {
   Select,
   SelectContent,
@@ -221,7 +222,8 @@ export default function PlatformTenantDetail() {
           <InfoRow label="סטטוס" value={STATUS_LABELS[tenant.status] ?? tenant.status} />
           <InfoRow label="נוצרה בתאריך" value={new Date(tenant.created_at).toLocaleDateString("he-IL")} />
 
-          <div className="flex gap-2 mt-4">
+          <div className="flex flex-wrap gap-2 mt-4">
+            <AddModelsDialog tenantId={tenantId} tenantName={tenant.name} />
             {tenant.status !== "suspended" && (
               <Button
                 variant="outline"

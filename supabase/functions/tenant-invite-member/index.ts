@@ -109,10 +109,13 @@ Deno.serve(async (req) => {
 
     const newMemberId = createdUser.user.id;
 
+    const rollbackUser = () => adminClient.auth.admin.deleteUser(newMemberId);
+
     const { error: profileError } = await adminClient
       .from("profiles")
       .upsert({ id: newMemberId, full_name: fullName ?? null }, { onConflict: "id" });
     if (profileError) {
+      await rollbackUser();
       return new Response(JSON.stringify({ error: `Failed to create profile: ${profileError.message}` }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -123,6 +126,7 @@ Deno.serve(async (req) => {
       .from("tenant_memberships")
       .insert({ tenant_id: tenantId, profile_id: newMemberId, role: targetRole });
     if (membershipError) {
+      await rollbackUser();
       return new Response(JSON.stringify({ error: `Failed to create membership: ${membershipError.message}` }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },

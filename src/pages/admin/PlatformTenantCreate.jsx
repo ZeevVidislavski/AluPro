@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import { PlatformAdminService } from "@/services/platformAdminService";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,6 +26,7 @@ function generatePassword() {
 
 export default function PlatformTenantCreate() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [name, setName] = useState("");
   const [slug, setSlug] = useState("");
   const [slugTouched, setSlugTouched] = useState(false);
@@ -51,6 +53,7 @@ export default function PlatformTenantCreate() {
         ownerPassword,
         ownerFullName,
       });
+      queryClient.invalidateQueries({ queryKey: ["platform-tenants"] });
       navigate(`/admin/tenants/${tenantId}`, { replace: true });
     } catch (err) {
       setError(err.message || "שגיאה ביצירת החברה");

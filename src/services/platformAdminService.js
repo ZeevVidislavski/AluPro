@@ -110,9 +110,41 @@ export const PlatformAdminService = {
     const { data, error } = await supabase.functions.invoke('platform-create-tenant-with-user', {
       body: { name, slug, ownerEmail, ownerPassword, ownerFullName },
     });
-    if (error) throw error;
+    if (error) {
+      // supabase-js hides the function's JSON body behind a generic
+      // "non-2xx status code" message; the real reason is in error.context.
+      let detail = null;
+      try {
+        detail = (await error.context?.json())?.error;
+      } catch {
+        // body wasn't JSON (e.g. function not deployed → 404 HTML)
+      }
+      const status = error.context?.status;
+      throw new Error(detail || (status === 404 ? 'הפונקציה platform-create-tenant-with-user לא פרוסה ב-Supabase' : error.message));
+    }
     if (data?.error) throw new Error(data.error);
     return data; // { tenantId, ownerId }
+  },
+
+  async listTenantModels(tenantId) {
+    const { data, error } = await supabase.rpc('platform_list_tenant_models', {
+      p_tenant_id: tenantId,
+    });
+    if (error) throw error;
+    return data ?? [];
+  },
+
+  // Copies the chosen models (plus their component recipes) from one
+  // tenant's catalog into another's; returns how many were copied
+  // (models already present by name in the target are skipped).
+  async copyModelsToTenant(sourceTenantId, targetTenantId, modelIds) {
+    const { data, error } = await supabase.rpc('platform_copy_models_to_tenant', {
+      p_source_tenant_id: sourceTenantId,
+      p_target_tenant_id: targetTenantId,
+      p_model_ids: modelIds,
+    });
+    if (error) throw error;
+    return data;
   },
 
   async setTenantStatus(tenantId, status) {

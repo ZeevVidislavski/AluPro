@@ -93,10 +93,15 @@ Deno.serve(async (req) => {
 
     const ownerId = createdUser.user.id;
 
+    // Everything after createUser must undo it on failure, otherwise a
+    // retry with the same email fails with "already registered".
+    const rollbackUser = () => adminClient.auth.admin.deleteUser(ownerId);
+
     const { error: profileError } = await adminClient
       .from("profiles")
       .upsert({ id: ownerId, full_name: ownerFullName ?? null }, { onConflict: "id" });
     if (profileError) {
+      await rollbackUser();
       return new Response(JSON.stringify({ error: `Failed to create profile: ${profileError.message}` }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -109,6 +114,7 @@ Deno.serve(async (req) => {
       .select("id")
       .single();
     if (tenantError) {
+      await rollbackUser();
       return new Response(JSON.stringify({ error: `Failed to create tenant: ${tenantError.message}` }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -119,6 +125,7 @@ Deno.serve(async (req) => {
       .from("tenant_memberships")
       .insert({ tenant_id: tenant.id, profile_id: ownerId, role: "owner" });
     if (membershipError) {
+      await rollbackUser();
       return new Response(JSON.stringify({ error: `Failed to create membership: ${membershipError.message}` }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -129,6 +136,7 @@ Deno.serve(async (req) => {
       .from("tenant_subscriptions")
       .insert({ tenant_id: tenant.id });
     if (subscriptionError) {
+      await rollbackUser();
       return new Response(JSON.stringify({ error: `Failed to create subscription row: ${subscriptionError.message}` }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
