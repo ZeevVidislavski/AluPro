@@ -30,7 +30,6 @@ const navigation = [
   { name: "דשבורד", href: "Dashboard", icon: LayoutDashboard },
   { name: "לקוחות", href: "Customers", icon: Users },
   { name: "פרויקטים", href: "Projects", icon: Building2 },
-  { name: "הצעות מחיר", href: "Quotes", icon: FileText },
   { name: "קטלוג דגמים", href: "ModelPricing", icon: Tag },
   { name: "פיננסים", href: "Finance", icon: Wallet },
   { name: "תזכורות", href: "Reminders", icon: Bell },

@@ -13,6 +13,7 @@ import StatsCard from "@/components/dashboard/StatsCard";
 import ActiveProjectsTable from "@/components/dashboard/ActiveProjectsTable";
 import RemindersWidget from "@/components/dashboard/RemindersWidget";
 import ProfitabilityChart from "@/components/dashboard/ProfitabilityChart";
+import QuotesList from "@/components/dashboard/QuotesList";
 import MorningSummary from "@/components/dashboard/MorningSummary";
 import { calculateProjectFinancials } from "@/components/lib/projectFinancials";
 import { useMemo } from "react";
@@ -169,6 +170,9 @@ export default function Dashboard() {
 
         {/* Profitability Chart */}
         <ProfitabilityChart projects={projects} allOrders={allOrders} allQuotes={allQuotes} allPayments={allPayments} />
+
+        {/* Quotes (moved here from the menu) */}
+        <QuotesList quotes={allQuotes} formatCurrency={formatCurrency} />
       </div>
     </div>
   );

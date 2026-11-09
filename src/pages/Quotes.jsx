@@ -63,7 +63,7 @@ export default function Quotes() {
         quote_date: new Date().toISOString().split("T")[0],
         amount: 0,
         subtotal: 0,
-        vat_percent: 17,
+        vat_percent: 18,
         vat_amount: 0,
         total_with_vat: 0,
         discount_percent: 0,

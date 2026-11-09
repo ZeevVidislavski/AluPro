@@ -9,7 +9,7 @@ import {
   ReminderService,
   PartnerService,
 } from "@/services";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { format } from "date-fns";
 import { he } from "date-fns/locale";
@@ -437,32 +437,32 @@ export default function ProjectDetails() {
         </div>
 
         {/* Tabs */}
-        <Tabs defaultValue="payments" className="space-y-6">
+        <Tabs defaultValue="quotes" className="space-y-6">
           <div className="overflow-x-auto">
           <TabsList className="bg-white border border-slate-200 p-1 min-w-max">
-            <TabsTrigger value="payments" className="gap-2">
-              <Receipt className="w-4 h-4" />
-              תשלומים ({payments.length})
+            <TabsTrigger value="quotes" className="gap-2">
+              <FileText className="w-4 h-4" />
+              הצעות מחיר ({quotes.length})
             </TabsTrigger>
             <TabsTrigger value="orders" className="gap-2">
               <Package className="w-4 h-4" />
               הזמנות ({orders.length})
             </TabsTrigger>
-            <TabsTrigger value="quotes" className="gap-2">
-              <FileText className="w-4 h-4" />
-              הצעות מחיר ({quotes.length})
+            <TabsTrigger value="payments" className="gap-2">
+              <Receipt className="w-4 h-4" />
+              תשלומים ({payments.length})
             </TabsTrigger>
             <TabsTrigger value="documents" className="gap-2">
               <FileText className="w-4 h-4" />
               מסמכים ({documents.length})
             </TabsTrigger>
-            <TabsTrigger value="reminders" className="gap-2">
-              <Bell className="w-4 h-4" />
-              תזכורות ({reminders.filter(r => r.status === 'open').length})
-            </TabsTrigger>
             <TabsTrigger value="material-orders" className="gap-2">
               <Package className="w-4 h-4" />
               הזמנות חומר
+            </TabsTrigger>
+            <TabsTrigger value="reminders" className="gap-2">
+              <Bell className="w-4 h-4" />
+              תזכורות ({reminders.filter(r => r.status === 'open').length})
             </TabsTrigger>
           </TabsList>
           </div>
@@ -497,6 +497,7 @@ export default function ProjectDetails() {
               quotes={quotes} 
               projectId={projectId}
               projectName={project.name}
+              customerName={project.customer_name}
               dialogOpen={quoteDialogOpen}
               setDialogOpen={setQuoteDialogOpen}
             />
@@ -888,7 +889,7 @@ function PaymentsSection({ payments, projectId, projectName, dialogOpen, setDial
             </div>
             <div className="space-y-2">
               <Label>סכום</Label>
-              <Input type="number" value={formData.amount} onChange={(e) => setFormData({ ...formData, amount: parseFloat(e.target.value) || 0 })} />
+              <Input type="number" autoFocus onFocus={(e) => e.target.select()} value={formData.amount} onChange={(e) => setFormData({ ...formData, amount: parseFloat(e.target.value) || 0 })} />
             </div>
             <div className="space-y-2">
               <Label>תאריך</Label>
@@ -1177,7 +1178,7 @@ function OrdersSection({ orders, projectId, projectName, dialogOpen, setDialogOp
 }
 
 // Quotes Section Component
-function QuotesSection({ quotes, projectId, projectName, dialogOpen, setDialogOpen }) {
+function QuotesSection({ quotes, projectId, projectName, customerName, dialogOpen, setDialogOpen }) {
   const [formData, setFormData] = useState({
     addition_number: quotes.length,
     quote_date: new Date().toISOString().split('T')[0],
@@ -1189,6 +1190,32 @@ function QuotesSection({ quotes, projectId, projectName, dialogOpen, setDialogOp
   const [editingQuote, setEditingQuote] = useState(null);
 
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
+
+  // "New quote" from inside a project opens the same editor as the menu's
+  // quote flow, with the project and customer already filled in.
+  const createDraftMutation = useMutation({
+    mutationFn: () => ProjectQuoteService.create({
+      project_id: projectId,
+      project_name: projectName,
+      customer_name: customerName || '',
+      addition_number: quotes.length,
+      quote_date: new Date().toISOString().split('T')[0],
+      amount: 0,
+      subtotal: 0,
+      vat_percent: 18,
+      vat_amount: 0,
+      total_with_vat: 0,
+      discount_percent: 0,
+      status: 'draft',
+      is_detailed: true
+    }),
+    onSuccess: (newQuote) => {
+      queryClient.invalidateQueries({ queryKey: ['project-quotes', projectId] });
+      queryClient.invalidateQueries({ queryKey: ['all-quotes'] });
+      navigate(`/QuoteEditor?quote_id=${newQuote.id}`);
+    }
+  });
 
   const createMutation = useMutation({
     mutationFn: (data) => ProjectQuoteService.create({
@@ -1256,10 +1283,10 @@ function QuotesSection({ quotes, projectId, projectName, dialogOpen, setDialogOp
   return (
     <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
       <div className="p-6 border-b border-slate-100 flex items-center justify-between">
-        <h3 className="font-semibold text-slate-900">הצעה ראשונית ותוספות</h3>
-        <Button onClick={() => setDialogOpen(true)} size="sm">
-          <Plus className="w-4 h-4 ml-2" />
-          {quotes.length === 0 ? 'הצעה ראשונית' : 'תוספת חדשה'}
+        <h3 className="font-semibold text-slate-900">הצעות מחיר</h3>
+        <Button onClick={() => createDraftMutation.mutate()} disabled={createDraftMutation.isPending} size="sm">
+          {createDraftMutation.isPending ? <Loader2 className="w-4 h-4 ml-2 animate-spin" /> : <Plus className="w-4 h-4 ml-2" />}
+          הצעת מחיר חדשה
         </Button>
       </div>
       <div className="divide-y divide-slate-100">
@@ -1286,16 +1313,10 @@ function QuotesSection({ quotes, projectId, projectName, dialogOpen, setDialogOp
                 variant="ghost"
                 size="icon"
                 onClick={() => {
-                  setEditingQuote(quote);
-                  setFormData({
-                    addition_number: quote.addition_number,
-                    quote_date: quote.quote_date || new Date().toISOString().split('T')[0],
-                    amount: quote.amount,
-                    changes_description: quote.changes_description || '',
-                    status: quote.status,
-                    file_url: quote.file_url
-                  });
-                  setDialogOpen(true);
+                  // The old file-upload dialog below is no longer reachable
+                  // from the UI; every quote opens in the editor. (Kept in
+                  // the code only as a fallback.)
+                  navigate(`/QuoteEditor?quote_id=${quote.id}`);
                 }}
                 className="text-slate-600 hover:text-slate-900 hover:bg-slate-100"
               >

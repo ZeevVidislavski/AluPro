@@ -8,7 +8,7 @@ import { supabase, excludeDeleted } from './client';
 export const QuoteItemService = {
   async listByQuote(quoteId) {
     const { data, error } = await excludeDeleted(
-      supabase.from('quote_items').select('*').eq('quote_id', quoteId).order('sort_order', { ascending: true })
+      supabase.from('quote_items').select('*').eq('quote_id', quoteId).order('sort_order', { ascending: true }).order('created_at', { ascending: true })
     );
     if (error) throw error;
     return data;

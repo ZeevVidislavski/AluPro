@@ -170,7 +170,7 @@ export default function QuoteItemCard({
                 {components.map(comp => {
                   const totalVal = calcCompLine(comp);
                   return (
-                    <tr key={comp.id || comp._tempId} className="hover:bg-slate-50/50">
+                    <tr key={comp._tempId || comp.id} className="hover:bg-slate-50/50">
                       <td className="px-4 py-2 font-medium text-slate-700">{comp.name_snapshot}</td>
                       <td className="px-4 py-2 text-slate-500 text-xs whitespace-nowrap">
                         {item.height_cm && item.width_cm ? `${item.height_cm} × ${item.width_cm} ס"מ` : "—"}
