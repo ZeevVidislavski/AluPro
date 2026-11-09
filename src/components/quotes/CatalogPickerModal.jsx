@@ -23,21 +23,18 @@ const PRICING_METHOD_LABELS = {
  * mode="quote"    → onConfirm(selectedItems)           [saves to QuoteItemComponent externally]
  * mode="template" → onConfirm(selectedItems, {name, description}) [saves to QuoteTemplate + QuoteTemplateComponent externally]
  *
- * Keyboard flow (no mouse needed): type to search, ArrowUp/ArrowDown to move
- * the highlight, Enter to pick the highlighted row. In quote mode with
- * `onQuickAdd`, Enter adds it straight to the quote, clears the search and
- * keeps the dialog open for the next component; in template mode Enter
- * toggles the selection. Escape closes.
+ * Keyboard flow (no mouse needed): the search box is focused on open. Type
+ * to filter, ArrowUp/ArrowDown move the highlight (works with an empty
+ * search too), Enter ticks/unticks the highlighted row, Ctrl+Enter confirms
+ * the ticked rows, Escape closes.
  */
-export default function CatalogPickerModal({ open, onClose, catalogItems, onConfirm, onQuickAdd, mode = "quote", isSaving = false }) {
+export default function CatalogPickerModal({ open, onClose, catalogItems, onConfirm, mode = "quote", isSaving = false }) {
   const [search, setSearch] = useState("");
   const [filterCat, setFilterCat] = useState(ALL);
   const [selected, setSelected] = useState([]);
   // Per-item price overrides before confirming
   const [priceOverrides, setPriceOverrides] = useState({});
   const [active, setActive] = useState(0); // highlighted row (keyboard)
-  const [lastAdded, setLastAdded] = useState(null);
-  const [addedCount, setAddedCount] = useState(0);
 
   // template name step (only for mode="template")
   const [step, setStep] = useState("pick"); // "pick" | "name"
@@ -69,19 +66,16 @@ export default function CatalogPickerModal({ open, onClose, catalogItems, onConf
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
       moveActive(-1);
+    } else if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+      e.preventDefault();
+      if (selected.length > 0) handleConfirmPick();
     } else if (e.key === "Enter") {
       e.preventDefault();
       const item = filtered[safeActive];
       if (!item) return;
-      if (mode === "quote" && onQuickAdd) {
-        onQuickAdd({ ...item, base_price: getEffectivePrice(item) });
-        setLastAdded(item.model_name);
-        setAddedCount(c => c + 1);
-        setSearch("");
-        setActive(0);
-      } else {
-        toggle(item);
-      }
+      toggle(item);
+      e.target.select(); // next search replaces the current text
+      return;
     }
   };
 
@@ -133,8 +127,6 @@ export default function CatalogPickerModal({ open, onClose, catalogItems, onConf
     setFilterCat(ALL);
     setPriceOverrides({});
     setActive(0);
-    setLastAdded(null);
-    setAddedCount(0);
     setStep("pick");
     setTemplateName("");
     setTemplateDesc("");
@@ -248,15 +240,14 @@ export default function CatalogPickerModal({ open, onClose, catalogItems, onConf
             {/* Footer */}
             <div className="flex items-center justify-between pt-2 border-t border-slate-100">
               <span className="text-sm text-slate-500">
-                {mode === "quote" && onQuickAdd
-                  ? (lastAdded ? `נוסף: ${lastAdded} (סה"כ ${addedCount})` : "חפש, ↑↓ לבחירה, Enter להוספה")
-                  : (selected.length > 0 ? `${selected.length} רכיבים נבחרו` : "לא נבחרו רכיבים")}
+                {selected.length > 0
+                  ? `${selected.length} רכיבים נבחרו · Ctrl+Enter להוספה`
+                  : "↑↓ לבחירה, Enter לסימון"}
               </span>
               <div className="flex gap-2">
                 <Button variant="outline" onClick={handleClose}>
-                  {mode === "quote" && onQuickAdd ? "סגור" : "ביטול"}
+                  ביטול
                 </Button>
-                {!(mode === "quote" && onQuickAdd) && (
                 <Button
                   className="bg-blue-600 hover:bg-blue-700"
                   disabled={selected.length === 0}
@@ -264,7 +255,6 @@ export default function CatalogPickerModal({ open, onClose, catalogItems, onConf
                 >
                   {mode === "template" ? `המשך (${selected.length})` : `הוסף ${selected.length > 0 ? `(${selected.length})` : ""}`}
                 </Button>
-                )}
               </div>
             </div>
           </>

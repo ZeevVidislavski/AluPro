@@ -695,7 +695,6 @@ export default function QuoteEditor() {
           addComponentsToItem(catalogPickerFor, selected);
           setCatalogPickerFor(null);
         }}
-        onQuickAdd={(item) => addComponentsToItem(catalogPickerFor, [item])}
       />
 
       {/* Save template modal */}
