@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import AddModelsDialog from "./AddModelsDialog";
+import AddModelsDialog, { BASE_CATALOG_TENANT_ID } from "./AddModelsDialog";
 import {
   Select,
   SelectContent,
@@ -214,41 +214,69 @@ export default function PlatformTenantDetail() {
         חזרה לרשימת החברות
       </Link>
 
-      <h1 className="text-2xl font-bold text-slate-900 mb-6">{tenant.name}</h1>
+      <div className="bg-white rounded-xl border border-slate-200 p-5 mb-4 flex flex-wrap items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <h1 className="text-2xl font-bold text-slate-900">{tenant.name}</h1>
+          <span
+            className={cn(
+              "text-xs font-medium rounded-full px-2.5 py-1",
+              tenant.status === "active" && "bg-green-50 text-green-700",
+              tenant.status === "suspended" && "bg-amber-50 text-amber-700",
+              tenant.status === "cancelled" && "bg-red-50 text-red-700"
+            )}
+          >
+            {STATUS_LABELS[tenant.status] ?? tenant.status}
+          </span>
+        </div>
+
+        <div className="flex flex-wrap gap-2">
+          <AddModelsDialog tenantId={tenantId} tenantName={tenant.name} />
+          <Button
+            variant="outline"
+            size="sm"
+            className="gap-2"
+            disabled={storageMutation.isPending}
+            onClick={() => storageMutation.mutate()}
+          >
+            {storageMutation.isPending ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <HardDrive className="w-4 h-4" />
+            )}
+            חשב שימוש אחסון
+          </Button>
+          {tenantId !== BASE_CATALOG_TENANT_ID && tenant.status !== "suspended" && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-2 text-amber-700"
+              disabled={statusMutation.isPending}
+              onClick={() => statusMutation.mutate("suspended")}
+            >
+              <Ban className="w-4 h-4" />
+              השעיית חברה
+            </Button>
+          )}
+          {tenant.status !== "active" && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-2"
+              disabled={statusMutation.isPending}
+              onClick={() => statusMutation.mutate("active")}
+            >
+              <PlayCircle className="w-4 h-4" />
+              הפעלה מחדש
+            </Button>
+          )}
+        </div>
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="bg-white rounded-xl border border-slate-200 p-5">
           <h2 className="font-semibold text-slate-900 mb-3">פרטי חברה</h2>
           <InfoRow label="סטטוס" value={STATUS_LABELS[tenant.status] ?? tenant.status} />
           <InfoRow label="נוצרה בתאריך" value={new Date(tenant.created_at).toLocaleDateString("he-IL")} />
-
-          <div className="flex flex-wrap gap-2 mt-4">
-            <AddModelsDialog tenantId={tenantId} tenantName={tenant.name} />
-            {tenant.status !== "suspended" && (
-              <Button
-                variant="outline"
-                size="sm"
-                className="gap-2"
-                disabled={statusMutation.isPending}
-                onClick={() => statusMutation.mutate("suspended")}
-              >
-                <Ban className="w-4 h-4" />
-                השעיית חברה
-              </Button>
-            )}
-            {tenant.status !== "active" && (
-              <Button
-                variant="outline"
-                size="sm"
-                className="gap-2"
-                disabled={statusMutation.isPending}
-                onClick={() => statusMutation.mutate("active")}
-              >
-                <PlayCircle className="w-4 h-4" />
-                הפעלה מחדש
-              </Button>
-            )}
-          </div>
         </div>
 
         <div className="bg-white rounded-xl border border-slate-200 p-5">
@@ -289,22 +317,11 @@ export default function PlatformTenantDetail() {
           )}
 
           <div className="mt-4 pt-4 border-t border-slate-100">
-            <Button
-              variant="outline"
-              size="sm"
-              className="gap-2"
-              disabled={storageMutation.isPending}
-              onClick={() => storageMutation.mutate()}
-            >
-              {storageMutation.isPending ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : (
-                <HardDrive className="w-4 h-4" />
-              )}
-              חשב שימוש אחסון
-            </Button>
+            {!storageMutation.data && !storageMutation.isError && (
+              <p className="text-sm text-slate-400">שימוש אחסון: לחץ "חשב שימוש אחסון" למעלה</p>
+            )}
             {storageMutation.data && (
-              <p className="text-sm text-slate-600 mt-2">
+              <p className="text-sm text-slate-600">
                 שימוש אחסון: <span className="font-medium text-slate-900">{storageMutation.data.gb.toFixed(2)} GB</span>
               </p>
             )}
