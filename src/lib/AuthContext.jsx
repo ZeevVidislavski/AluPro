@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useState, useContext, useEffect, useRef } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { queryClientInstance } from '@/lib/query-client';
 
@@ -9,6 +9,18 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoadingAuth, setIsLoadingAuth] = useState(true);
   const [authError, setAuthError] = useState(null);
+  const lastUserId = useRef(null);
+
+  // Cached query results belong to whoever fetched them. If the signed-in
+  // user changes (login as someone else, expired session, other tab), drop
+  // the whole cache so one company never briefly sees another's data.
+  const dropCacheIfUserChanged = (nextUser) => {
+    const nextId = nextUser?.id ?? null;
+    if (lastUserId.current !== nextId) {
+      if (lastUserId.current !== null || nextId === null) queryClientInstance.clear();
+      lastUserId.current = nextId;
+    }
+  };
 
   useEffect(() => {
     checkUserAuth();
@@ -16,6 +28,7 @@ export const AuthProvider = ({ children }) => {
     // Keep state in sync with Supabase's own session changes (login in
     // another tab, token refresh, sign-out elsewhere, etc.)
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      dropCacheIfUserChanged(session?.user);
       setUser(session?.user ?? null);
       setIsAuthenticated(!!session?.user);
       setIsLoadingAuth(false);
@@ -55,6 +68,7 @@ export const AuthProvider = ({ children }) => {
     if (error) {
       throw error;
     }
+    dropCacheIfUserChanged(data.user);
     setUser(data.user);
     setIsAuthenticated(true);
     return data.user;
