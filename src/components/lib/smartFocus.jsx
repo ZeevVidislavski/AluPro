@@ -11,7 +11,7 @@ import { calculateProjectFinancials } from "./projectFinancials";
  * Calculate days since last update for a project
  */
 function daysSinceUpdate(project) {
-  const lastUpdate = project.updated_date || project.created_date;
+  const lastUpdate = project.updated_at || project.created_at;
   if (!lastUpdate) return 0;
   return Math.floor((new Date() - new Date(lastUpdate)) / (1000 * 60 * 60 * 24));
 }

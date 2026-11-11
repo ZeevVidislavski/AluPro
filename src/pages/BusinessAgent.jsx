@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ProjectService, CustomerService, ClientPaymentService, SupplierOrderService, AgentSettingsService, AgentAlertService, ProjectQuoteService } from "@/services";
 import { Button } from "@/components/ui/button";
@@ -135,7 +136,8 @@ export default function BusinessAgent() {
       // Analyze each project
       for (const project of activeProjects) {
         const financials = calculateProjectFinancials(project.id, { allQuotes, allPayments, allOrders });
-        const projectAlerts = analyzeProjectAlerts(project, financials, currentSettings);
+        const projectAlerts = analyzeProjectAlerts(project, financials, currentSettings, { allQuotes, allPayments, allOrders });
+        const activeKeys = new Set(projectAlerts.map(a => a.alert_key));
 
         // Create or update alerts
         for (const alertData of projectAlerts) {
@@ -145,7 +147,9 @@ export default function BusinessAgent() {
             await AgentAlertService.update(existing.id, {
               severity: alertData.severity,
               message: alertData.message,
-              details: alertData.details
+              details: alertData.details,
+              priority_score: alertData.priority_score,
+              action_type: alertData.action_type
             });
           } else {
             await AgentAlertService.create(alertData);
@@ -155,10 +159,16 @@ export default function BusinessAgent() {
         // Check and resolve alerts
         const projectAlertsList = alerts.filter(a => a.project_id === project.id && !a.is_handled);
         for (const alert of projectAlertsList) {
-          if (shouldResolveAlert(alert, financials, currentSettings, activeProjects.length)) {
+          if (shouldResolveAlert(alert, financials, currentSettings, activeProjects.length, activeKeys)) {
             await AgentAlertService.update(alert.id, { is_handled: true });
           }
         }
+      }
+
+      // Alerts of projects that are no longer active (completed) are closed.
+      const activeIds = new Set(activeProjects.map(p => p.id));
+      for (const alert of alerts.filter(a => !a.is_handled && a.project_id && !activeIds.has(a.project_id))) {
+        await AgentAlertService.update(alert.id, { is_handled: true });
       }
 
       // Check workload
@@ -442,9 +452,14 @@ export default function BusinessAgent() {
                       </div>
                       <p className="font-medium text-slate-900 mb-2">{alert.message}</p>
                       <p className="text-xs text-slate-500">
-                        {new Date(alert.created_date).toLocaleDateString('he-IL')}
+                        {new Date(alert.created_at).toLocaleDateString('he-IL')}
                       </p>
                     </div>
+                    {alert.action_link && (
+                      <Link to={alert.action_link}>
+                        <Button size="sm" variant="ghost">פתח פרויקט</Button>
+                      </Link>
+                    )}
                     <Button
                       size="sm"
                       variant="outline"

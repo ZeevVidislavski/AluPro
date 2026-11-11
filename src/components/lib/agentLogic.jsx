@@ -91,71 +91,157 @@ export function calculateProjectPriorityScore(project, customer, financials, ale
   return Math.max(0, score);
 }
 
+// Defaults for the time-based rules. A tenant can override any of them by
+// adding the same key to its agent settings (no UI/DB column for that yet).
+export const AGENT_RULES = {
+  deposit_missing_days: 7,
+  payment_stalled_days: 30,
+  stale_draft_quote_days: 14,
+  deadline_warning_days: 7
+};
+
+const DAY_MS = 1000 * 60 * 60 * 24;
+const daysSince = (date, now) => (date ? Math.floor((now - new Date(date)) / DAY_MS) : null);
+const SEVERITY_SCORE = { critical: 90, high: 70, medium: 45, low: 20 };
+
+// alert_key = `${project_id}|${rule}`: the key is what stops a rule from
+// creating a duplicate alert on every run, and what resolves it once the rule
+// stops firing. The first three rules keep their original keys.
+function makeAlert(project, rule, alert_type, severity, message, details, action_type) {
+  return {
+    alert_key: `${project.id}|${rule}`,
+    project_id: project.id,
+    project_name: project.name,
+    alert_type,
+    severity,
+    message,
+    details: JSON.stringify(details),
+    priority_score: SEVERITY_SCORE[severity],
+    action_type,
+    action_link: `/ProjectDetails?id=${project.id}`
+  };
+}
+
 /**
- * Analyze project and return alerts to create/update
+ * Analyze project and return the alerts that currently apply to it.
+ * `data` = { allQuotes, allPayments, allOrders, now } — the time-based rules
+ * need the raw rows (dates), not just the aggregated financials.
  */
-export function analyzeProjectAlerts(project, financials, settings) {
+export function analyzeProjectAlerts(project, financials, settings, data = {}) {
   const alerts = [];
+  const now = data.now ? new Date(data.now) : new Date();
+  const rule = (key) => settings[key] ?? AGENT_RULES[key];
+  const quotes = (data.allQuotes || []).filter(q => q.project_id === project.id);
+  const payments = (data.allPayments || []).filter(p => p.project_id === project.id);
+  const orders = (data.allOrders || []).filter(o => o.project_id === project.id);
 
   // 1. Low profitability
   if (financials.hasApprovedQuote && financials.profit_percent < settings.minimum_profit_percent) {
-    alerts.push({
-      alert_key: `${project.id}|profitability`,
-      project_id: project.id,
-      project_name: project.name,
-      alert_type: 'profitability',
-      severity: financials.profit_percent < 5 ? 'critical' : 'high',
-      message: `רווחיות נמוכה: ${financials.profit_percent?.toFixed(1)}% (יעד: ${settings.minimum_profit_percent}%)`,
-      details: JSON.stringify({ profit_percent: financials.profit_percent, target: settings.minimum_profit_percent })
-    });
+    alerts.push(makeAlert(project, 'profitability', 'profitability',
+      financials.profit_percent < 5 ? 'critical' : 'high',
+      `רווחיות נמוכה: ${financials.profit_percent?.toFixed(1)}% (יעד: ${settings.minimum_profit_percent}%)`,
+      { profit_percent: financials.profit_percent, target: settings.minimum_profit_percent },
+      'fix_profit'));
   }
 
   // 2. High debt from client
   if (financials.balance_to_collect > settings.high_debt_threshold) {
-    alerts.push({
-      alert_key: `${project.id}|collection`,
-      project_id: project.id,
-      project_name: project.name,
-      alert_type: 'collection',
-      severity: financials.balance_to_collect > settings.high_debt_threshold * 2 ? 'critical' : 'high',
-      message: `חוב גבוה לגבייה: ₪${financials.balance_to_collect.toLocaleString()}`,
-      details: JSON.stringify({ balance: financials.balance_to_collect, threshold: settings.high_debt_threshold })
-    });
+    alerts.push(makeAlert(project, 'collection', 'collection',
+      financials.balance_to_collect > settings.high_debt_threshold * 2 ? 'critical' : 'high',
+      `חוב גבוה לגבייה: ₪${financials.balance_to_collect.toLocaleString()}`,
+      { balance: financials.balance_to_collect, threshold: settings.high_debt_threshold },
+      'collect'));
   }
 
   // 3. Negative cash flow
   if (financials.cash_flow < settings.cash_flow_warning_threshold) {
-    alerts.push({
-      alert_key: `${project.id}|cash_flow`,
-      project_id: project.id,
-      project_name: project.name,
-      alert_type: 'cash_flow',
-      severity: 'critical',
-      message: `תזרים מזומנים שלילי: ₪${financials.cash_flow.toLocaleString()}`,
-      details: JSON.stringify({ cash_flow: financials.cash_flow, threshold: settings.cash_flow_warning_threshold })
-    });
+    alerts.push(makeAlert(project, 'cash_flow', 'cash_flow', 'critical',
+      `תזרים מזומנים שלילי: ₪${financials.cash_flow.toLocaleString()}`,
+      { cash_flow: financials.cash_flow, threshold: settings.cash_flow_warning_threshold },
+      'supplier_payment'));
+  }
+
+  // 4. Deposit missing: a quote was approved a while ago and nothing was paid.
+  if (financials.hasApprovedQuote && financials.total_sale > 0 && financials.total_received === 0) {
+    const approvedDates = quotes
+      .filter(q => q.status === 'approved')
+      .map(q => q.updated_at || q.created_at)
+      .filter(Boolean)
+      .sort();
+    const days = daysSince(approvedDates[0], now);
+    if (days !== null && days > rule('deposit_missing_days')) {
+      alerts.push(makeAlert(project, 'deposit_missing', 'collection',
+        days > rule('deposit_missing_days') * 3 ? 'high' : 'medium',
+        `הצעה אושרה לפני ${days} ימים ולא התקבלה מקדמה`,
+        { days, total_sale: financials.total_sale },
+        'collect'));
+    }
+  }
+
+  // 5. Payments stalled: some money came in, a balance remains, and the last
+  // payment is old.
+  if (financials.total_received > 0 && financials.balance_to_collect > 0) {
+    const lastPayment = payments.map(p => p.payment_date).filter(Boolean).sort().pop();
+    const days = daysSince(lastPayment, now);
+    if (days !== null && days > rule('payment_stalled_days')) {
+      alerts.push(makeAlert(project, 'payment_stalled', 'collection', 'medium',
+        `לא התקבל תשלום ${days} ימים, יתרה לגבייה: ₪${financials.balance_to_collect.toLocaleString()}`,
+        { days, balance: financials.balance_to_collect },
+        'collect'));
+    }
+  }
+
+  // 6. Deadline close (or passed) and no supplier order was placed.
+  if (financials.hasApprovedQuote && project.target_date && orders.length === 0) {
+    const daysLeft = -daysSince(project.target_date, now);
+    if (daysLeft <= rule('deadline_warning_days')) {
+      alerts.push(makeAlert(project, 'deadline_no_orders', 'strategic',
+        daysLeft < 0 ? 'high' : 'medium',
+        daysLeft < 0
+          ? `תאריך היעד עבר לפני ${-daysLeft} ימים ואין הזמנות ספקים`
+          : `נשארו ${daysLeft} ימים ליעד ואין הזמנות ספקים`,
+        { days_left: daysLeft },
+        'order_material'));
+    }
+  }
+
+  // 7. Draft quotes left open for too long.
+  const staleDrafts = quotes.filter(q => q.status === 'draft' && daysSince(q.created_at, now) > rule('stale_draft_quote_days'));
+  if (staleDrafts.length > 0) {
+    const oldest = Math.max(...staleDrafts.map(q => daysSince(q.created_at, now)));
+    alerts.push(makeAlert(project, 'stale_draft_quote', 'strategic', 'low',
+      `${staleDrafts.length} הצעות בטיוטה פתוחות עד ${oldest} ימים`,
+      { count: staleDrafts.length, oldest_days: oldest },
+      'follow_up'));
   }
 
   return alerts;
 }
 
 /**
- * Check if alert conditions are resolved and mark as handled
+ * Check if alert conditions are resolved and mark as handled.
+ * With `activeKeys` (the alert_keys that currently apply to the project) an
+ * alert is resolved as soon as its rule stops firing; without it, the
+ * original per-type checks are used.
  */
-export function shouldResolveAlert(alert, financials, settings, activeProjectsCount) {
+export function shouldResolveAlert(alert, financials, settings, activeProjectsCount, activeKeys) {
+  if (activeKeys && alert.project_id) {
+    return !activeKeys.has(alert.alert_key);
+  }
+
   switch (alert.alert_type) {
     case 'profitability':
       return financials.profit_percent >= settings.minimum_profit_percent;
-    
+
     case 'collection':
       return financials.balance_to_collect < settings.high_debt_threshold;
-    
+
     case 'cash_flow':
       return financials.cash_flow >= settings.cash_flow_warning_threshold;
-    
+
     case 'workload':
       return activeProjectsCount < settings.max_open_projects;
-    
+
     default:
       return false;
   }
