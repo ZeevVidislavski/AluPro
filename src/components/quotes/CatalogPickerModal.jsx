@@ -24,7 +24,7 @@ const PRICING_METHOD_LABELS = {
  * mode="template" → onConfirm(selectedItems, {name, description}) [saves to QuoteTemplate + QuoteTemplateComponent externally]
  *
  * Keyboard flow (no mouse needed): the search box is focused on open. Type
- * to filter, ArrowUp/ArrowDown move the highlight (works with an empty
+ * to filter, Left/Right switch the category (empty search box), ArrowUp/ArrowDown move the highlight (works with an empty
  * search too), Enter ticks/unticks the highlighted row, Ctrl+Enter confirms
  * the ticked rows, Escape closes.
  */
@@ -66,6 +66,15 @@ export default function CatalogPickerModal({ open, onClose, catalogItems, onConf
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
       moveActive(-1);
+    } else if ((e.key === "ArrowLeft" || e.key === "ArrowRight") && !search) {
+      // The page is RTL: the category chips run right-to-left, so Left = next
+      // category and Right = previous. Only with an empty search box, so the
+      // arrows still move the text cursor while typing.
+      e.preventDefault();
+      const i = categories.indexOf(filterCat);
+      const next = Math.min(Math.max(i + (e.key === "ArrowLeft" ? 1 : -1), 0), categories.length - 1);
+      setFilterCat(categories[next]);
+      setActive(0);
     } else if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
       e.preventDefault();
       if (selected.length > 0) handleConfirmPick();
@@ -242,7 +251,7 @@ export default function CatalogPickerModal({ open, onClose, catalogItems, onConf
               <span className="text-sm text-slate-500">
                 {selected.length > 0
                   ? `${selected.length} רכיבים נבחרו · Ctrl+Enter להוספה`
-                  : "↑↓ לבחירה, Enter לסימון"}
+                  : "←→ קטגוריה, ↑↓ לבחירה, Enter לסימון"}
               </span>
               <div className="flex gap-2">
                 <Button variant="outline" onClick={handleClose}>
