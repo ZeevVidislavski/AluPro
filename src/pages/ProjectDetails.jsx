@@ -585,7 +585,7 @@ export default function ProjectDetails() {
 
       {/* Edit Project Dialog */}
       <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
-        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+        <DialogContent dir="rtl" className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>עריכת פרויקט</DialogTitle>
           </DialogHeader>
@@ -600,53 +600,39 @@ export default function ProjectDetails() {
                 onChange={(e) => setEditFormData({ ...editFormData, name: e.target.value })}
               />
             </div>
-            <div className="grid grid-cols-3 gap-4">
-              <div className="space-y-2">
-                <Label>הצעה ראשונית מאושרת</Label>
-                <Input
-                  type="text"
-                  value={formatCurrency(initial_quote)}
-                  disabled
-                  className="bg-slate-100 cursor-not-allowed"
-                />
-                <p className="text-xs text-slate-500">addition_number = 0</p>
+
+            {/* Financial summary — read-only, derived from approved quotes */}
+            <div className="grid grid-cols-3 gap-3 rounded-xl bg-slate-50 border border-slate-100 p-4">
+              <div>
+                <p className="text-xs text-slate-500 mb-1">הצעה ראשונית מאושרת</p>
+                <p className="text-lg font-semibold text-slate-800">{formatCurrency(initial_quote)}</p>
               </div>
-              <div className="space-y-2">
-                <Label>סכום תוספות מאושרות</Label>
-                <Input
-                  type="text"
-                  value={formatCurrency(additions_total)}
-                  disabled
-                  className="bg-slate-100 cursor-not-allowed"
-                />
-                <p className="text-xs text-slate-500">{additions_count} תוספות</p>
+              <div>
+                <p className="text-xs text-slate-500 mb-1">תוספות מאושרות</p>
+                <p className="text-lg font-semibold text-slate-800">{formatCurrency(additions_total)}</p>
+                <p className="text-xs text-slate-400">{additions_count} תוספות</p>
               </div>
-              <div className="space-y-2">
-                <Label>סה״כ מכירה</Label>
-                <Input
-                  type="text"
-                  value={formatCurrency(total_sale)}
-                  disabled
-                  className="bg-blue-100 cursor-not-allowed font-bold"
-                />
-                <p className="text-xs text-slate-500">ראשונית + תוספות</p>
+              <div>
+                <p className="text-xs text-slate-500 mb-1">סה״כ מכירה</p>
+                <p className="text-lg font-bold text-blue-700">{formatCurrency(total_sale)}</p>
               </div>
             </div>
-            <div className="space-y-2">
-              <Label>כתובת</Label>
-              <Input
-                value={editFormData.address || ''}
-                onChange={(e) => setEditFormData({ ...editFormData, address: e.target.value })}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>צבע אלומיניום</Label>
-              <Input
-                value={editFormData.aluminum_color || ''}
-                onChange={(e) => setEditFormData({ ...editFormData, aluminum_color: e.target.value })}
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>כתובת</Label>
+                <Input
+                  value={editFormData.address || ''}
+                  onChange={(e) => setEditFormData({ ...editFormData, address: e.target.value })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>צבע אלומיניום</Label>
+                <Input
+                  value={editFormData.aluminum_color || ''}
+                  onChange={(e) => setEditFormData({ ...editFormData, aluminum_color: e.target.value })}
+                />
+              </div>
               <div className="space-y-2">
                 <Label>תאריך יעד</Label>
                 <Input
@@ -656,6 +642,7 @@ export default function ProjectDetails() {
                 />
               </div>
             </div>
+
             <div className="space-y-2">
               <Label>הערות</Label>
               <Textarea
@@ -664,13 +651,13 @@ export default function ProjectDetails() {
                 rows={3}
               />
             </div>
-            <div className="flex gap-3 pt-4">
-              <Button type="submit" className="flex-1 bg-blue-600 hover:bg-blue-700">
-                {updateProjectMutation.isPending && <Loader2 className="w-4 h-4 ml-2 animate-spin" />}
-                עדכון
-              </Button>
+            <div className="flex justify-end gap-3 pt-2 border-t border-slate-100">
               <Button type="button" variant="outline" onClick={() => setEditDialogOpen(false)}>
                 ביטול
+              </Button>
+              <Button type="submit" className="min-w-32 bg-blue-600 hover:bg-blue-700">
+                {updateProjectMutation.isPending && <Loader2 className="w-4 h-4 ml-2 animate-spin" />}
+                עדכון
               </Button>
             </div>
           </form>
