@@ -452,13 +452,13 @@ export default function ProjectDetails() {
               <Receipt className="w-4 h-4" />
               תשלומים ({payments.length})
             </TabsTrigger>
-            <TabsTrigger value="documents" className="gap-2">
-              <FileText className="w-4 h-4" />
-              מסמכים ({documents.length})
-            </TabsTrigger>
             <TabsTrigger value="material-orders" className="gap-2">
               <Package className="w-4 h-4" />
               הזמנות חומר
+            </TabsTrigger>
+            <TabsTrigger value="documents" className="gap-2">
+              <FileText className="w-4 h-4" />
+              מסמכים ({documents.length})
             </TabsTrigger>
             <TabsTrigger value="reminders" className="gap-2">
               <Bell className="w-4 h-4" />

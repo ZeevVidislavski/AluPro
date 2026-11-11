@@ -4,7 +4,7 @@ import { useAuth } from "@/lib/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Loader2 } from "lucide-react";
+import { Loader2, Eye, EyeOff } from "lucide-react";
 
 export default function Login() {
   const { login, isAuthenticated, resetPasswordForEmail } = useAuth();
@@ -15,6 +15,7 @@ export default function Login() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [resetMessage, setResetMessage] = useState(null);
   const [isSendingReset, setIsSendingReset] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   if (isAuthenticated) {
     navigate("/", { replace: true });
@@ -78,14 +79,26 @@ export default function Login() {
 
           <div className="space-y-2">
             <Label htmlFor="password">סיסמה</Label>
-            <Input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              autoComplete="current-password"
-            />
+            <div className="relative">
+              <Input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                autoComplete="current-password"
+                className="pl-10"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((v) => !v)}
+                aria-label={showPassword ? "הסתר סיסמה" : "הצג סיסמה"}
+                tabIndex={-1}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+              >
+                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
+            </div>
           </div>
 
           {error && (

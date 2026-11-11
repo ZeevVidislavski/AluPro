@@ -229,59 +229,14 @@ export default function PlatformTenantDetail() {
           </span>
         </div>
 
-        <div className="flex flex-wrap gap-2">
-          <AddModelsDialog tenantId={tenantId} tenantName={tenant.name} />
-          <Button
-            variant="outline"
-            size="sm"
-            className="gap-2"
-            disabled={storageMutation.isPending}
-            onClick={() => storageMutation.mutate()}
-          >
-            {storageMutation.isPending ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <HardDrive className="w-4 h-4" />
-            )}
-            חשב שימוש אחסון
-          </Button>
-          {tenantId !== BASE_CATALOG_TENANT_ID && tenant.status !== "suspended" && (
-            <Button
-              variant="outline"
-              size="sm"
-              className="gap-2 text-amber-700"
-              disabled={statusMutation.isPending}
-              onClick={() => statusMutation.mutate("suspended")}
-            >
-              <Ban className="w-4 h-4" />
-              השעיית חברה
-            </Button>
-          )}
-          {tenant.status !== "active" && (
-            <Button
-              variant="outline"
-              size="sm"
-              className="gap-2"
-              disabled={statusMutation.isPending}
-              onClick={() => statusMutation.mutate("active")}
-            >
-              <PlayCircle className="w-4 h-4" />
-              הפעלה מחדש
-            </Button>
-          )}
-        </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+        <div className="space-y-4">
         <div className="bg-white rounded-xl border border-slate-200 p-5">
           <h2 className="font-semibold text-slate-900 mb-3">פרטי חברה</h2>
           <InfoRow label="סטטוס" value={STATUS_LABELS[tenant.status] ?? tenant.status} />
           <InfoRow label="נוצרה בתאריך" value={new Date(tenant.created_at).toLocaleDateString("he-IL")} />
-        </div>
-
-        <div className="bg-white rounded-xl border border-slate-200 p-5">
-          <h2 className="font-semibold text-slate-900 mb-3">תשלום ותוכנית</h2>
-          <BillingForm tenantId={tenantId} subscription={subscription} onSaved={invalidateAll} />
         </div>
 
         <div className="bg-white rounded-xl border border-slate-200 p-5">
@@ -318,7 +273,7 @@ export default function PlatformTenantDetail() {
 
           <div className="mt-4 pt-4 border-t border-slate-100">
             {!storageMutation.data && !storageMutation.isError && (
-              <p className="text-sm text-slate-400">שימוש אחסון: לחץ "חשב שימוש אחסון" למעלה</p>
+              <p className="text-sm text-slate-400">שימוש אחסון: לחץ "חשב שימוש אחסון"</p>
             )}
             {storageMutation.data && (
               <p className="text-sm text-slate-600">
@@ -343,6 +298,55 @@ export default function PlatformTenantDetail() {
             </div>
           ))}
         </div>
+        </div>
+
+        <div className="bg-white rounded-xl border border-slate-200 p-5">
+          <h2 className="font-semibold text-slate-900 mb-3">תשלום ותוכנית</h2>
+          <div className="flex flex-wrap gap-2 mb-4 pb-4 border-b border-slate-100">
+            <AddModelsDialog tenantId={tenantId} tenantName={tenant.name} />
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-2"
+              disabled={storageMutation.isPending}
+              onClick={() => storageMutation.mutate()}
+            >
+              {storageMutation.isPending ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <HardDrive className="w-4 h-4" />
+              )}
+              חשב שימוש אחסון
+            </Button>
+            {tenantId !== BASE_CATALOG_TENANT_ID && tenant.status !== "suspended" && (
+              <Button
+                variant="outline"
+                size="sm"
+                className="gap-2 text-amber-700"
+                disabled={statusMutation.isPending}
+                onClick={() => statusMutation.mutate("suspended")}
+              >
+                <Ban className="w-4 h-4" />
+                השעיית חברה
+              </Button>
+            )}
+            {tenant.status !== "active" && (
+              <Button
+                variant="outline"
+                size="sm"
+                className="gap-2"
+                disabled={statusMutation.isPending}
+                onClick={() => statusMutation.mutate("active")}
+              >
+                <PlayCircle className="w-4 h-4" />
+                הפעלה מחדש
+              </Button>
+            )}
+          </div>
+
+          <BillingForm tenantId={tenantId} subscription={subscription} onSaved={invalidateAll} />
+        </div>
+
       </div>
     </div>
   );

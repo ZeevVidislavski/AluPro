@@ -5,7 +5,6 @@ import { PLAN_LIMITS, isApproachingLimit } from "@/lib/planLimits";
 import { Loader2, AlertTriangle, ChevronLeft, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import AddModelsDialog from "./AddModelsDialog";
 
 const STATUS_LABELS = {
   active: "פעילה",
@@ -124,7 +123,6 @@ export default function PlatformTenantList() {
                     <TenantUsageBadge tenantId={tenant.id} plan={subscription?.plan} />
                   </td>
                   <td className="px-4 py-3 text-left whitespace-nowrap">
-                    <AddModelsDialog tenantId={tenant.id} tenantName={tenant.name} />
                     <Link
                       to={`/admin/tenants/${tenant.id}`}
                       className="text-slate-400 hover:text-slate-700 inline-flex items-center"
