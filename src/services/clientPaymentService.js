@@ -1,4 +1,6 @@
-import { supabase, excludeDeleted } from './client';
+import { supabase, excludeDeleted, emptyToNull } from './client';
+
+const NULLABLE_FIELDS = ['received_by_partner_id', 'payment_date'];
 
 // list() was the only method through Phase 3 — ClientPayment CRUD
 // (create/update/delete) lived exclusively in ProjectDetails.jsx, which
@@ -29,7 +31,7 @@ export const ClientPaymentService = {
 
     const { data: created, error } = await supabase
       .from('client_payments')
-      .insert({ ...data, tenant_id: tenantId, created_by: user.id })
+      .insert({ ...emptyToNull(data, NULLABLE_FIELDS), tenant_id: tenantId, created_by: user.id })
       .select()
       .single();
     if (error) throw error;
@@ -40,7 +42,7 @@ export const ClientPaymentService = {
     const { tenant_id, created_by, deleted_at, ...safeData } = data;
     const { data: updated, error } = await supabase
       .from('client_payments')
-      .update(safeData)
+      .update(emptyToNull(safeData, NULLABLE_FIELDS))
       .eq('id', id)
       .select()
       .single();

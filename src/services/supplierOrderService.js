@@ -1,4 +1,6 @@
-import { supabase, excludeDeleted } from './client';
+import { supabase, excludeDeleted, emptyToNull } from './client';
+
+const NULLABLE_FIELDS = ['paid_by_partner_id', 'supplier_id', 'order_date', 'payment_date'];
 
 // list() was the only method through Phase 3 — same reasoning as
 // clientPaymentService.js. SupplierOrder CRUD lived exclusively in
@@ -28,7 +30,7 @@ export const SupplierOrderService = {
 
     const { data: created, error } = await supabase
       .from('supplier_orders')
-      .insert({ ...data, tenant_id: tenantId, created_by: user.id })
+      .insert({ ...emptyToNull(data, NULLABLE_FIELDS), tenant_id: tenantId, created_by: user.id })
       .select()
       .single();
     if (error) throw error;
@@ -39,7 +41,7 @@ export const SupplierOrderService = {
     const { tenant_id, created_by, deleted_at, ...safeData } = data;
     const { data: updated, error } = await supabase
       .from('supplier_orders')
-      .update(safeData)
+      .update(emptyToNull(safeData, NULLABLE_FIELDS))
       .eq('id', id)
       .select()
       .single();
