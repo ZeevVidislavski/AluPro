@@ -1,3 +1,4 @@
+import { handleFormArrowNav } from "@/lib/formKeyboardNav";
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ProjectService, CustomerService, ClientPaymentService, SupplierOrderService, ProjectQuoteService } from "@/services";
@@ -321,7 +322,7 @@ export default function Projects() {
           <DialogHeader>
             <DialogTitle>פרויקט חדש</DialogTitle>
           </DialogHeader>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onKeyDown={handleFormArrowNav} onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="name">שם פרויקט *</Label>
               <Input

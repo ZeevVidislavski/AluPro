@@ -1,3 +1,4 @@
+import { handleFormArrowNav } from "@/lib/formKeyboardNav";
 import { useState, useEffect, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
@@ -588,7 +589,7 @@ export default function ProjectDetails() {
           <DialogHeader>
             <DialogTitle>עריכת פרויקט</DialogTitle>
           </DialogHeader>
-          <form onSubmit={(e) => {
+          <form onKeyDown={handleFormArrowNav} onSubmit={(e) => {
             e.preventDefault();
             updateProjectMutation.mutate(editFormData);
           }} className="space-y-4">
@@ -842,7 +843,7 @@ function PaymentsSection({ payments, projectId, projectName, dialogOpen, setDial
           <DialogHeader>
             <DialogTitle>{editingPayment ? 'עריכת תשלום' : 'תשלום חדש'}</DialogTitle>
           </DialogHeader>
-          <form onSubmit={(e) => { 
+          <form onKeyDown={handleFormArrowNav} onSubmit={(e) => { 
             e.preventDefault(); 
             if (editingPayment) {
               updateMutation.mutate({ id: editingPayment.id, data: formData });
@@ -1079,7 +1080,7 @@ function OrdersSection({ orders, projectId, projectName, dialogOpen, setDialogOp
           <DialogHeader>
             <DialogTitle>{editingOrder ? 'עריכת הזמנה' : 'הזמנה חדשה'}</DialogTitle>
           </DialogHeader>
-          <form onSubmit={(e) => { 
+          <form onKeyDown={handleFormArrowNav} onSubmit={(e) => { 
             e.preventDefault(); 
             if (editingOrder) {
               updateMutation.mutate({ id: editingOrder.id, data: formData });
@@ -1375,7 +1376,7 @@ function QuotesSection({ quotes, projectId, projectName, customerName, projectSt
           <DialogHeader>
             <DialogTitle>{editingQuote ? 'עריכת הצעה/תוספת' : (quotes.length === 0 ? 'הצעה ראשונית' : 'תוספת להצעה')}</DialogTitle>
           </DialogHeader>
-          <form onSubmit={(e) => { 
+          <form onKeyDown={handleFormArrowNav} onSubmit={(e) => { 
             e.preventDefault(); 
             if (editingQuote) {
               updateMutation.mutate({ id: editingQuote.id, data: formData });
@@ -1564,7 +1565,7 @@ function DocumentsSection({ documents, projectId, projectName, dialogOpen, setDi
           <DialogHeader>
             <DialogTitle>{editingDocument ? 'עריכת מסמך' : 'מסמך חדש'}</DialogTitle>
           </DialogHeader>
-          <form onSubmit={(e) => { 
+          <form onKeyDown={handleFormArrowNav} onSubmit={(e) => { 
             e.preventDefault(); 
             if (editingDocument) {
               updateMutation.mutate({ id: editingDocument.id, data: formData });
@@ -1772,7 +1773,7 @@ function RemindersSection({ reminders, projectId, projectName, dialogOpen, setDi
           <DialogHeader>
             <DialogTitle>{editingReminder ? 'עריכת תזכורת' : 'תזכורת חדשה'}</DialogTitle>
           </DialogHeader>
-          <form onSubmit={(e) => { 
+          <form onKeyDown={handleFormArrowNav} onSubmit={(e) => { 
             e.preventDefault(); 
             if (editingReminder) {
               updateReminder.mutate({ id: editingReminder.id, data: formData });
