@@ -33,7 +33,8 @@ import {
   Printer,
   Lock,
   Unlock,
-  AlertCircle
+  AlertCircle,
+  CheckCircle2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -65,16 +66,6 @@ import { calculateProjectFinancials } from "@/components/lib/projectFinancials";
 import { validateProjectCanClose } from "@/components/lib/partnerSettlement";
 import { cn } from "@/lib/utils";
 
-const statusOptions = [
-  { value: 'quote', label: 'בהצעה' },
-  { value: 'negotiation', label: 'מו״מ' },
-  { value: 'approved', label: 'מאושר' },
-  { value: 'ordering', label: 'בהזמנת חומר' },
-  { value: 'production', label: 'בייצור' },
-  { value: 'installation', label: 'בהתקנה' },
-  { value: 'completed', label: 'הושלם' },
-  { value: 'invoiced', label: 'סגור חשבונית' }
-];
 
 // file_url on both ProjectQuote and Document is now an internal Storage
 // path, not a displayable/public URL — these resolve a path to a
@@ -307,6 +298,11 @@ export default function ProjectDetails() {
           <div className="flex-1">
             <div className="flex items-center gap-3">
               <h1 className="text-3xl font-bold text-slate-900">{project.name}</h1>
+              {project.start_date && (
+                <span className="text-xs text-slate-400">
+                  (ת.פתיחה: {format(new Date(project.start_date), 'dd/MM/yyyy', { locale: he })})
+                </span>
+              )}
               <ProjectStatusBadge status={project.status} />
             </div>
             {project.project_number && (
@@ -498,6 +494,7 @@ export default function ProjectDetails() {
               projectId={projectId}
               projectName={project.name}
               customerName={project.customer_name}
+              projectStatus={project.status}
               dialogOpen={quoteDialogOpen}
               setDialogOpen={setQuoteDialogOpen}
             />
@@ -601,22 +598,6 @@ export default function ProjectDetails() {
                 onChange={(e) => setEditFormData({ ...editFormData, name: e.target.value })}
               />
             </div>
-            <div className="space-y-2">
-              <Label>סטטוס</Label>
-              <Select 
-                value={editFormData.status} 
-                onValueChange={(value) => setEditFormData({ ...editFormData, status: value })}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {statusOptions.map(opt => (
-                    <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
             <div className="grid grid-cols-3 gap-4">
               <div className="space-y-2">
                 <Label>הצעה ראשונית מאושרת</Label>
@@ -664,14 +645,6 @@ export default function ProjectDetails() {
               />
             </div>
             <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label>תאריך פתיחה</Label>
-                <Input
-                  type="date"
-                  value={editFormData.start_date || ''}
-                  onChange={(e) => setEditFormData({ ...editFormData, start_date: e.target.value })}
-                />
-              </div>
               <div className="space-y-2">
                 <Label>תאריך יעד</Label>
                 <Input
@@ -1178,7 +1151,7 @@ function OrdersSection({ orders, projectId, projectName, dialogOpen, setDialogOp
 }
 
 // Quotes Section Component
-function QuotesSection({ quotes, projectId, projectName, customerName, dialogOpen, setDialogOpen }) {
+function QuotesSection({ quotes, projectId, projectName, customerName, projectStatus, dialogOpen, setDialogOpen }) {
   const [formData, setFormData] = useState({
     addition_number: quotes.length,
     quote_date: new Date().toISOString().split('T')[0],
@@ -1214,6 +1187,23 @@ function QuotesSection({ quotes, projectId, projectName, customerName, dialogOpe
       queryClient.invalidateQueries({ queryKey: ['project-quotes', projectId] });
       queryClient.invalidateQueries({ queryKey: ['all-quotes'] });
       navigate(`/QuoteEditor?quote_id=${newQuote.id}`);
+    }
+  });
+
+  // Approving a quote is the only way its status changes. It also approves
+  // the project (if still a draft); every financial figure is derived from
+  // approved quotes (calculateProjectFinancials), so they follow automatically.
+  const approveMutation = useMutation({
+    mutationFn: async (quote) => {
+      await ProjectQuoteService.update(quote.id, { status: 'approved' });
+      if (projectStatus === 'draft') {
+        await ProjectService.update(projectId, { status: 'approved' });
+      }
+    },
+    onSuccess: () => {
+      ['project-quotes', 'all-quotes', 'project', 'projects', 'all-payments', 'all-orders'].forEach(key =>
+        queryClient.invalidateQueries({ queryKey: key === 'project-quotes' || key === 'project' ? [key, projectId] : [key] })
+      );
     }
   });
 
@@ -1278,7 +1268,7 @@ function QuotesSection({ quotes, projectId, projectName, customerName, dialogOpe
     return new Intl.NumberFormat('he-IL', { style: 'currency', currency: 'ILS', maximumFractionDigits: 0 }).format(amount || 0);
   };
 
-  const statusLabels = { draft: 'טיוטה', sent: 'נשלח', approved: 'אושר', rejected: 'נדחה' };
+  const statusLabels = { draft: 'טיוטה', approved: 'אושר' };
 
   return (
     <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
@@ -1308,6 +1298,19 @@ function QuotesSection({ quotes, projectId, projectName, customerName, dialogOpe
               {quote.changes_description && <p className="text-sm text-slate-500">{quote.changes_description}</p>}
             </div>
             <div className="flex items-center gap-2">
+              {quote.status !== 'approved' && (
+                <Button
+                  size="sm"
+                  className="bg-green-600 hover:bg-green-700"
+                  disabled={approveMutation.isPending}
+                  onClick={() => approveMutation.mutate(quote)}
+                >
+                  {approveMutation.isPending && approveMutation.variables?.id === quote.id
+                    ? <Loader2 className="w-4 h-4 ml-1 animate-spin" />
+                    : <CheckCircle2 className="w-4 h-4 ml-1" />}
+                  אשר הצעה
+                </Button>
+              )}
               {quote.file_url && <QuoteFileLink path={quote.file_url} />}
               <Button
                 variant="ghost"
@@ -1396,18 +1399,6 @@ function QuotesSection({ quotes, projectId, projectName, customerName, dialogOpe
               <Label>קובץ PDF</Label>
               <Input type="file" accept=".pdf" onChange={handleFileUpload} disabled={uploading} />
               {uploading && <p className="text-sm text-slate-500">מעלה...</p>}
-            </div>
-            <div className="space-y-2">
-              <Label>סטטוס</Label>
-              <Select value={formData.status} onValueChange={(v) => setFormData({ ...formData, status: v })}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="draft">טיוטה</SelectItem>
-                  <SelectItem value="sent">נשלח</SelectItem>
-                  <SelectItem value="approved">אושר</SelectItem>
-                  <SelectItem value="rejected">נדחה</SelectItem>
-                </SelectContent>
-              </Select>
             </div>
             <div className="flex gap-3 pt-4">
               <Button type="submit" className="flex-1 bg-blue-600 hover:bg-blue-700">

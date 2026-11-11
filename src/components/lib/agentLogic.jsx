@@ -59,11 +59,9 @@ export function calculateProjectPriorityScore(project, customer, financials, ale
 
   // 5. Status Score (0-10)
   const statusScores = {
-    'quote': 3, 'negotiation': 3,
-    'approved': 5,
-    'ordering': 10, 'production': 10,
-    'installation': 8,
-    'completed': 0, 'invoiced': 0
+    'draft': 3,
+    'approved': 8,
+    'completed': 0
   };
   score += statusScores[project.status] || 0;
 

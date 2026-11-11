@@ -16,7 +16,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowRight, Plus, Loader2, Printer, Save, FileDown, GripVertical, Check } from "lucide-react";
 import { generateDescription, calcItemTotal } from "@/lib/quoteCalculations";
 import QuoteItemCard from "@/components/quotes/QuoteItemCard";
@@ -540,7 +539,7 @@ export default function QuoteEditor() {
         {/* Quote meta */}
         <div className="bg-white rounded-2xl border border-slate-200 p-6">
           <h2 className="font-semibold text-slate-800 mb-4">פרטי הצעה</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             <div className="space-y-1">
               <Label>תאריך הצעה</Label>
               <Input type="date" value={quoteForm.quote_date} onChange={e => editForm({ quote_date: e.target.value })} />
@@ -548,18 +547,6 @@ export default function QuoteEditor() {
             <div className="space-y-1">
               <Label>בתוקף עד</Label>
               <Input type="date" value={quoteForm.valid_until} onChange={e => editForm({ valid_until: e.target.value })} />
-            </div>
-            <div className="space-y-1">
-              <Label>סטטוס</Label>
-              <Select value={quoteForm.status} onValueChange={v => editForm({ status: v })}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="draft">טיוטה</SelectItem>
-                  <SelectItem value="sent">נשלח</SelectItem>
-                  <SelectItem value="approved">אושר</SelectItem>
-                  <SelectItem value="rejected">נדחה</SelectItem>
-                </SelectContent>
-              </Select>
             </div>
             <div className="space-y-1">
               <Label>מע"מ (%)</Label>

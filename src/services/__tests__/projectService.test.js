@@ -228,13 +228,13 @@ describe('ProjectService', () => {
   });
 
   describe('reopenSettlement', () => {
-    it('resets settlement_status to open and clears closed_at/closed_by', async () => {
+    it('resets settlement_status to open, returns the project to approved and clears closed_at/closed_by', async () => {
       supabase.__setResult({ data: { id: 'p1', settlement_status: 'open' }, error: null });
 
       await ProjectService.reopenSettlement('p1');
 
       const updatePayload = supabase.__getLastUpdatePayload();
-      expect(updatePayload).toEqual({ settlement_status: 'open', closed_at: null, closed_by: null });
+      expect(updatePayload).toEqual({ settlement_status: 'open', status: 'approved', closed_at: null, closed_by: null });
     });
   });
 

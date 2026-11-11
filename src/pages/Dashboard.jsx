@@ -63,7 +63,7 @@ export default function Dashboard() {
 
   // Active projects (not completed or invoiced)
   const activeProjects = projects.filter(p => 
-    !['completed', 'invoiced'].includes(p.status)
+    !['completed'].includes(p.status)
   );
 
   // Memoized financials map — calculate once per project, reuse everywhere

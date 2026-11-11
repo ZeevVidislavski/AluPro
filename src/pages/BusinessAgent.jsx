@@ -130,7 +130,7 @@ export default function BusinessAgent() {
         contractor_priority_weight: 1.5
       };
 
-      const activeProjects = projects.filter(p => !['completed', 'invoiced'].includes(p.status));
+      const activeProjects = projects.filter(p => !['completed'].includes(p.status));
 
       // Analyze each project
       for (const project of activeProjects) {
@@ -195,7 +195,7 @@ export default function BusinessAgent() {
   };
 
   // Calculate top priority projects
-  const activeProjects = projects.filter(p => !['completed', 'invoiced'].includes(p.status));
+  const activeProjects = projects.filter(p => !['completed'].includes(p.status));
   const baseMetrics = calculateBaseMetrics(activeProjects, allQuotes, allPayments, allOrders);
   
   const projectsWithScores = activeProjects.map(project => {

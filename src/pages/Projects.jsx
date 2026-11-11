@@ -45,19 +45,14 @@ const emptyProject = {
   aluminum_color: '',
   start_date: '',
   target_date: '',
-  status: 'quote',
+  status: 'draft',
   notes: ''
 };
 
 const statusOptions = [
-  { value: 'quote', label: 'בהצעה' },
-  { value: 'negotiation', label: 'מו״מ' },
+  { value: 'draft', label: 'טיוטה' },
   { value: 'approved', label: 'מאושר' },
-  { value: 'ordering', label: 'בהזמנת חומר' },
-  { value: 'production', label: 'בייצור' },
-  { value: 'installation', label: 'בהתקנה' },
-  { value: 'completed', label: 'הושלם' },
-  { value: 'invoiced', label: 'סגור חשבונית' }
+  { value: 'completed', label: 'הושלם' }
 ];
 
 export default function Projects() {
@@ -152,7 +147,12 @@ export default function Projects() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    createMutation.mutate(formData);
+    // New projects start as a draft, opened today (neither is user-editable).
+    createMutation.mutate({
+      ...formData,
+      status: 'draft',
+      start_date: new Date().toISOString().split('T')[0]
+    });
   };
 
   const handleCustomerChange = (customerId) => {
@@ -370,16 +370,7 @@ export default function Projects() {
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="start_date">תאריך פתיחה</Label>
-                <Input
-                  id="start_date"
-                  type="date"
-                  value={formData.start_date}
-                  onChange={(e) => setFormData({ ...formData, start_date: e.target.value })}
-                />
-              </div>
+            <div className="grid grid-cols-1 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="target_date">תאריך יעד</Label>
                 <Input
@@ -391,22 +382,6 @@ export default function Projects() {
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="status">סטטוס</Label>
-              <Select 
-                value={formData.status} 
-                onValueChange={(value) => setFormData({ ...formData, status: value })}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {statusOptions.map(opt => (
-                    <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
 
 
 

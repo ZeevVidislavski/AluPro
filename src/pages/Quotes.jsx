@@ -91,7 +91,7 @@ export default function Quotes() {
   const formatCurrency = (amount) =>
     new Intl.NumberFormat("he-IL", { style: "currency", currency: "ILS", maximumFractionDigits: 0 }).format(amount || 0);
 
-  const activeProjects = projects.filter(p => !["completed", "invoiced"].includes(p.status));
+  const activeProjects = projects.filter(p => !["completed"].includes(p.status));
 
   if (isLoading) {
     return (

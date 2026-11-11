@@ -3,11 +3,7 @@ import { he } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { calculateProjectFinancials } from "@/components/lib/projectFinancials";
 
-const statusLabels = {
-  quote: 'בהצעה', negotiation: 'מו״מ', approved: 'מאושר',
-  ordering: 'בהזמנת חומר', production: 'בייצור',
-  installation: 'בהתקנה', completed: 'הושלם', invoiced: 'סגור חשבונית'
-};
+const statusLabels = { draft: 'טיוטה', approved: 'מאושר', completed: 'הושלם' };
 
 const paymentTypeLabels = { advance: 'מקדמה', interim: 'תשלום ביניים', final: 'תשלום סופי' };
 const paymentMethodLabels = { cash: 'מזומן', check: "צ'ק", transfer: 'העברה בנקאית', credit: 'אשראי' };

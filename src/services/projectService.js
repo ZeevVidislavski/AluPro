@@ -94,6 +94,7 @@ export const ProjectService = {
       .from('projects')
       .update({
         settlement_status: 'closed',
+        status: 'completed',
         closed_at: new Date().toISOString().split('T')[0],
         closed_by: user.id,
       })
@@ -107,7 +108,7 @@ export const ProjectService = {
   async reopenSettlement(id) {
     const { data: updated, error } = await supabase
       .from('projects')
-      .update({ settlement_status: 'open', closed_at: null, closed_by: null })
+      .update({ settlement_status: 'open', status: 'approved', closed_at: null, closed_by: null })
       .eq('id', id)
       .select()
       .single();

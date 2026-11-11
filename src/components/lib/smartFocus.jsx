@@ -42,7 +42,7 @@ export function generateSmartFocusTasks(projects, { allQuotes, allPayments, allO
   const minProfit = currentSettings.minimum_profit_percent ?? 15;
   const contractorWeight = currentSettings.contractor_priority_weight ?? 1.5;
 
-  const activeProjects = projects.filter(p => !['completed', 'invoiced'].includes(p.status));
+  const activeProjects = projects.filter(p => !['completed'].includes(p.status));
   const tasks = [];
 
   for (const project of activeProjects) {

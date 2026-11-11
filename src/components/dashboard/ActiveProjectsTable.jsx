@@ -38,7 +38,7 @@ export default function ActiveProjectsTable({ projects, allPayments, allQuotes, 
             {projects.map((project) => {
               // Calculate financials using centralized function
               const financials = calculateProjectFinancials(project.id, { allQuotes, allPayments, allOrders });
-              const overdue = isOverdue(project.target_date) && project.status !== 'completed' && project.status !== 'invoiced';
+              const overdue = isOverdue(project.target_date) && project.status !== 'completed';
               
               return (
                 <tr key={project.id} className="hover:bg-slate-50 transition-colors">

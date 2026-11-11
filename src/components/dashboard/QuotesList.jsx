@@ -2,12 +2,13 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { FileText } from "lucide-react";
 
-const STATUS_LABELS = { draft: "טיוטה", sent: "נשלח", approved: "אושר", rejected: "נדחה" };
+const STATUS_LABELS = { draft: "טיוטה", approved: "אושר" };
 const PAGE = 10;
 
 // Replaces the "הצעות מחיר" menu entry: all quotes, newest first, each
 // linking straight to the editor.
-export default function QuotesList({ quotes, formatCurrency }) {
+export default function QuotesList({ quotes: allQuotes, formatCurrency }) {
+  const quotes = allQuotes.filter((q) => q.status === "approved");
   const [showAll, setShowAll] = useState(false);
   const rows = showAll ? quotes : quotes.slice(0, PAGE);
 
@@ -15,10 +16,10 @@ export default function QuotesList({ quotes, formatCurrency }) {
     <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
       <div className="p-6 border-b border-slate-100 flex items-center gap-2">
         <FileText className="w-5 h-5 text-slate-500" />
-        <h3 className="font-semibold text-slate-900">הצעות מחיר ({quotes.length})</h3>
+        <h3 className="font-semibold text-slate-900">הצעות מחיר מאושרות ({quotes.length})</h3>
       </div>
       {quotes.length === 0 ? (
-        <div className="p-8 text-center text-slate-500">אין הצעות מחיר עדיין</div>
+        <div className="p-8 text-center text-slate-500">אין הצעות מחיר מאושרות עדיין</div>
       ) : (
         <div className="divide-y divide-slate-100">
           {rows.map((q) => (

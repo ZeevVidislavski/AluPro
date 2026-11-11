@@ -54,7 +54,7 @@ export default function MorningSummary() {
     return null;
   }
 
-  const activeProjects = projects.filter(p => !['completed', 'invoiced'].includes(p.status));
+  const activeProjects = projects.filter(p => !['completed'].includes(p.status));
   
   // Calculate aggregate metrics
   let totalProfit = 0;
