@@ -36,6 +36,7 @@ import {
   AlertCircle,
   CheckCircle2
 } from "lucide-react";
+import { SupplierPicker, SuppliersManagerButton } from "@/components/project/SupplierPicker";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -924,6 +925,7 @@ function PaymentsSection({ payments, projectId, projectName, dialogOpen, setDial
 function OrdersSection({ orders, projectId, projectName, dialogOpen, setDialogOpen, partners = [] }) {
   const [formData, setFormData] = useState({
     order_type: 'aluminum',
+    supplier_id: null,
     supplier_name: '',
     description: '',
     order_amount: 0,
@@ -977,10 +979,13 @@ function OrdersSection({ orders, projectId, projectName, dialogOpen, setDialogOp
     <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
       <div className="p-6 border-b border-slate-100 flex items-center justify-between">
         <h3 className="font-semibold text-slate-900">הזמנות ספקים</h3>
-        <Button onClick={() => setDialogOpen(true)} size="sm">
-          <Plus className="w-4 h-4 ml-2" />
-          הזמנה חדשה
-        </Button>
+        <div className="flex gap-2">
+          <SuppliersManagerButton />
+          <Button onClick={() => setDialogOpen(true)} size="sm">
+            <Plus className="w-4 h-4 ml-2" />
+            הזמנה חדשה
+          </Button>
+        </div>
       </div>
       <div className="divide-y divide-slate-100">
         {orders.map(order => (
@@ -1014,6 +1019,7 @@ function OrdersSection({ orders, projectId, projectName, dialogOpen, setDialogOp
                   setEditingOrder(order);
                   setFormData({
                     order_type: order.order_type,
+                    supplier_id: order.supplier_id || null,
                     supplier_name: order.supplier_name,
                     description: order.description || '',
                     order_amount: order.order_amount,
@@ -1057,7 +1063,8 @@ function OrdersSection({ orders, projectId, projectName, dialogOpen, setDialogOp
           setEditingOrder(null);
           setFormData({
             order_type: 'aluminum',
-            supplier_name: '',
+            supplier_id: null,
+    supplier_name: '',
             description: '',
             order_amount: 0,
             paid_amount: 0,
@@ -1094,7 +1101,11 @@ function OrdersSection({ orders, projectId, projectName, dialogOpen, setDialogOp
             </div>
             <div className="space-y-2">
               <Label>ספק</Label>
-              <Input value={formData.supplier_name} onChange={(e) => setFormData({ ...formData, supplier_name: e.target.value })} required />
+              <SupplierPicker
+                supplierId={formData.supplier_id}
+                supplierName={formData.supplier_name}
+                onChange={(changes) => setFormData({ ...formData, ...changes })}
+              />
             </div>
             <div className="space-y-2">
               <Label>תיאור</Label>
@@ -1134,7 +1145,7 @@ function OrdersSection({ orders, projectId, projectName, dialogOpen, setDialogOp
               </div>
             )}
             <div className="flex gap-3 pt-4">
-              <Button type="submit" className="flex-1 bg-blue-600 hover:bg-blue-700">
+              <Button type="submit" className="flex-1 bg-blue-600 hover:bg-blue-700" disabled={!formData.supplier_name}>
                 {(createMutation.isPending || updateMutation.isPending) && <Loader2 className="w-4 h-4 ml-2 animate-spin" />}
                 {editingOrder ? 'עדכון' : 'הוספה'}
               </Button>

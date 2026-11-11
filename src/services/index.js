@@ -3,6 +3,7 @@ export { ProjectService } from './projectService';
 export { PartnerService } from './partnerService';
 export { ClientPaymentService } from './clientPaymentService';
 export { SupplierOrderService } from './supplierOrderService';
+export { SupplierService } from './supplierService';
 export { ProjectQuoteService } from './projectQuoteService';
 export { ReminderService } from './reminderService';
 export { CompanyHeaderService } from './companyHeaderService';
