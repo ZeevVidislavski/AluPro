@@ -79,6 +79,7 @@ export default function QuoteEditor() {
   const rerunRef = useRef(false);
   const dirtyRef = useRef(false);
   const pendingCompDeletes = useRef([]);
+  const lastSaved = useRef({}); // "i:<id>" / "c:<id>" -> JSON of last saved payload
   const markDirty = () => { dirtyRef.current = true; };
   const editForm = (changes) => { markDirty(); setQuoteForm(f => ({ ...f, ...changes })); };
   const printRef = useRef(null);
@@ -314,7 +315,12 @@ export default function QuoteEditor() {
 
       let itemId = item.id;
       if (itemId) {
-        await QuoteItemService.update(itemId, itemData);
+        // Only hit the DB for rows that actually changed since the last save.
+        const sig = JSON.stringify(itemData);
+        if (lastSaved.current[`i:${itemId}`] !== sig) {
+          await QuoteItemService.update(itemId, itemData);
+          lastSaved.current[`i:${itemId}`] = sig;
+        }
       } else {
         itemId = (await QuoteItemService.create(itemData)).id;
       }
@@ -333,10 +339,15 @@ export default function QuoteEditor() {
           sort_order: compIndex
         };
         if (comp.id) {
-          await QuoteItemComponentService.update(comp.id, compData);
+          const sig = JSON.stringify(compData);
+          if (lastSaved.current[`c:${comp.id}`] !== sig) {
+            await QuoteItemComponentService.update(comp.id, compData);
+            lastSaved.current[`c:${comp.id}`] = sig;
+          }
         } else {
           const saved = await QuoteItemComponentService.create(compData);
           savedCompIds[comp._tempId] = saved.id;
+          lastSaved.current[`c:${saved.id}`] = JSON.stringify(compData);
         }
       }
     }
