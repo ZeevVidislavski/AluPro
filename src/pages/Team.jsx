@@ -11,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Loader2, UserPlus } from "lucide-react";
+import { Loader2, UserPlus, Pencil } from "lucide-react";
 
 const ROLE_LABELS = { owner: "בעלים", admin: "מנהל", member: "חבר צוות", viewer: "צופה" };
 const INVITE_ROLE_LABELS = { admin: "מנהל", member: "חבר צוות", viewer: "צופה" };
@@ -117,8 +117,104 @@ function InviteForm({ tenantId, onInvited }) {
   );
 }
 
+function EditMemberForm({ tenantId, member, onClose, onSaved }) {
+  const isOwner = member.role === "owner";
+  const [fullName, setFullName] = useState(member.profiles?.full_name ?? "");
+  const [email, setEmail] = useState("");
+  const [role, setRole] = useState(member.role);
+  const [newPassword, setNewPassword] = useState("");
+  const [error, setError] = useState(null);
+  const [message, setMessage] = useState(null);
+
+  const saveMutation = useMutation({
+    mutationFn: () =>
+      TeamService.updateMember({
+        tenantId,
+        memberId: member.id,
+        fullName,
+        email: email.trim() || undefined,
+        role: isOwner ? undefined : role,
+      }),
+    onSuccess: () => {
+      setError(null);
+      setMessage("הפרטים נשמרו");
+      onSaved();
+    },
+    onError: (err) => { setMessage(null); setError(err.message || "שגיאה בשמירה"); },
+  });
+
+  const resetMutation = useMutation({
+    mutationFn: () => TeamService.resetMemberPassword({ tenantId, memberId: member.id, password: newPassword }),
+    onSuccess: () => {
+      setError(null);
+      setMessage(`הסיסמה אופסה. יש למסור לעובד את הסיסמה: ${newPassword}`);
+    },
+    onError: (err) => { setMessage(null); setError(err.message || "שגיאה באיפוס הסיסמה"); },
+  });
+
+  return (
+    <div className="bg-white rounded-2xl border border-slate-200 p-6 space-y-4">
+      <h2 className="font-semibold text-slate-900 flex items-center gap-2">
+        <Pencil className="w-5 h-5 text-slate-400" />
+        עריכת עובד
+      </h2>
+
+      <div className="space-y-2">
+        <Label htmlFor="editFullName">שם מלא</Label>
+        <Input id="editFullName" value={fullName} onChange={(e) => setFullName(e.target.value)} />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="editEmail">אימייל חדש (אופציונלי)</Label>
+        <Input id="editEmail" type="email" dir="ltr" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="להשאיר ריק ללא שינוי" />
+      </div>
+
+      {!isOwner && (
+        <div className="space-y-2">
+          <Label>תפקיד</Label>
+          <Select value={role} onValueChange={setRole}>
+            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectContent>
+              {Object.entries(INVITE_ROLE_LABELS).map(([value, label]) => (
+                <SelectItem key={value} value={value}>{label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      )}
+
+      <Button className="w-full" disabled={saveMutation.isPending} onClick={() => saveMutation.mutate()}>
+        {saveMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : "שמור שינויים"}
+      </Button>
+
+      <div className="border-t border-slate-100 pt-4 space-y-2">
+        <Label htmlFor="resetPassword">איפוס סיסמה</Label>
+        <div className="flex gap-2">
+          <Input id="resetPassword" dir="ltr" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
+          <Button type="button" variant="outline" onClick={() => setNewPassword(generatePassword())}>חדש</Button>
+        </div>
+        <Button
+          type="button"
+          variant="outline"
+          className="w-full"
+          disabled={resetMutation.isPending || newPassword.length < 6}
+          onClick={() => resetMutation.mutate()}
+        >
+          {resetMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : "אפס סיסמה"}
+        </Button>
+      </div>
+
+      {error && <p className="text-sm text-red-600 bg-red-50 rounded-md px-3 py-2">{error}</p>}
+      {message && <p className="text-sm text-green-700 bg-green-50 rounded-md px-3 py-2">{message}</p>}
+
+      <Button type="button" variant="ghost" className="w-full" onClick={onClose}>סגור</Button>
+    </div>
+  );
+}
+
 export default function Team() {
   const queryClient = useQueryClient();
+  const [editing, setEditing] = useState(null);
 
   const { data: context, isLoading: isLoadingContext } = useQuery({
     queryKey: ["active-tenant-context"],
@@ -156,16 +252,33 @@ export default function Team() {
             <>
               {(members ?? []).length === 0 && <p className="text-slate-400 text-sm">אין חברי צוות</p>}
               {(members ?? []).map((member) => (
-                <div key={member.id} className="flex justify-between py-2 border-b border-slate-100 last:border-0 text-sm">
+                <div key={member.id} className="flex items-center justify-between py-2 border-b border-slate-100 last:border-0 text-sm gap-2">
                   <span>{member.profiles?.full_name ?? "—"}</span>
-                  <span className="text-slate-500">{ROLE_LABELS[member.role] ?? member.role}</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-slate-500">{ROLE_LABELS[member.role] ?? member.role}</span>
+                    {canManageTeam && (member.role !== "owner" || context?.role === "owner") && (
+                      <Button size="sm" variant="ghost" onClick={() => setEditing(member)} title="עריכה / איפוס סיסמה">
+                        <Pencil className="w-4 h-4" />
+                      </Button>
+                    )}
+                  </div>
                 </div>
               ))}
             </>
           )}
         </div>
 
-        {canManageTeam && tenantId && (
+        {canManageTeam && tenantId && editing && (
+          <EditMemberForm
+            key={editing.id}
+            tenantId={tenantId}
+            member={editing}
+            onClose={() => setEditing(null)}
+            onSaved={() => queryClient.invalidateQueries({ queryKey: ["team-members", tenantId] })}
+          />
+        )}
+
+        {canManageTeam && tenantId && !editing && (
           <InviteForm
             tenantId={tenantId}
             onInvited={() => queryClient.invalidateQueries({ queryKey: ["team-members", tenantId] })}

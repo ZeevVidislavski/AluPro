@@ -78,6 +78,7 @@ export default function QuoteEditor() {
   const savingRef = useRef(false);
   const rerunRef = useRef(false);
   const dirtyRef = useRef(false);
+  const pendingCompDeletes = useRef([]);
   const markDirty = () => { dirtyRef.current = true; };
   const editForm = (changes) => { markDirty(); setQuoteForm(f => ({ ...f, ...changes })); };
   const printRef = useRef(null);
@@ -229,14 +230,14 @@ export default function QuoteEditor() {
 
   const removeComponent = (itemKey, compKey) => {
     markDirty();
-    setComponentsMap(prev => {
-      const updated = (prev[itemKey] || []).filter(c => (c.id || c._tempId) !== compKey);
-      const item = items.find(i => getItemKey(i) === itemKey);
-      // update description
-      const newDesc = generateDescription(updated);
-      updateItem(itemKey, { description: newDesc });
-      return { ...prev, [itemKey]: updated };
-    });
+    const current = componentsMap[itemKey] || [];
+    const removed = current.find(c => (c.id || c._tempId) === compKey);
+    // Components already in the DB are soft-deleted on the next save;
+    // otherwise they'd come back after reload.
+    if (removed?.id) pendingCompDeletes.current.push(removed.id);
+    const updated = current.filter(c => (c.id || c._tempId) !== compKey);
+    setComponentsMap(prev => ({ ...prev, [itemKey]: updated }));
+    updateItem(itemKey, { description: generateDescription(updated) });
   };
 
   const updateComponentPrice = (itemKey, compKey, newPrice) => {
@@ -287,6 +288,13 @@ export default function QuoteEditor() {
     if (!quoteId) return;
     const savedItemsMap = {}; // item key -> real id
     const savedCompIds = {}; // component _tempId -> real id
+
+    // Persist component removals first.
+    while (pendingCompDeletes.current.length > 0) {
+      const id = pendingCompDeletes.current[0];
+      await QuoteItemComponentService.delete(id);
+      pendingCompDeletes.current.shift();
+    }
 
     for (const [index, item] of items.entries()) {
       const key = getItemKey(item);
@@ -487,11 +495,44 @@ export default function QuoteEditor() {
     setTimeout(async () => {
       const el = printRef.current;
       if (!el) return;
-      const canvas = await html2canvas(el, { scale: 2, useCORS: true });
+      const scale = 2;
+      const canvas = await html2canvas(el, { scale, useCORS: true });
       const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
       const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-      pdf.addImage(canvas.toDataURL("image/png"), "PNG", 0, 0, pdfWidth, pdfHeight);
+      const pdfPageHeight = pdf.internal.pageSize.getHeight();
+
+      // Multi-page: cut the screenshot into A4-sized slices, preferring to
+      // break between table rows / top-level blocks so text isn't sliced.
+      const pagePx = Math.floor((canvas.width * pdfPageHeight) / pdfWidth);
+      const root = el.firstElementChild || el;
+      const elTop = el.getBoundingClientRect().top;
+      const breakPoints = [...root.querySelectorAll("tr"), ...root.children]
+        .map(n => Math.round((n.getBoundingClientRect().bottom - elTop) * scale))
+        .filter(y => y > 0 && y < canvas.height)
+        .sort((a, b) => a - b);
+
+      let start = 0;
+      let pageIndex = 0;
+      while (start < canvas.height) {
+        let end = start + pagePx;
+        if (end >= canvas.height) {
+          end = canvas.height;
+        } else {
+          const fit = breakPoints.filter(y => y > start + pagePx * 0.5 && y <= end);
+          if (fit.length) end = fit[fit.length - 1];
+        }
+        const slice = document.createElement("canvas");
+        slice.width = canvas.width;
+        slice.height = end - start;
+        const ctx = slice.getContext("2d");
+        ctx.fillStyle = "#fff";
+        ctx.fillRect(0, 0, slice.width, slice.height);
+        ctx.drawImage(canvas, 0, start, canvas.width, end - start, 0, 0, canvas.width, end - start);
+        if (pageIndex > 0) pdf.addPage();
+        pdf.addImage(slice.toDataURL("image/png"), "PNG", 0, 0, pdfWidth, (slice.height * pdfWidth) / slice.width);
+        start = end;
+        pageIndex++;
+      }
       pdf.save(`הצעת-מחיר-${quote?.project_name || ""}.pdf`);
       setShowPrint(false);
     }, 500);
@@ -625,6 +666,16 @@ export default function QuoteEditor() {
               )}
             </Droppable>
           </DragDropContext>
+
+          {items.length > 0 && (
+            <button
+              type="button"
+              onClick={addNewItem}
+              className="w-full flex items-center justify-center gap-1 py-3 rounded-2xl border border-dashed border-slate-300 text-slate-500 hover:border-blue-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
+            >
+              <Plus className="w-5 h-5" /> פריט חדש
+            </button>
+          )}
         </div>
 
         {/* Totals */}

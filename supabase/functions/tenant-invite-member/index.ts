@@ -101,6 +101,13 @@ Deno.serve(async (req) => {
       email_confirm: true,
     });
     if (createUserError) {
+      const alreadyExists = /already|registered|exists/i.test(createUserError.message);
+      if (alreadyExists) {
+        return new Response(JSON.stringify({ error: "כתובת האימייל כבר רשומה במערכת", code: "email_exists" }), {
+          status: 409,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
       return new Response(JSON.stringify({ error: `Failed to create user: ${createUserError.message}` }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },

@@ -6,6 +6,22 @@ import { supabase } from './client';
 // memberships_select/memberships_insert RLS policies
 // (supabase/migrations/0001_poc_core.sql) — no RLS bypass involved, since
 // a tenant admin only ever needs to see/manage their own tenant's team.
+// supabase.functions.invoke hides the response body on non-2xx with a generic
+// "Edge Function returned a non-2xx status code" — read the real message.
+async function invokeFunction(name, body) {
+  const { data, error } = await supabase.functions.invoke(name, { body });
+  if (error) {
+    let message = null;
+    try {
+      const payload = await error.context?.json?.();
+      message = payload?.error;
+    } catch { /* body not JSON */ }
+    throw new Error(message || 'הפעולה נכשלה, נסי שוב');
+  }
+  if (data?.error) throw new Error(data.error);
+  return data;
+}
+
 export const TeamService = {
   // Returns the caller's own tenant + role + plan — not just tenant_id.
   // Layout.jsx uses this single query for everything it needs to decide
@@ -58,11 +74,15 @@ export const TeamService = {
   // — needs the service_role key to create an auth user, which a
   // browser-callable SQL RPC cannot hold).
   async inviteMember({ tenantId, email, password, fullName, role }) {
-    const { data, error } = await supabase.functions.invoke('tenant-invite-member', {
-      body: { tenantId, email, password, fullName, role },
-    });
-    if (error) throw error;
-    if (data?.error) throw new Error(data.error);
-    return data; // { tenantId, memberId }
+    return invokeFunction('tenant-invite-member', { tenantId, email, password, fullName, role }); // { tenantId, memberId }
+  },
+
+  // Edit name / email / role of an existing teammate (memberId = tenant_memberships.id).
+  async updateMember({ tenantId, memberId, fullName, email, role }) {
+    return invokeFunction('tenant-manage-member', { action: 'update', tenantId, memberId, fullName, email, role });
+  },
+
+  async resetMemberPassword({ tenantId, memberId, password }) {
+    return invokeFunction('tenant-manage-member', { action: 'reset-password', tenantId, memberId, password });
   },
 };
