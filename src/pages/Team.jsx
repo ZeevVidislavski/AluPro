@@ -152,6 +152,12 @@ function EditMemberForm({ tenantId, member, onClose, onSaved }) {
     onError: (err) => { setMessage(null); setError(err.message || "שגיאה באיפוס הסיסמה"); },
   });
 
+  const removeMutation = useMutation({
+    mutationFn: () => TeamService.removeMember({ tenantId, memberId: member.id }),
+    onSuccess: () => { onSaved(); onClose(); },
+    onError: (err) => { setMessage(null); setError(err.message || "שגיאה במחיקה"); },
+  });
+
   return (
     <div className="bg-white rounded-2xl border border-slate-200 p-6 space-y-4">
       <h2 className="font-semibold text-slate-900 flex items-center gap-2">
@@ -207,7 +213,21 @@ function EditMemberForm({ tenantId, member, onClose, onSaved }) {
       {error && <p className="text-sm text-red-600 bg-red-50 rounded-md px-3 py-2">{error}</p>}
       {message && <p className="text-sm text-green-700 bg-green-50 rounded-md px-3 py-2">{message}</p>}
 
-      <Button type="button" variant="ghost" className="w-full" onClick={onClose}>סגור</Button>
+      {!isOwner && (
+        <Button
+          type="button"
+          variant="outline"
+          className="w-full text-red-600 border-red-200 hover:bg-red-50"
+          disabled={removeMutation.isPending}
+          onClick={() => {
+            if (window.confirm(`למחוק את ${member.profiles?.full_name || "העובד"} מהצוות?`)) removeMutation.mutate();
+          }}
+        >
+          {removeMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : "מחק עובד"}
+        </Button>
+      )}
+
+      <Button type="button" variant="ghost" className="w-full" onClick={onClose}>חזרה להזמנת עובד חדש</Button>
     </div>
   );
 }
@@ -245,7 +265,14 @@ export default function Team() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="bg-white rounded-2xl border border-slate-200 p-6">
-          <h2 className="font-semibold text-slate-900 mb-3">חברי צוות</h2>
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="font-semibold text-slate-900">חברי צוות</h2>
+            {canManageTeam && editing && (
+              <Button size="sm" variant="outline" onClick={() => setEditing(null)}>
+                <UserPlus className="w-4 h-4 ml-1" /> עובד חדש
+              </Button>
+            )}
+          </div>
           {isLoadingMembers ? (
             <Loader2 className="w-4 h-4 animate-spin text-slate-400" />
           ) : (

@@ -7,6 +7,7 @@
 // Actions (body.action):
 //   "update"         { tenantId, memberId (tenant_memberships.id), fullName?, email?, role? }
 //   "reset-password" { tenantId, memberId, password }
+//   "remove"         { tenantId, memberId }   (soft delete; not owners, not self)
 //
 // Rules: role 'owner' can never be assigned here, and an owner's role can't
 // be changed. Only an owner may modify/reset another owner.
@@ -82,6 +83,22 @@ Deno.serve(async (req) => {
       if (callerMembership?.role !== "owner") {
         return json({ error: "Only an owner can modify another owner" }, 403);
       }
+    }
+
+    if (action === "remove") {
+      if (membership.role === "owner") {
+        return json({ error: "לא ניתן להסיר בעלים" }, 400);
+      }
+      if (membership.profile_id === callerId) {
+        return json({ error: "לא ניתן להסיר את עצמך" }, 400);
+      }
+      // Soft delete the membership only; the auth user itself is kept.
+      const { error } = await adminClient
+        .from("tenant_memberships")
+        .update({ deleted_at: new Date().toISOString() })
+        .eq("id", memberId);
+      if (error) return json({ error: `Failed to remove member: ${error.message}` }, 400);
+      return json({ memberId });
     }
 
     if (action === "reset-password") {

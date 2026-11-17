@@ -82,6 +82,10 @@ export const TeamService = {
     return invokeFunction('tenant-manage-member', { action: 'update', tenantId, memberId, fullName, email, role });
   },
 
+  async removeMember({ tenantId, memberId }) {
+    return invokeFunction('tenant-manage-member', { action: 'remove', tenantId, memberId });
+  },
+
   async resetMemberPassword({ tenantId, memberId, password }) {
     return invokeFunction('tenant-manage-member', { action: 'reset-password', tenantId, memberId, password });
   },
