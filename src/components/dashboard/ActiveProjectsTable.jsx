@@ -24,13 +24,13 @@ export default function ActiveProjectsTable({ projects, allPayments, allQuotes, 
       </div>
       <div className="overflow-x-auto">
         <table className="w-full">
-          <thead className="bg-background">
+          <thead className="bg-secondary">
             <tr>
-              <th className="text-right px-6 py-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">פרויקט</th>
-              <th className="text-right px-6 py-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">לקוח</th>
-              <th className="text-right px-6 py-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">סטטוס</th>
-              <th className="text-right px-6 py-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">יתרה לגבייה</th>
-              <th className="text-right px-6 py-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">תאריך יעד</th>
+              <th className="text-start px-6 py-4 text-[13px] font-semibold text-foreground">פרויקט</th>
+              <th className="text-start px-6 py-4 text-[13px] font-semibold text-foreground">לקוח</th>
+              <th className="text-start px-6 py-4 text-[13px] font-semibold text-foreground">סטטוס</th>
+              <th className="text-start px-6 py-4 text-[13px] font-semibold text-foreground">יתרה לגבייה</th>
+              <th className="text-start px-6 py-4 text-[13px] font-semibold text-foreground">תאריך יעד</th>
               <th className="px-6 py-4"></th>
             </tr>
           </thead>

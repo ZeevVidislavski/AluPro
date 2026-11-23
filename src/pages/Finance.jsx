@@ -1,4 +1,5 @@
 import { useState } from "react";
+import PageHeader from "@/components/shared/PageHeader";
 import { useQuery } from "@tanstack/react-query";
 import { ProjectService, CustomerService, ClientPaymentService, SupplierOrderService, ProjectQuoteService } from "@/services";
 import { format, subMonths } from "date-fns";
@@ -33,8 +34,7 @@ import StatsCard from "@/components/dashboard/StatsCard";
 import { calculateProjectFinancials } from "@/components/lib/projectFinancials";
 import { cn } from "@/lib/utils";
 import PartnerSettlement from "@/components/finance/PartnerSettlement";
-
-const COLORS = ['#3b82f6', '#8b5cf6', '#06b6d4', '#f59e0b', '#ef4444', '#10b981'];
+const COLORS = ['#456A87', '#66869E', '#273444', '#9DB4C4', '#1E7B4F', '#9A5B00'];
 
 export default function Finance() {
   const [activeTab, setActiveTab] = useState("finance"); // finance | settlement
@@ -210,44 +210,32 @@ export default function Finance() {
 
   return (
     <div className="p-4 md:p-6 lg:p-8">
-      <div className="max-w-7xl mx-auto space-y-8">
+      <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-          <div>
-            <h1 className="text-[28px] leading-9 font-bold text-foreground">פיננסים</h1>
-            <p className="text-muted-foreground mt-1">ניתוח הכנסות, הוצאות ורווחיות</p>
-          </div>
-          
-          {/* Filters */}
-          <div className="flex flex-wrap items-center gap-4">
-            <div className="flex items-center gap-2">
-              <Filter className="w-5 h-5 text-muted-foreground" />
-              <span className="text-sm text-muted-foreground">מתאריך:</span>
-              <Input
-                type="date"
-                value={dateFrom}
-                onChange={(e) => setDateFrom(e.target.value)}
-                className="w-[150px]"
-              />
+        <PageHeader
+          title="פיננסים"
+          description="ניתוח הכנסות, הוצאות ורווחיות"
+          actions={
+            <div className="flex flex-wrap items-center gap-3" role="group" aria-label="טווח תאריכים">
+              <Filter className="w-4 h-4 text-primary/70" aria-hidden="true" />
+              <label className="flex items-center gap-2 text-sm text-muted-foreground">
+                מתאריך
+                <Input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} className="w-[150px]" />
+              </label>
+              <label className="flex items-center gap-2 text-sm text-muted-foreground">
+                עד
+                <Input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} className="w-[150px]" />
+              </label>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-muted-foreground">עד:</span>
-              <Input
-                type="date"
-                value={dateTo}
-                onChange={(e) => setDateTo(e.target.value)}
-                className="w-[150px]"
-              />
-            </div>
-          </div>
-        </div>
+          }
+        />
 
         {/* Sub-tabs */}
         <div className="flex gap-1 bg-card border border-border rounded-xl p-1 w-fit">
           <button
             onClick={() => setActiveTab("finance")}
             className={cn("px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2",
-              activeTab === "finance" ? "bg-primary text-white shadow-sm" : "text-muted-foreground hover:bg-secondary"
+              activeTab === "finance" ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:bg-secondary"
             )}
           >
             <Wallet className="w-4 h-4" /> סקירה פיננסית
@@ -255,7 +243,7 @@ export default function Finance() {
           <button
             onClick={() => setActiveTab("settlement")}
             className={cn("px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2",
-              activeTab === "settlement" ? "bg-primary text-white shadow-sm" : "text-muted-foreground hover:bg-secondary"
+              activeTab === "settlement" ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:bg-secondary"
             )}
           >
             <Users className="w-4 h-4" /> התחשבנות שותפים
@@ -272,10 +260,10 @@ export default function Finance() {
         )}
 
         {activeTab === "finance" && (
-        <div className="space-y-8">
+        <div className="space-y-6">
 
         {/* Main Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <StatsCard
             title="סה״כ הכנסות"
             value={formatCurrency(totalIncome)}
@@ -286,7 +274,7 @@ export default function Finance() {
             title="סה״כ הוצאות"
             value={formatCurrency(totalExpenses)}
             icon={TrendingDown}
-            variant="warning"
+            variant="default"
           />
           <StatsCard
             title="רווח תפעולי (לפי תאריך)"
@@ -308,17 +296,17 @@ export default function Finance() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Income vs Expenses Chart */}
           <div className="bg-card rounded-xl border border-border p-6">
-            <h3 className="text-lg font-semibold text-foreground mb-6">הכנסות והוצאות לפי חודש</h3>
+            <h3 className="text-base font-semibold text-foreground mb-4">הכנסות והוצאות לפי חודש</h3>
             {monthlyData.length > 0 ? (
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={monthlyData}>
-                  <CartesianGrid strokeDasharray="3 3" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#D5DEE5" />
                   <XAxis dataKey="monthLabel" />
-                  <YAxis tickFormatter={(value) => `₪${(value/1000).toFixed(0)}K`} />
+                  <YAxis tickFormatter={(value) => `${(value/1000).toFixed(0)}K`} />
                   <Tooltip content={<CustomTooltip />} />
                   <Legend />
-                  <Bar dataKey="income" name="הכנסות" fill="#10b981" radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="expenses" name="הוצאות" fill="#f59e0b" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="income" name="הכנסות" fill="#1E7B4F" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="expenses" name="הוצאות" fill="#66869E" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             ) : (
@@ -330,7 +318,7 @@ export default function Finance() {
 
           {/* Expenses by Type */}
           <div className="bg-card rounded-xl border border-border p-6">
-            <h3 className="text-lg font-semibold text-foreground mb-6">הוצאות לפי סוג</h3>
+            <h3 className="text-base font-semibold text-foreground mb-4">הוצאות לפי סוג</h3>
             {expensesByType.length > 0 ? (
               <ResponsiveContainer width="100%" height={300}>
                 <PieChart>
@@ -361,21 +349,21 @@ export default function Finance() {
 
         {/* Profit Trend */}
         <div className="bg-card rounded-xl border border-border p-6">
-          <h3 className="text-lg font-semibold text-foreground mb-6">מגמת רווח</h3>
+          <h3 className="text-base font-semibold text-foreground mb-4">מגמת רווח</h3>
           {monthlyData.length > 0 ? (
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={monthlyData}>
-                <CartesianGrid strokeDasharray="3 3" />
+                <CartesianGrid strokeDasharray="3 3" stroke="#D5DEE5" />
                 <XAxis dataKey="monthLabel" />
-                <YAxis tickFormatter={(value) => `₪${(value/1000).toFixed(0)}K`} />
+                <YAxis tickFormatter={(value) => `${(value/1000).toFixed(0)}K`} />
                 <Tooltip content={<CustomTooltip />} />
                 <Line 
                   type="monotone" 
                   dataKey="profit" 
                   name="רווח" 
-                  stroke="#10b981" 
+                  stroke="#1E7B4F" 
                   strokeWidth={2}
-                  dot={{ fill: '#10b981' }}
+                  dot={{ fill: '#1E7B4F' }}
                 />
               </LineChart>
             </ResponsiveContainer>

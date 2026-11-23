@@ -330,13 +330,13 @@ export default function PartnerSettlement({ allPayments, allOrders, allQuotes, p
             <table className="w-full text-sm">
               <thead>
                 <tr className="bg-background border-b border-border text-right">
-                  <th className="p-3 text-muted-foreground">פרויקט</th>
-                  <th className="p-3 text-muted-foreground">לקוח</th>
-                  <th className="p-3 text-muted-foreground">נגבה</th>
-                  <th className="p-3 text-muted-foreground">עלויות</th>
-                  <th className="p-3 text-muted-foreground">רווח נקי</th>
-                  <th className="p-3 text-muted-foreground">נסגר ע״י</th>
-                  <th className="p-3 text-muted-foreground">תאריך סגירה</th>
+                  <th className="p-3 text-foreground">פרויקט</th>
+                  <th className="p-3 text-foreground">לקוח</th>
+                  <th className="p-3 text-foreground">נגבה</th>
+                  <th className="p-3 text-foreground">עלויות</th>
+                  <th className="p-3 text-foreground">רווח נקי</th>
+                  <th className="p-3 text-foreground">נסגר ע״י</th>
+                  <th className="p-3 text-foreground">תאריך סגירה</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
@@ -371,13 +371,13 @@ export default function PartnerSettlement({ allPayments, allOrders, allQuotes, p
               <table className="w-full text-sm">
                 <thead>
                   <tr className="bg-background border-b border-border text-right">
-                    <th className="p-3 text-muted-foreground">פרויקט</th>
-                    <th className="p-3 text-muted-foreground">לקוח</th>
-                    <th className="p-3 text-muted-foreground">נגבה עד כה</th>
-                    <th className="p-3 text-muted-foreground">יתרה לגבייה</th>
-                    <th className="p-3 text-muted-foreground">עלויות</th>
-                    <th className="p-3 text-muted-foreground">יתרה לספקים</th>
-                    <th className="p-3 text-muted-foreground">רווח תיאורטי</th>
+                    <th className="p-3 text-foreground">פרויקט</th>
+                    <th className="p-3 text-foreground">לקוח</th>
+                    <th className="p-3 text-foreground">נגבה עד כה</th>
+                    <th className="p-3 text-foreground">יתרה לגבייה</th>
+                    <th className="p-3 text-foreground">עלויות</th>
+                    <th className="p-3 text-foreground">יתרה לספקים</th>
+                    <th className="p-3 text-foreground">רווח תיאורטי</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border">
@@ -418,11 +418,11 @@ export default function PartnerSettlement({ allPayments, allOrders, allQuotes, p
             <table className="w-full text-sm">
               <thead>
                 <tr className="bg-background border-b border-border">
-                  <th className="text-right p-3 text-muted-foreground">תאריך</th>
-                  <th className="text-right p-3 text-muted-foreground">תיאור</th>
-                  <th className="text-right p-3 text-muted-foreground">קטגוריה</th>
-                  <th className="text-right p-3 text-muted-foreground">שילם</th>
-                  <th className="text-left p-3 text-muted-foreground">סכום</th>
+                  <th className="text-start p-3 text-foreground">תאריך</th>
+                  <th className="text-start p-3 text-foreground">תיאור</th>
+                  <th className="text-start p-3 text-foreground">קטגוריה</th>
+                  <th className="text-start p-3 text-foreground">שילם</th>
+                  <th className="text-end p-3 text-foreground">סכום</th>
                   <th className="p-3"></th>
                 </tr>
               </thead>

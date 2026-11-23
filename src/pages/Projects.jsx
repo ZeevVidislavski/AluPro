@@ -1,4 +1,5 @@
 import { handleFormArrowNav } from "@/lib/formKeyboardNav";
+import EmptyState from "@/components/shared/EmptyState";
 import PageHeader from "@/components/shared/PageHeader";
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -241,16 +242,16 @@ export default function Projects() {
         </div>
 
         {/* Projects Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredProjects.map((project) => {
             // Calculate financials using centralized function
             const financials = calculateProjectFinancials(project.id, { allQuotes, allPayments, allOrders });
             
             return (
-              <div key={project.id} className="relative bg-card rounded-xl border border-border hover:shadow-lg transition-all hover:border-primary/30 group">
+              <div key={project.id} className="relative bg-card rounded-xl border shadow-sm hover:shadow-md transition-all hover:border-primary/40 group">
               <Link
                 to={createPageUrl("ProjectDetails") + `?id=${project.id}`}
-                className="block p-6"
+                className="block p-5"
               >
                 <div className="flex items-start justify-between mb-4">
                   <div>
@@ -308,10 +309,12 @@ export default function Projects() {
         </div>
 
         {filteredProjects.length === 0 && (
-          <div className="text-center py-12">
-            <Building2 className="w-12 h-12 mx-auto text-muted-foreground/60 mb-4" />
-            <h3 className="text-lg font-medium text-foreground mb-1">לא נמצאו פרויקטים</h3>
-            <p className="text-muted-foreground">נסה לשנות את פרמטרי החיפוש</p>
+          <div className="bg-card rounded-xl border shadow-sm">
+            <EmptyState
+              icon={Building2}
+              title="לא נמצאו פרויקטים"
+              description="נסו לשנות את החיפוש או הסינון."
+            />
           </div>
         )}
       </div>

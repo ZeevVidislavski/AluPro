@@ -100,15 +100,12 @@ export default function Dashboard() {
 
   return (
     <div className="p-4 md:p-6 lg:p-8">
-      <div className="max-w-7xl mx-auto space-y-8">
+      <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <PageHeader title="דשבורד" description="סקירה כללית של העסק" />
 
-        {/* Morning Summary */}
-        <MorningSummary />
-
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <StatsCard
             title="הכנסות השנה"
             value={formatCurrency(totalIncome)}
@@ -136,7 +133,7 @@ export default function Dashboard() {
         </div>
 
         {/* Secondary Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <StatsCard
             title="יתרת לקוחות לגבייה"
             value={formatCurrency(outstandingBalance)}
@@ -152,6 +149,9 @@ export default function Dashboard() {
             subtitle={`${projects.filter(p => (projectFinancialsMap[p.id]?.balance_to_suppliers || 0) > 0).length} פרויקטים עם חוב לספקים`}
           />
         </div>
+
+        {/* Morning Summary */}
+        <MorningSummary />
 
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

@@ -48,12 +48,12 @@ export default function TemplateComponentsManager({ templateId, comps, catalogIt
   return (
     <div className="border-t border-border">
       <table className="w-full text-sm">
-        <thead className="bg-background">
+        <thead className="bg-secondary">
           <tr>
-            <th className="text-right px-4 py-2 text-xs font-medium text-muted-foreground">רכיב</th>
-            <th className="text-right px-4 py-2 text-xs font-medium text-muted-foreground">שיטת חישוב</th>
-            <th className="text-right px-4 py-2 text-xs font-medium text-muted-foreground">מחיר שמור</th>
-            <th className="px-2 py-2 w-20 text-left">
+            <th className="text-start px-4 py-2 text-[13px] font-semibold text-foreground">רכיב</th>
+            <th className="text-start px-4 py-2 text-[13px] font-semibold text-foreground">שיטת חישוב</th>
+            <th className="text-start px-4 py-2 text-[13px] font-semibold text-foreground">מחיר שמור</th>
+            <th className="px-2 py-2 w-20 text-end">
               <button
                 onClick={() => setPickerOpen(true)}
                 className="text-primary/80 hover:text-primary flex items-center gap-1 text-xs font-medium"

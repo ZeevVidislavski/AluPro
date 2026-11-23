@@ -1,4 +1,6 @@
 import { handleFormArrowNav } from "@/lib/formKeyboardNav";
+import { confirmAction } from "@/components/shared/confirm";
+import EmptyState from "@/components/shared/EmptyState";
 import PageHeader from "@/components/shared/PageHeader";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -192,18 +194,18 @@ export default function Customers() {
         </div>
 
         {/* Customers Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredCustomers.map((customer) => (
             <div 
               key={customer.id}
-              className="bg-card rounded-xl border border-border p-6 hover:shadow-lg transition-shadow"
+              className="bg-card rounded-xl border shadow-sm p-5 hover:shadow-md transition-shadow"
             >
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
                   <div className={cn(
-                    "w-12 h-12 rounded-xl flex items-center justify-center",
+                    "w-11 h-11 rounded-lg flex items-center justify-center",
                     customer.customer_type === 'contractor' 
-                      ? "bg-purple-100 text-purple-600" 
+                      ? "bg-info-subtle text-info" 
                       : "bg-secondary text-primary"
                   )}>
                     {customer.customer_type === 'contractor' ? (
@@ -215,9 +217,9 @@ export default function Customers() {
                   <div>
                     <h3 className="font-semibold text-foreground">{customer.name}</h3>
                     <span className={cn(
-                      "text-xs px-2 py-0.5 rounded-full",
+                      "text-xs font-medium px-2 py-0.5 rounded-full",
                       customer.customer_type === 'contractor'
-                        ? "bg-purple-100 text-purple-700"
+                        ? "bg-info-subtle text-info"
                         : "bg-secondary text-primary"
                     )}>
                       {customer.customer_type === 'contractor' ? 'קבלן' : 'פרטי'}
@@ -226,7 +228,7 @@ export default function Customers() {
                 </div>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-8 w-8">
+                    <Button variant="ghost" size="icon" className="h-8 w-8" aria-label={`פעולות ללקוח ${customer.name}`}>
                       <MoreHorizontal className="w-4 h-4" />
                     </Button>
                   </DropdownMenuTrigger>
@@ -236,7 +238,7 @@ export default function Customers() {
                       עריכה
                     </DropdownMenuItem>
                     <DropdownMenuItem 
-                      onClick={() => deleteMutation.mutate(customer.id)}
+                      onClick={async () => { if (await confirmAction(`למחוק את הלקוח ${customer.name}?`)) deleteMutation.mutate(customer.id); }}
                       className="text-destructive"
                     >
                       <Trash2 className="w-4 h-4 ml-2" />
@@ -250,7 +252,7 @@ export default function Customers() {
                 {customer.phone && (
                   <div className="flex items-center gap-2">
                     <Phone className="w-4 h-4 text-muted-foreground" />
-                    <a href={`tel:${customer.phone}`} className="hover:text-primary">
+                    <a href={`tel:${customer.phone}`} dir="ltr" className="hover:text-primary hover:underline">
                       {customer.phone}
                     </a>
                   </div>
@@ -277,7 +279,7 @@ export default function Customers() {
                 </span>
                 <Link
                   to={createPageUrl("Projects") + `?customer=${customer.id}`}
-                  className="text-primary hover:text-primary text-sm flex items-center gap-1"
+                  className="text-primary hover:text-primary-hover hover:underline text-sm font-medium flex items-center gap-1"
                 >
                   צפייה בפרויקטים
                   <ChevronLeft className="w-4 h-4" />
@@ -288,10 +290,12 @@ export default function Customers() {
         </div>
 
         {filteredCustomers.length === 0 && (
-          <div className="text-center py-12">
-            <User className="w-12 h-12 mx-auto text-muted-foreground/60 mb-4" />
-            <h3 className="text-lg font-medium text-foreground mb-1">לא נמצאו לקוחות</h3>
-            <p className="text-muted-foreground">נסה לשנות את פרמטרי החיפוש</p>
+          <div className="bg-card rounded-xl border shadow-sm">
+            <EmptyState
+              icon={User}
+              title="לא נמצאו לקוחות"
+              description="נסו לשנות את החיפוש או הסינון."
+            />
           </div>
         )}
       </div>

@@ -87,12 +87,12 @@ export default function PlatformTenantList() {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border text-muted-foreground text-right">
-              <th className="px-4 py-3 font-medium">שם חברה</th>
-              <th className="px-4 py-3 font-medium">סטטוס</th>
-              <th className="px-4 py-3 font-medium">תוכנית</th>
-              <th className="px-4 py-3 font-medium">סוג חיוב</th>
-              <th className="px-4 py-3 font-medium">תשלום</th>
-              <th className="px-4 py-3 font-medium">שימוש</th>
+              <th className="px-4 py-3 font-semibold">שם חברה</th>
+              <th className="px-4 py-3 font-semibold">סטטוס</th>
+              <th className="px-4 py-3 font-semibold">תוכנית</th>
+              <th className="px-4 py-3 font-semibold">סוג חיוב</th>
+              <th className="px-4 py-3 font-semibold">תשלום</th>
+              <th className="px-4 py-3 font-semibold">שימוש</th>
               <th className="px-4 py-3"></th>
             </tr>
           </thead>

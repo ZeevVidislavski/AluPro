@@ -239,14 +239,14 @@ export default function ModelComponentsTab({ modelId }) {
       ) : (
         <div className="border border-border rounded-xl overflow-hidden">
           <table className="w-full text-sm">
-            <thead className="bg-background border-b border-border">
+            <thead className="bg-secondary">
               <tr>
-                <th className="text-right px-3 py-2 text-muted-foreground font-medium">סוג</th>
-                <th className="text-right px-3 py-2 text-muted-foreground font-medium">קוד פריט</th>
-                <th className="text-right px-3 py-2 text-muted-foreground font-medium">כמות</th>
-                <th className="text-right px-3 py-2 text-muted-foreground font-medium">חישוב אורך</th>
-                <th className="text-right px-3 py-2 text-muted-foreground font-medium">אורך מחושב (ס"מ)</th>
-                <th className="text-right px-3 py-2 text-muted-foreground font-medium">רוחב מחושב (ס"מ)</th>
+                <th className="text-start px-3 py-2 text-foreground font-semibold">סוג</th>
+                <th className="text-start px-3 py-2 text-foreground font-semibold">קוד פריט</th>
+                <th className="text-start px-3 py-2 text-foreground font-semibold">כמות</th>
+                <th className="text-start px-3 py-2 text-foreground font-semibold">חישוב אורך</th>
+                <th className="text-start px-3 py-2 text-foreground font-semibold">אורך מחושב (ס"מ)</th>
+                <th className="text-start px-3 py-2 text-foreground font-semibold">רוחב מחושב (ס"מ)</th>
                 <th className="px-3 py-2 w-16"></th>
               </tr>
             </thead>
@@ -352,12 +352,12 @@ export default function ModelComponentsTab({ modelId }) {
               <div className="space-y-2">
                 <div className="border border-border rounded-xl overflow-hidden">
                   <table className="w-full text-sm">
-                    <thead className="bg-background border-b border-border">
+                    <thead className="bg-secondary">
                       <tr>
-                        <th className="text-right px-3 py-2 text-muted-foreground font-medium">קוד פריט</th>
-                        <th className="text-right px-3 py-2 text-muted-foreground font-medium">חישוב</th>
-                        <th className="text-right px-3 py-2 text-muted-foreground font-medium">אורך</th>
-                        <th className="text-right px-3 py-2 text-muted-foreground font-medium">רוחב</th>
+                        <th className="text-start px-3 py-2 text-foreground font-semibold">קוד פריט</th>
+                        <th className="text-start px-3 py-2 text-foreground font-semibold">חישוב</th>
+                        <th className="text-start px-3 py-2 text-foreground font-semibold">אורך</th>
+                        <th className="text-start px-3 py-2 text-foreground font-semibold">רוחב</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-border">

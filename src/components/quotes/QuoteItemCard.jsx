@@ -159,11 +159,11 @@ export default function QuoteItemCard({
             <table className="w-full text-sm">
               <thead className="bg-secondary">
                 <tr>
-                  <th className="text-right px-4 py-2 text-xs font-medium text-muted-foreground">שם רכיב</th>
-                  <th className="text-right px-4 py-2 text-xs font-medium text-muted-foreground">רוחב × גובה</th>
-                  <th className="text-right px-4 py-2 text-xs font-medium text-muted-foreground">כמות</th>
-                  <th className="text-right px-4 py-2 text-xs font-medium text-muted-foreground">מחיר יחידה</th>
-                  <th className="text-right px-4 py-2 text-xs font-medium text-muted-foreground">סה"כ</th>
+                  <th className="text-start px-4 py-2 text-[13px] font-semibold text-foreground">שם רכיב</th>
+                  <th className="text-start px-4 py-2 text-[13px] font-semibold text-foreground">רוחב × גובה</th>
+                  <th className="text-start px-4 py-2 text-[13px] font-semibold text-foreground">כמות</th>
+                  <th className="text-start px-4 py-2 text-[13px] font-semibold text-foreground">מחיר יחידה</th>
+                  <th className="text-start px-4 py-2 text-[13px] font-semibold text-foreground">סה"כ</th>
                   <th className="px-2 py-2 w-8"></th>
                 </tr>
               </thead>

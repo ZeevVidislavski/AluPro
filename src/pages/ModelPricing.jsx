@@ -242,13 +242,13 @@ export default function ModelPricing() {
 
             <div className="bg-card rounded-xl border border-border overflow-hidden">
               <table className="w-full">
-                <thead className="bg-background border-b border-border">
+                <thead className="bg-secondary">
                   <tr>
-                    <th className="text-right px-4 py-3 text-sm font-medium text-muted-foreground">שם רכיב</th>
-                    <th className="text-right px-4 py-3 text-sm font-medium text-muted-foreground">קטגוריה</th>
-                    <th className="text-right px-4 py-3 text-sm font-medium text-muted-foreground">שיטת חישוב</th>
-                    <th className="text-right px-4 py-3 text-sm font-medium text-muted-foreground">מחיר בסיס</th>
-                    <th className="text-right px-4 py-3 text-sm font-medium text-muted-foreground">סטטוס</th>
+                    <th className="text-start px-4 py-3 text-sm font-semibold text-foreground">שם רכיב</th>
+                    <th className="text-start px-4 py-3 text-sm font-semibold text-foreground">קטגוריה</th>
+                    <th className="text-start px-4 py-3 text-sm font-semibold text-foreground">שיטת חישוב</th>
+                    <th className="text-start px-4 py-3 text-sm font-semibold text-foreground">מחיר בסיס</th>
+                    <th className="text-start px-4 py-3 text-sm font-semibold text-foreground">סטטוס</th>
                     <th className="px-4 py-3 w-20"></th>
                   </tr>
                 </thead>

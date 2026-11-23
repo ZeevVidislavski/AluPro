@@ -151,14 +151,14 @@ export default function MaterialOrdersTab({ projectId, projectName }) {
             {isExpanded && (
               <div className="border-t border-border">
                 <table className="w-full text-sm">
-                  <thead className="bg-background">
+                  <thead className="bg-secondary">
                     <tr>
-                      <th className="text-right px-4 py-2 text-muted-foreground font-medium">קוד פריט</th>
-                      <th className="text-right px-4 py-2 text-muted-foreground font-medium">כמות כוללת</th>
+                      <th className="text-start px-4 py-2 text-foreground font-semibold">קוד פריט</th>
+                      <th className="text-start px-4 py-2 text-foreground font-semibold">כמות כוללת</th>
                       {order.order_type === "profiles" && (
-                        <th className="text-right px-4 py-2 text-muted-foreground font-medium">אורך כולל (ס"מ)</th>
+                        <th className="text-start px-4 py-2 text-foreground font-semibold">אורך כולל (ס"מ)</th>
                       )}
-                      <th className="text-right px-4 py-2 text-muted-foreground font-medium">הערות</th>
+                      <th className="text-start px-4 py-2 text-foreground font-semibold">הערות</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-border">

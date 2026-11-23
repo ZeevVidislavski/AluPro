@@ -147,10 +147,10 @@ export default function ProfitabilityReport({ project, payments, orders, quotes 
               <table className="w-full text-sm">
                 <thead>
                   <tr className="bg-slate-800 text-white">
-                    <th className="text-right p-3">תאריך</th>
-                    <th className="text-right p-3">סוג</th>
-                    <th className="text-right p-3">אמצעי</th>
-                    <th className="text-left p-3">סכום</th>
+                    <th className="text-start p-3">תאריך</th>
+                    <th className="text-start p-3">סוג</th>
+                    <th className="text-start p-3">אמצעי</th>
+                    <th className="text-end p-3">סכום</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -188,12 +188,12 @@ export default function ProfitabilityReport({ project, payments, orders, quotes 
               <table className="w-full text-sm">
                 <thead>
                   <tr className="bg-slate-800 text-white">
-                    <th className="text-right p-3">תאריך</th>
-                    <th className="text-right p-3">סוג</th>
-                    <th className="text-right p-3">ספק</th>
-                    <th className="text-left p-3">הזמנה</th>
-                    <th className="text-left p-3">שולם</th>
-                    <th className="text-left p-3">יתרה</th>
+                    <th className="text-start p-3">תאריך</th>
+                    <th className="text-start p-3">סוג</th>
+                    <th className="text-start p-3">ספק</th>
+                    <th className="text-end p-3">הזמנה</th>
+                    <th className="text-end p-3">שולם</th>
+                    <th className="text-end p-3">יתרה</th>
                   </tr>
                 </thead>
                 <tbody>

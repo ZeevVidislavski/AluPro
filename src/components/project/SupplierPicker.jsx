@@ -151,12 +151,12 @@ export function SuppliersManagerButton() {
           ) : (
             <div className="border border-border rounded-xl overflow-hidden">
               <table className="w-full text-sm">
-                <thead className="bg-background border-b border-border">
+                <thead className="bg-secondary">
                   <tr>
-                    <th className="text-right px-3 py-2 font-medium text-muted-foreground">שם</th>
-                    <th className="text-right px-3 py-2 font-medium text-muted-foreground">איש קשר</th>
-                    <th className="text-right px-3 py-2 font-medium text-muted-foreground">טלפון</th>
-                    <th className="text-right px-3 py-2 font-medium text-muted-foreground">מייל</th>
+                    <th className="text-start px-3 py-2 font-semibold text-foreground">שם</th>
+                    <th className="text-start px-3 py-2 font-semibold text-foreground">איש קשר</th>
+                    <th className="text-start px-3 py-2 font-semibold text-foreground">טלפון</th>
+                    <th className="text-start px-3 py-2 font-semibold text-foreground">מייל</th>
                     <th className="w-20" />
                   </tr>
                 </thead>

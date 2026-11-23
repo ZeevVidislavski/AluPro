@@ -95,10 +95,10 @@ export default function MorningSummary() {
   };
 
   return (
-    <div className="bg-gradient-to-br from-indigo-50 via-blue-50 to-cyan-50 rounded-xl border-2 border-primary/30 p-6 shadow-lg">
+    <div className="bg-card rounded-xl border shadow-sm p-6">
       <div className="flex items-start justify-between mb-4">
         <div>
-          <h2 className="text-2xl font-bold text-foreground mb-1">📊 סיכום עסקי יומי</h2>
+          <h2 className="text-xl font-semibold text-foreground mb-1">סיכום עסקי יומי</h2>
           <p className="text-sm text-muted-foreground">{new Date().toLocaleDateString('he-IL', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
         </div>
         <Button variant="ghost" size="icon" onClick={handleDismiss}>
@@ -107,7 +107,7 @@ export default function MorningSummary() {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white/70 backdrop-blur rounded-xl p-4">
+        <div className="bg-secondary rounded-lg p-4">
           <div className="flex items-center gap-2 mb-2">
             <TrendingUp className="w-4 h-4 text-success" />
             <span className="text-xs text-muted-foreground">רווחיות ממוצעת</span>
@@ -120,7 +120,7 @@ export default function MorningSummary() {
           </p>
         </div>
 
-        <div className="bg-white/70 backdrop-blur rounded-xl p-4">
+        <div className="bg-secondary rounded-lg p-4">
           <div className="flex items-center gap-2 mb-2">
             <AlertTriangle className="w-4 h-4 text-warning" />
             <span className="text-xs text-muted-foreground">דורשים טיפול</span>
@@ -136,7 +136,7 @@ export default function MorningSummary() {
           )}
         </div>
 
-        <div className="bg-white/70 backdrop-blur rounded-xl p-4">
+        <div className="bg-secondary rounded-lg p-4">
           <div className="flex items-center gap-2 mb-2">
             <CheckCircle2 className="w-4 h-4 text-primary" />
             <span className="text-xs text-muted-foreground">תזרים מזומנים</span>
@@ -150,9 +150,9 @@ export default function MorningSummary() {
           <p className="text-xs text-muted-foreground mt-1">{formatCurrency(Math.abs(cashFlow))}</p>
         </div>
 
-        <div className="bg-white/70 backdrop-blur rounded-xl p-4">
+        <div className="bg-secondary rounded-lg p-4">
           <div className="flex items-center gap-2 mb-2">
-            <DollarSign className="w-4 h-4 text-purple-600" />
+            <DollarSign className="w-4 h-4 text-primary" />
             <span className="text-xs text-muted-foreground">ממתינים לגבייה</span>
           </div>
           <p className="text-2xl font-bold text-foreground">
