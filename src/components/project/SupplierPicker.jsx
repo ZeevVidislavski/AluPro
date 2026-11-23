@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { confirmAction } from "@/components/shared/confirm";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { SupplierService } from "@/services";
 import { Plus, Pencil, Trash2, Loader2, Truck } from "lucide-react";
@@ -176,8 +177,8 @@ export function SuppliersManagerButton() {
                             variant="ghost"
                             size="icon"
                             className="text-destructive"
-                            onClick={() => {
-                              if (window.confirm(`למחוק את הספק ${s.name}?`)) deleteMutation.mutate(s.id);
+                            onClick={async () => {
+                              if (await confirmAction(`למחוק את הספק ${s.name}?`)) deleteMutation.mutate(s.id);
                             }}
                           >
                             <Trash2 className="w-4 h-4" />

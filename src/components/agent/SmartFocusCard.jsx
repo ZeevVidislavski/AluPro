@@ -54,7 +54,7 @@ export default function SmartFocusCard({ tasks, summary, isLoading, onRefresh, m
     new Intl.NumberFormat('he-IL', { style: 'currency', currency: 'ILS', maximumFractionDigits: 0 }).format(amount || 0);
 
   return (
-    <div className="bg-white rounded-2xl border border-border overflow-hidden">
+    <div className="bg-card rounded-xl border border-border overflow-hidden">
       {/* Header */}
       <div className="bg-gradient-to-l from-indigo-600 to-blue-600 p-5">
         <div className="flex items-center justify-between mb-4">

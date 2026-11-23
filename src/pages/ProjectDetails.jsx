@@ -1,4 +1,5 @@
 import { handleFormArrowNav } from "@/lib/formKeyboardNav";
+import { confirmAction } from "@/components/shared/confirm";
 import { useState, useEffect, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
@@ -215,7 +216,7 @@ export default function ProjectDetails() {
     }
   });
 
-  const handleCloseSettlement = () => {
+  const handleCloseSettlement = async () => {
     const { canClose, reasons } = validateProjectCanClose(projectId, {
       allQuotes: quotes,
       allPayments: payments,
@@ -226,7 +227,7 @@ export default function ProjectDetails() {
       setCloseBlockDialogOpen(true);
       return;
     }
-    if (window.confirm("לסגור פרויקט זה להתחשבנות? הוא ייכנס לחלוקת הרווחים בין השותפים.")) {
+    if (await confirmAction("לסגור פרויקט זה להתחשבנות? הוא ייכנס לחלוקת הרווחים בין השותפים.")) {
       closeSettlementMutation.mutate();
     }
   };
@@ -248,7 +249,7 @@ export default function ProjectDetails() {
 
   if (isLoading || !project) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="flex items-center justify-center py-24">
         <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </div>
     );
@@ -287,7 +288,7 @@ export default function ProjectDetails() {
   }
 
   return (
-    <div className="min-h-screen bg-background p-6 lg:p-8">
+    <div className="p-4 md:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-center gap-4 mb-6">
@@ -299,7 +300,7 @@ export default function ProjectDetails() {
           </Link>
           <div className="flex-1">
             <div className="flex items-center gap-3">
-              <h1 className="text-3xl font-bold text-foreground">{project.name}</h1>
+              <h1 className="text-[28px] leading-9 font-bold text-foreground">{project.name}</h1>
               {project.start_date && (
                 <span className="text-xs text-muted-foreground">
                   (ת.פתיחה: {format(new Date(project.start_date), 'dd/MM/yyyy', { locale: he })})
@@ -316,7 +317,7 @@ export default function ProjectDetails() {
               <span className="flex items-center gap-1.5 text-sm font-medium text-success bg-success-subtle border border-emerald-200 px-3 py-1.5 rounded-lg">
                 <Lock className="w-4 h-4" /> סגור להתחשבנות
               </span>
-              <Button variant="outline" size="sm" onClick={() => { if (window.confirm("לפתוח פרויקט זה מחדש?")) reopenSettlementMutation.mutate(); }}>
+              <Button variant="outline" size="sm" onClick={async () => { if (await confirmAction("לפתוח פרויקט זה מחדש?")) reopenSettlementMutation.mutate(); }}>
                 <Unlock className="w-4 h-4 ml-1" /> פתח מחדש
               </Button>
             </div>
@@ -356,15 +357,15 @@ export default function ProjectDetails() {
 
         {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="bg-white rounded-2xl border border-border p-6">
+          <div className="bg-card rounded-xl border border-border p-6">
             <p className="text-sm text-muted-foreground mb-1">סכום הצעה</p>
             <p className="text-2xl font-bold text-foreground">{formatCurrency(total_sale)}</p>
           </div>
-          <div className="bg-white rounded-2xl border border-border p-6">
+          <div className="bg-card rounded-xl border border-border p-6">
             <p className="text-sm text-muted-foreground mb-1">סה״כ התקבל</p>
             <p className="text-2xl font-bold text-success">{formatCurrency(total_received)}</p>
           </div>
-          <div className="bg-white rounded-2xl border border-border p-6">
+          <div className="bg-card rounded-xl border border-border p-6">
             <p className="text-sm text-muted-foreground mb-1">יתרה לגבייה</p>
             <p className={cn(
               "text-2xl font-bold",
@@ -373,7 +374,7 @@ export default function ProjectDetails() {
               {formatCurrency(balance_to_collect)}
             </p>
           </div>
-          <div className="bg-white rounded-2xl border border-border p-6">
+          <div className="bg-card rounded-xl border border-border p-6">
             <p className="text-sm text-muted-foreground mb-1">רווח צפוי</p>
             <p className={cn(
               "text-2xl font-bold",
@@ -388,7 +389,7 @@ export default function ProjectDetails() {
         </div>
 
         {/* Project Info */}
-        <div className="bg-white rounded-2xl border border-border p-6">
+        <div className="bg-card rounded-xl border border-border p-6">
           <h3 className="font-semibold text-foreground mb-4">פרטי פרויקט</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="flex items-center gap-3">
@@ -437,7 +438,7 @@ export default function ProjectDetails() {
         {/* Tabs */}
         <Tabs defaultValue="quotes" className="space-y-6">
           <div className="overflow-x-auto">
-          <TabsList className="bg-white border border-border p-1 min-w-max">
+          <TabsList className="bg-card border border-border p-1 min-w-max">
             <TabsTrigger value="quotes" className="gap-2">
               <FileText className="w-4 h-4" />
               הצעות מחיר ({quotes.length})
@@ -740,7 +741,7 @@ function PaymentsSection({ payments, projectId, projectName, dialogOpen, setDial
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-border overflow-hidden">
+    <div className="bg-card rounded-xl border border-border overflow-hidden">
       <div className="p-6 border-b border-border flex items-center justify-between">
         <h3 className="font-semibold text-foreground">תשלומים מלקוח</h3>
         <Button onClick={() => setDialogOpen(true)} size="sm">
@@ -791,8 +792,8 @@ function PaymentsSection({ payments, projectId, projectName, dialogOpen, setDial
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => {
-                  if (window.confirm('האם אתה בטוח שברצונך למחוק תשלום זה?')) {
+                onClick={async () => {
+                  if (await confirmAction('האם אתה בטוח שברצונך למחוק תשלום זה?')) {
                     deleteMutation.mutate(payment.id);
                   }
                 }}
@@ -964,7 +965,7 @@ function OrdersSection({ orders, projectId, projectName, dialogOpen, setDialogOp
   const statusLabels = { ordered: 'הוזמן', partial: 'שולם חלקית', paid: 'שולם מלא', received: 'התקבל' };
 
   return (
-    <div className="bg-white rounded-2xl border border-border overflow-hidden">
+    <div className="bg-card rounded-xl border border-border overflow-hidden">
       <div className="p-6 border-b border-border flex items-center justify-between">
         <h3 className="font-semibold text-foreground">הזמנות ספקים</h3>
         <div className="flex gap-2">
@@ -1026,8 +1027,8 @@ function OrdersSection({ orders, projectId, projectName, dialogOpen, setDialogOp
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => {
-                  if (window.confirm('האם אתה בטוח שברצונך למחוק הזמנה זו?')) {
+                onClick={async () => {
+                  if (await confirmAction('האם אתה בטוח שברצונך למחוק הזמנה זו?')) {
                     deleteMutation.mutate(order.id);
                   }
                 }}
@@ -1270,7 +1271,7 @@ function QuotesSection({ quotes, projectId, projectName, customerName, projectSt
   const statusLabels = { draft: 'טיוטה', approved: 'אושר' };
 
   return (
-    <div className="bg-white rounded-2xl border border-border overflow-hidden">
+    <div className="bg-card rounded-xl border border-border overflow-hidden">
       <div className="p-6 border-b border-border flex items-center justify-between">
         <h3 className="font-semibold text-foreground">הצעות מחיר</h3>
         <Button onClick={() => createDraftMutation.mutate()} disabled={createDraftMutation.isPending} size="sm">
@@ -1327,8 +1328,8 @@ function QuotesSection({ quotes, projectId, projectName, customerName, projectSt
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => {
-                  if (window.confirm('האם אתה בטוח שברצונך למחוק הצעת מחיר זו?')) {
+                onClick={async () => {
+                  if (await confirmAction('האם אתה בטוח שברצונך למחוק הצעת מחיר זו?')) {
                     deleteMutation.mutate(quote.id);
                   }
                 }}
@@ -1478,7 +1479,7 @@ function DocumentsSection({ documents, projectId, projectName, dialogOpen, setDi
   const docTypeLabels = { contract: 'חוזה', plan: 'תוכנית', invoice: 'חשבונית', photo: 'תמונה', delivery: 'תעודת משלוח' };
 
   return (
-    <div className="bg-white rounded-2xl border border-border overflow-hidden">
+    <div className="bg-card rounded-xl border border-border overflow-hidden">
       <div className="p-6 border-b border-border flex items-center justify-between">
         <h3 className="font-semibold text-foreground">מסמכים</h3>
         <Button onClick={() => setDialogOpen(true)} size="sm">
@@ -1518,8 +1519,8 @@ function DocumentsSection({ documents, projectId, projectName, dialogOpen, setDi
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => {
-                  if (window.confirm('האם אתה בטוח שברצונך למחוק מסמך זה?')) {
+                onClick={async () => {
+                  if (await confirmAction('האם אתה בטוח שברצונך למחוק מסמך זה?')) {
                     deleteMutation.mutate(doc.id);
                   }
                 }}
@@ -1658,7 +1659,7 @@ function RemindersSection({ reminders, projectId, projectName, dialogOpen, setDi
   const statusLabels = { open: 'פתוח', done: 'בוצע', postponed: 'נדחה' };
 
   return (
-    <div className="bg-white rounded-2xl border border-border overflow-hidden">
+    <div className="bg-card rounded-xl border border-border overflow-hidden">
       <div className="p-6 border-b border-border flex items-center justify-between">
         <h3 className="font-semibold text-foreground">תזכורות</h3>
         <Button onClick={() => setDialogOpen(true)} size="sm">
@@ -1724,8 +1725,8 @@ function RemindersSection({ reminders, projectId, projectName, dialogOpen, setDi
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => {
-                  if (window.confirm('האם אתה בטוח שברצונך למחוק תזכורת זו?')) {
+                onClick={async () => {
+                  if (await confirmAction('האם אתה בטוח שברצונך למחוק תזכורת זו?')) {
                     deleteMutation.mutate(reminder.id);
                   }
                 }}

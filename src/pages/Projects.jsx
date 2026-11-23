@@ -184,19 +184,19 @@ export default function Projects() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="flex items-center justify-center py-24">
         <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background p-6 lg:p-8">
+    <div className="p-4 md:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">פרויקטים</h1>
+            <h1 className="text-[28px] leading-9 font-bold text-foreground">פרויקטים</h1>
             <p className="text-muted-foreground mt-1">{projects.length} פרויקטים במערכת</p>
           </div>
           <Button onClick={openCreateDialog} className="bg-primary hover:bg-primary-hover">
@@ -247,7 +247,7 @@ export default function Projects() {
             const financials = calculateProjectFinancials(project.id, { allQuotes, allPayments, allOrders });
             
             return (
-              <div key={project.id} className="relative bg-white rounded-2xl border border-border hover:shadow-lg transition-all hover:border-blue-200 group">
+              <div key={project.id} className="relative bg-card rounded-xl border border-border hover:shadow-lg transition-all hover:border-blue-200 group">
               <Link
                 to={createPageUrl("ProjectDetails") + `?id=${project.id}`}
                 className="block p-6"

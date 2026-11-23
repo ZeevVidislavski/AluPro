@@ -31,7 +31,7 @@ export default function RemindersWidget({ reminders }) {
     .slice(0, 5);
 
   return (
-    <div className="bg-white rounded-2xl border border-border overflow-hidden">
+    <div className="bg-card rounded-xl border border-border overflow-hidden">
       <div className="p-6 border-b border-border flex items-center justify-between">
         <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
           <Bell className="w-5 h-5 text-muted-foreground" />

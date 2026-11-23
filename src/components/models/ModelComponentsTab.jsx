@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { confirmAction } from "@/components/shared/confirm";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ModelComponentService } from "@/services";
 import { Button } from "@/components/ui/button";
@@ -268,7 +269,7 @@ export default function ModelComponentsTab({ modelId }) {
                     <div className="flex gap-1">
                       <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => openEdit(comp)}><Pencil className="w-3 h-3" /></Button>
                       <Button variant="ghost" size="icon" className="h-7 w-7 text-red-400 hover:text-destructive hover:bg-destructive-subtle"
-                        onClick={() => { if (window.confirm("למחוק?")) deleteMutation.mutate(comp.id); }}>
+                        onClick={async () => { if (await confirmAction("למחוק?")) deleteMutation.mutate(comp.id); }}>
                         <Trash2 className="w-3 h-3" />
                       </Button>
                     </div>

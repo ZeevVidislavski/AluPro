@@ -190,7 +190,7 @@ export default function Finance() {
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-white p-4 rounded-xl shadow-lg border border-border">
+        <div className="bg-card p-4 rounded-xl shadow-lg border border-border">
           <p className="font-medium text-foreground mb-2">{label}</p>
           {payload.map((entry, index) => (
             <p key={index} style={{ color: entry.color }} className="text-sm">
@@ -205,7 +205,7 @@ export default function Finance() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="flex items-center justify-center py-24">
         <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </div>
     );
@@ -217,12 +217,12 @@ export default function Finance() {
   const supplierDebts = getSupplierDebts();
 
   return (
-    <div className="min-h-screen bg-background p-6 lg:p-8">
+    <div className="p-4 md:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto space-y-8">
         {/* Header */}
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">פיננסים</h1>
+            <h1 className="text-[28px] leading-9 font-bold text-foreground">פיננסים</h1>
             <p className="text-muted-foreground mt-1">ניתוח הכנסות, הוצאות ורווחיות</p>
           </div>
           
@@ -251,7 +251,7 @@ export default function Finance() {
         </div>
 
         {/* Sub-tabs */}
-        <div className="flex gap-1 bg-white border border-border rounded-xl p-1 w-fit">
+        <div className="flex gap-1 bg-card border border-border rounded-xl p-1 w-fit">
           <button
             onClick={() => setActiveTab("finance")}
             className={cn("px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2",
@@ -315,7 +315,7 @@ export default function Finance() {
         {/* Charts Row */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Income vs Expenses Chart */}
-          <div className="bg-white rounded-2xl border border-border p-6">
+          <div className="bg-card rounded-xl border border-border p-6">
             <h3 className="text-lg font-semibold text-foreground mb-6">הכנסות והוצאות לפי חודש</h3>
             {monthlyData.length > 0 ? (
               <ResponsiveContainer width="100%" height={300}>
@@ -337,7 +337,7 @@ export default function Finance() {
           </div>
 
           {/* Expenses by Type */}
-          <div className="bg-white rounded-2xl border border-border p-6">
+          <div className="bg-card rounded-xl border border-border p-6">
             <h3 className="text-lg font-semibold text-foreground mb-6">הוצאות לפי סוג</h3>
             {expensesByType.length > 0 ? (
               <ResponsiveContainer width="100%" height={300}>
@@ -368,7 +368,7 @@ export default function Finance() {
         </div>
 
         {/* Profit Trend */}
-        <div className="bg-white rounded-2xl border border-border p-6">
+        <div className="bg-card rounded-xl border border-border p-6">
           <h3 className="text-lg font-semibold text-foreground mb-6">מגמת רווח</h3>
           {monthlyData.length > 0 ? (
             <ResponsiveContainer width="100%" height={300}>
@@ -397,7 +397,7 @@ export default function Finance() {
         {/* Debts Tables */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Client Debts */}
-          <div className="bg-white rounded-2xl border border-border overflow-hidden">
+          <div className="bg-card rounded-xl border border-border overflow-hidden">
             <div className="p-6 border-b border-border flex items-center justify-between">
               <h3 className="font-semibold text-foreground">חובות לקוחות פתוחים</h3>
               <span className="text-sm text-muted-foreground">{formatCurrency(outstandingFromClients)}</span>
@@ -425,7 +425,7 @@ export default function Finance() {
           </div>
 
           {/* Supplier Debts */}
-          <div className="bg-white rounded-2xl border border-border overflow-hidden">
+          <div className="bg-card rounded-xl border border-border overflow-hidden">
             <div className="p-6 border-b border-border flex items-center justify-between">
               <h3 className="font-semibold text-foreground">חובות לספקים</h3>
               <span className="text-sm text-muted-foreground">{formatCurrency(outstandingToSuppliers)}</span>

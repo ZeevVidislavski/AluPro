@@ -71,10 +71,10 @@ export default function Profile() {
 
   return (
     <div className="max-w-lg mx-auto p-6" dir="rtl">
-      <h1 className="text-2xl font-bold text-foreground mb-1">אזור אישי</h1>
+      <h1 className="text-[28px] leading-9 font-bold text-foreground mb-1">אזור אישי</h1>
       <p className="text-muted-foreground text-sm mb-6">{user?.email}</p>
 
-      <div className="bg-white rounded-2xl border border-border p-6 mb-4">
+      <div className="bg-card rounded-xl border border-border p-6 mb-4">
         <h2 className="font-semibold text-foreground mb-4">פרטים אישיים</h2>
         <form onSubmit={handleSaveName} className="space-y-4">
           <div className="space-y-2">
@@ -98,7 +98,7 @@ export default function Profile() {
         </form>
       </div>
 
-      <div className="bg-white rounded-2xl border border-border p-6">
+      <div className="bg-card rounded-xl border border-border p-6">
         <h2 className="font-semibold text-foreground mb-4">החלפת סיסמה</h2>
         <form onSubmit={handleSavePassword} className="space-y-4">
           <div className="space-y-2">

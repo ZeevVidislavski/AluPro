@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { confirmAction } from "@/components/shared/confirm";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { MaterialOrderService, MaterialOrderItemService } from "@/services";
 import { Button } from "@/components/ui/button";
@@ -114,7 +115,7 @@ export default function MaterialOrdersTab({ projectId, projectName }) {
         const items = allItems.filter(i => i.material_order_id === order.id);
         const isExpanded = expandedOrders[order.id];
         return (
-          <div key={order.id} className="bg-white border border-border rounded-2xl overflow-hidden">
+          <div key={order.id} className="bg-card border border-border rounded-xl overflow-hidden">
             <div className="flex items-center gap-3 p-4">
               <button onClick={() => toggleExpand(order.id)} className="text-muted-foreground hover:text-muted-foreground">
                 {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
@@ -141,7 +142,7 @@ export default function MaterialOrdersTab({ projectId, projectName }) {
                   variant="ghost"
                   size="icon"
                   className="h-8 w-8 text-red-400 hover:text-destructive hover:bg-destructive-subtle"
-                  onClick={() => { if (window.confirm("למחוק הזמנה זו?")) deleteOrderMutation.mutate(order.id); }}
+                  onClick={async () => { if (await confirmAction("למחוק הזמנה זו?")) deleteOrderMutation.mutate(order.id); }}
                 >
                   <Trash2 className="w-4 h-4" />
                 </Button>

@@ -544,10 +544,10 @@ export default function QuoteEditor() {
 
   // ─── Render ───────────────────────────────────────────────────────────────────
   if (loadingQuote || loadingItems) {
-    return <div className="min-h-screen flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>;
+    return <div className="flex items-center justify-center py-24"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>;
   }
   if (!quote) {
-    return <div className="min-h-screen flex items-center justify-center text-muted-foreground">הצעה לא נמצאה</div>;
+    return <div className="flex items-center justify-center py-24 text-muted-foreground">הצעה לא נמצאה</div>;
   }
 
   return (
@@ -681,19 +681,10 @@ export default function QuoteEditor() {
           )}
         </div>
 
-        {/* Notes */}
-        <div className="bg-card rounded-xl border shadow-sm p-6">
-          <Label className="mb-2 block">הערות</Label>
-          <Textarea
-            value={quoteForm.notes}
-            onChange={e => editForm({ notes: e.target.value })}
-            rows={3}
-            placeholder="הערות ותנאים..."
-          />
-        </div>
         </div>
         {/* Totals: sticky side panel on desktop (left in RTL), below the form on mobile */}
-        <aside aria-label="סיכום הצעה" className="bg-card rounded-xl border shadow-sm p-5 space-y-2.5 tabular-nums lg:sticky lg:top-4">
+        <div className="space-y-6 min-w-0 lg:sticky lg:top-4">
+      <aside aria-label="סיכום הצעה" className="bg-card rounded-xl border shadow-sm p-5 space-y-2.5 tabular-nums">
           <h2 className="font-semibold text-foreground">סיכום</h2>
           <div className="flex justify-between w-full text-sm">
             <span className="text-muted-foreground">סכום לפני הנחה</span>
@@ -722,6 +713,17 @@ export default function QuoteEditor() {
             <span className="text-foreground">{formatCurrency(totals.totalWithVat)}</span>
           </div>
         </aside>
+        {/* Notes */}
+        <div className="bg-card rounded-xl border shadow-sm p-6">
+          <Label className="mb-2 block">הערות</Label>
+          <Textarea
+            value={quoteForm.notes}
+            onChange={e => editForm({ notes: e.target.value })}
+            rows={3}
+            placeholder="הערות ותנאים..."
+          />
+        </div>
+        </div>
         </div>
       </div>
 

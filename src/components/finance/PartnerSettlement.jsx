@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { confirmAction } from "@/components/shared/confirm";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { PartnerService, GeneralExpenseService } from "@/services";
 import { format } from "date-fns";
@@ -153,7 +154,7 @@ export default function PartnerSettlement({ allPayments, allOrders, allQuotes, p
             onClick={() => setActiveTab(t.id)}
             className={cn(
               "px-3 py-1.5 rounded-lg text-sm font-medium transition-all",
-              activeTab === t.id ? "bg-white text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
+              activeTab === t.id ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
             )}
           >{t.label}</button>
         ))}
@@ -194,7 +195,7 @@ export default function PartnerSettlement({ allPayments, allOrders, allQuotes, p
 
           {/* Partner cards */}
           {partners.length === 0 ? (
-            <div className="bg-white rounded-xl border border-border p-10 text-center text-muted-foreground">
+            <div className="bg-card rounded-xl border border-border p-10 text-center text-muted-foreground">
               <Users className="w-10 h-10 mx-auto mb-3 text-slate-300" />
               <p className="font-medium mb-2">אין שותפים מוגדרים</p>
               <Button size="sm" onClick={() => { setPartnerForm({ name: "", profit_share_percent: 50, active: true }); setPartnerDialogOpen(true); }}>
@@ -207,7 +208,7 @@ export default function PartnerSettlement({ allPayments, allOrders, allQuotes, p
                 const isPositive = p.settlement_balance >= 0;
                 const isBalanced = Math.abs(p.settlement_balance) < 1;
                 return (
-                  <div key={p.id} className="bg-white rounded-2xl border border-border overflow-hidden shadow-sm">
+                  <div key={p.id} className="bg-card rounded-xl border border-border overflow-hidden shadow-sm">
                     {/* Header */}
                     <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-background">
                       <div className="flex items-center gap-3">
@@ -293,7 +294,7 @@ export default function PartnerSettlement({ allPayments, allOrders, allQuotes, p
 
           {/* Transfer summary */}
           {transfers.length > 0 && (
-            <div className="bg-white rounded-2xl border border-border overflow-hidden">
+            <div className="bg-card rounded-xl border border-border overflow-hidden">
               <div className="px-6 py-4 border-b border-border bg-background">
                 <h3 className="font-semibold text-foreground flex items-center gap-2">
                   <ArrowLeftRight className="w-5 h-5 text-blue-500" />
@@ -319,7 +320,7 @@ export default function PartnerSettlement({ allPayments, allOrders, allQuotes, p
 
       {/* ===== CLOSED PROJECTS TAB ===== */}
       {activeTab === "closed" && (
-        <div className="bg-white rounded-2xl border border-border overflow-hidden">
+        <div className="bg-card rounded-xl border border-border overflow-hidden">
           {closed_projects_detail.length === 0 ? (
             <div className="p-10 text-center text-muted-foreground">
               <Lock className="w-10 h-10 mx-auto mb-3 text-slate-300" />
@@ -363,7 +364,7 @@ export default function PartnerSettlement({ allPayments, allOrders, allQuotes, p
             <AlertCircle className="w-4 h-4 shrink-0" />
             פרויקטים אלה מוצגים כרווח תיאורטי בלבד ולא משפיעים על חלוקת הרווחים
           </div>
-          <div className="bg-white rounded-2xl border border-border overflow-hidden">
+          <div className="bg-card rounded-xl border border-border overflow-hidden">
             {open_projects_detail.length === 0 ? (
               <div className="p-10 text-center text-muted-foreground">אין פרויקטים פתוחים</div>
             ) : (
@@ -400,7 +401,7 @@ export default function PartnerSettlement({ allPayments, allOrders, allQuotes, p
 
       {/* ===== EXPENSES TAB ===== */}
       {activeTab === "expenses" && (
-        <div className="bg-white rounded-2xl border border-border overflow-hidden">
+        <div className="bg-card rounded-xl border border-border overflow-hidden">
           <div className="flex items-center justify-between px-6 py-4 border-b border-border">
             <h3 className="font-semibold text-foreground">הוצאות כלליות עסקיות</h3>
             <Button size="sm" onClick={() => {
@@ -442,7 +443,7 @@ export default function PartnerSettlement({ allPayments, allOrders, allQuotes, p
                           setExpenseForm({ description: exp.description, category: exp.category, amount: exp.amount, expense_date: exp.expense_date, paid_by_partner_id: exp.paid_by_partner_id, paid_by_partner_name: exp.paid_by_partner_name, notes: exp.notes || "" });
                           setExpenseDialogOpen(true);
                         }}><Pencil className="w-3.5 h-3.5" /></Button>
-                        <Button variant="ghost" size="icon" className="text-red-500 hover:text-destructive" onClick={() => { if (window.confirm("למחוק הוצאה זו?")) deleteExpense.mutate(exp.id); }}>
+                        <Button variant="ghost" size="icon" className="text-red-500 hover:text-destructive" onClick={async () => { if (await confirmAction("למחוק הוצאה זו?")) deleteExpense.mutate(exp.id); }}>
                           <Trash2 className="w-3.5 h-3.5" />
                         </Button>
                       </div>
@@ -473,7 +474,7 @@ export default function PartnerSettlement({ allPayments, allOrders, allQuotes, p
                     <Button variant="ghost" size="icon" onClick={() => { setEditingPartner(p); setPartnerForm({ name: p.name, profit_share_percent: p.profit_share_percent, active: p.active }); }}>
                       <Pencil className="w-4 h-4" />
                     </Button>
-                    <Button variant="ghost" size="icon" className="text-red-500" onClick={() => { if (window.confirm("למחוק שותף זה?")) deletePartner.mutate(p.id); }}>
+                    <Button variant="ghost" size="icon" className="text-red-500" onClick={async () => { if (await confirmAction("למחוק שותף זה?")) deletePartner.mutate(p.id); }}>
                       <Trash2 className="w-4 h-4" />
                     </Button>
                   </div>

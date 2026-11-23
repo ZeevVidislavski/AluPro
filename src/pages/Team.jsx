@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { confirmAction } from "@/components/shared/confirm";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { TeamService } from "@/services/teamService";
 import { Button } from "@/components/ui/button";
@@ -51,7 +52,7 @@ function InviteForm({ tenantId, onInvited }) {
         e.preventDefault();
         mutation.mutate();
       }}
-      className="bg-white rounded-2xl border border-border p-6 space-y-4"
+      className="bg-card rounded-xl border border-border p-6 space-y-4"
     >
       <h2 className="font-semibold text-foreground flex items-center gap-2">
         <UserPlus className="w-5 h-5 text-muted-foreground" />
@@ -159,7 +160,7 @@ function EditMemberForm({ tenantId, member, onClose, onSaved }) {
   });
 
   return (
-    <div className="bg-white rounded-2xl border border-border p-6 space-y-4">
+    <div className="bg-card rounded-xl border border-border p-6 space-y-4">
       <h2 className="font-semibold text-foreground flex items-center gap-2">
         <Pencil className="w-5 h-5 text-muted-foreground" />
         עריכת עובד
@@ -219,8 +220,8 @@ function EditMemberForm({ tenantId, member, onClose, onSaved }) {
           variant="outline"
           className="w-full text-destructive border-red-200 hover:bg-destructive-subtle"
           disabled={removeMutation.isPending}
-          onClick={() => {
-            if (window.confirm(`למחוק את ${member.profiles?.full_name || "העובד"} מהצוות?`)) removeMutation.mutate();
+          onClick={async () => {
+            if (await confirmAction(`למחוק את ${member.profiles?.full_name || "העובד"} מהצוות?`)) removeMutation.mutate();
           }}
         >
           {removeMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : "מחק עובד"}
@@ -261,10 +262,10 @@ export default function Team() {
 
   return (
     <div className="max-w-4xl mx-auto p-6" dir="rtl">
-      <h1 className="text-2xl font-bold text-foreground mb-6">צוות</h1>
+      <h1 className="text-[28px] leading-9 font-bold text-foreground mb-6">צוות</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="bg-white rounded-2xl border border-border p-6">
+        <div className="bg-card rounded-xl border border-border p-6">
           <div className="flex items-center justify-between mb-3">
             <h2 className="font-semibold text-foreground">חברי צוות</h2>
             {canManageTeam && editing && (

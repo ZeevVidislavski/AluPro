@@ -69,9 +69,9 @@ export default function PlatformTenantCreate() {
         חזרה לרשימת החברות
       </Link>
 
-      <h1 className="text-2xl font-bold text-foreground mb-6">חברה חדשה</h1>
+      <h1 className="text-[28px] leading-9 font-bold text-foreground mb-6">חברה חדשה</h1>
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-border p-6 space-y-4">
+      <form onSubmit={handleSubmit} className="bg-card rounded-xl border border-border p-6 space-y-4">
         <div className="space-y-2">
           <Label htmlFor="name">שם החברה</Label>
           <Input id="name" value={name} onChange={(e) => handleNameChange(e.target.value)} required />

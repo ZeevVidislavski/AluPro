@@ -18,7 +18,7 @@ export default function ActiveProjectsTable({ projects, allPayments, allQuotes, 
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-border overflow-hidden">
+    <div className="bg-card rounded-xl border border-border overflow-hidden">
       <div className="p-6 border-b border-border">
         <h3 className="text-lg font-semibold text-foreground">פרויקטים פעילים</h3>
       </div>

@@ -74,7 +74,7 @@ export default function PlatformTenantList() {
   return (
     <div className="max-w-6xl mx-auto">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-foreground">חברות במערכת</h1>
+        <h1 className="text-[28px] leading-9 font-bold text-foreground">חברות במערכת</h1>
         <Link to="/admin/tenants/new">
           <Button className="gap-2">
             <Plus className="w-4 h-4" />
@@ -83,7 +83,7 @@ export default function PlatformTenantList() {
         </Link>
       </div>
 
-      <div className="bg-white rounded-xl border border-border overflow-x-auto">
+      <div className="bg-card rounded-xl border border-border overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border text-muted-foreground text-right">

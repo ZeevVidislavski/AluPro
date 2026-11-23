@@ -214,9 +214,9 @@ export default function PlatformTenantDetail() {
         חזרה לרשימת החברות
       </Link>
 
-      <div className="bg-white rounded-xl border border-border p-5 mb-4 flex flex-wrap items-center justify-between gap-4">
+      <div className="bg-card rounded-xl border border-border p-5 mb-4 flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <h1 className="text-2xl font-bold text-foreground">{tenant.name}</h1>
+          <h1 className="text-[28px] leading-9 font-bold text-foreground">{tenant.name}</h1>
           <span
             className={cn(
               "text-xs font-medium rounded-full px-2.5 py-1",
@@ -233,13 +233,13 @@ export default function PlatformTenantDetail() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
         <div className="space-y-4">
-        <div className="bg-white rounded-xl border border-border p-5">
+        <div className="bg-card rounded-xl border border-border p-5">
           <h2 className="font-semibold text-foreground mb-3">פרטי חברה</h2>
           <InfoRow label="סטטוס" value={STATUS_LABELS[tenant.status] ?? tenant.status} />
           <InfoRow label="נוצרה בתאריך" value={new Date(tenant.created_at).toLocaleDateString("he-IL")} />
         </div>
 
-        <div className="bg-white rounded-xl border border-border p-5">
+        <div className="bg-card rounded-xl border border-border p-5">
           <h2 className="font-semibold text-foreground mb-3">שימוש</h2>
           {usage ? (
             <>
@@ -288,7 +288,7 @@ export default function PlatformTenantDetail() {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl border border-border p-5">
+        <div className="bg-card rounded-xl border border-border p-5">
           <h2 className="font-semibold text-foreground mb-3">חברי צוות</h2>
           {(members ?? []).length === 0 && <p className="text-muted-foreground text-sm">אין חברי צוות</p>}
           {(members ?? []).map((member) => (
@@ -300,7 +300,7 @@ export default function PlatformTenantDetail() {
         </div>
         </div>
 
-        <div className="bg-white rounded-xl border border-border p-5">
+        <div className="bg-card rounded-xl border border-border p-5">
           <h2 className="font-semibold text-foreground mb-3">תשלום ותוכנית</h2>
           <div className="flex flex-wrap gap-2 mb-4 pb-4 border-b border-border">
             <AddModelsDialog tenantId={tenantId} tenantName={tenant.name} />

@@ -27,7 +27,7 @@ export default function ProfitabilityChart({ projects, allOrders, allQuotes, all
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (
-        <div className="bg-white p-4 rounded-xl shadow-lg border border-border">
+        <div className="bg-card p-4 rounded-xl shadow-lg border border-border">
           <p className="font-medium text-foreground mb-2">{data.fullName}</p>
           <div className="space-y-1 text-sm">
             <p className="text-muted-foreground">הכנסה: {formatCurrency(data.revenue)}</p>
@@ -43,7 +43,7 @@ export default function ProfitabilityChart({ projects, allOrders, allQuotes, all
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-border p-6">
+    <div className="bg-card rounded-xl border border-border p-6">
       <h3 className="text-lg font-semibold text-foreground mb-6">רווחיות פר פרויקט</h3>
       {data.length > 0 ? (
         <ResponsiveContainer width="100%" height={300}>

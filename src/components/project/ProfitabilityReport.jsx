@@ -37,7 +37,7 @@ export default function ProfitabilityReport({ project, payments, orders, quotes 
     ? 'bg-amber-500' : 'bg-red-500';
 
   return (
-    <div className="bg-white min-h-screen" dir="rtl">
+    <div className="bg-card min-h-screen" dir="rtl">
       <div className="max-w-[800px] mx-auto">
 
         {/* ======= HEADER ======= */}
@@ -157,7 +157,7 @@ export default function ProfitabilityReport({ project, payments, orders, quotes 
                   {(payments || []).length === 0 ? (
                     <tr><td colSpan="4" className="p-6 text-center text-muted-foreground">אין תשלומים רשומים</td></tr>
                   ) : (payments || []).map((payment, idx) => (
-                    <tr key={idx} className={idx % 2 === 0 ? 'bg-white' : 'bg-background'}>
+                    <tr key={idx} className={idx % 2 === 0 ? 'bg-card' : 'bg-background'}>
                       <td className="p-3 text-foreground">{format(new Date(payment.payment_date), 'dd/MM/yyyy', { locale: he })}</td>
                       <td className="p-3"><span className="bg-blue-100 text-primary text-xs px-2 py-0.5 rounded-full">{paymentTypeLabels[payment.payment_type]}</span></td>
                       <td className="p-3 text-muted-foreground">{paymentMethodLabels[payment.payment_method]}</td>
@@ -200,7 +200,7 @@ export default function ProfitabilityReport({ project, payments, orders, quotes 
                   {(orders || []).length === 0 ? (
                     <tr><td colSpan="6" className="p-6 text-center text-muted-foreground">אין הזמנות רשומות</td></tr>
                   ) : (orders || []).map((order, idx) => (
-                    <tr key={idx} className={idx % 2 === 0 ? 'bg-white' : 'bg-background'}>
+                    <tr key={idx} className={idx % 2 === 0 ? 'bg-card' : 'bg-background'}>
                       <td className="p-3 text-muted-foreground">{order.order_date ? format(new Date(order.order_date), 'dd/MM/yyyy', { locale: he }) : '—'}</td>
                       <td className="p-3"><span className="bg-purple-100 text-purple-700 text-xs px-2 py-0.5 rounded-full">{orderTypeLabels[order.order_type]}</span></td>
                       <td className="p-3 text-foreground font-medium">{order.supplier_name}</td>
@@ -264,7 +264,7 @@ function SectionTitle({ children }) {
   );
 }
 
-function InfoBox({ label, value, valueClass = '', bg = 'bg-white' }) {
+function InfoBox({ label, value, valueClass = '', bg = 'bg-card' }) {
   return (
     <div className={cn("p-5 text-center", bg)}>
       <p className="text-xs text-muted-foreground mb-1">{label}</p>

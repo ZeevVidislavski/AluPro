@@ -13,7 +13,7 @@ export default function QuotesList({ quotes: allQuotes, formatCurrency }) {
   const rows = showAll ? quotes : quotes.slice(0, PAGE);
 
   return (
-    <div className="bg-white rounded-2xl border border-border overflow-hidden">
+    <div className="bg-card rounded-xl border border-border overflow-hidden">
       <div className="p-6 border-b border-border flex items-center gap-2">
         <FileText className="w-5 h-5 text-muted-foreground" />
         <h3 className="font-semibold text-foreground">הצעות מחיר מאושרות ({quotes.length})</h3>

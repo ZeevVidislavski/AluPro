@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { confirmAction } from "@/components/shared/confirm";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { QuoteTemplateComponentService } from "@/services";
 import { Input } from "@/components/ui/input";
@@ -82,7 +83,7 @@ export default function TemplateComponentsManager({ templateId, comps, catalogIt
               </td>
               <td className="px-2 py-2">
                 <button
-                  onClick={() => { if (window.confirm("למחוק רכיב מהתבנית?")) deleteCompMutation.mutate(comp.id); }}
+                  onClick={async () => { if (await confirmAction("למחוק רכיב מהתבנית?")) deleteCompMutation.mutate(comp.id); }}
                   className="text-red-300 hover:text-destructive"
                 >
                   <Trash2 className="w-3.5 h-3.5" />

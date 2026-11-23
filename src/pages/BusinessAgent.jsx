@@ -236,7 +236,7 @@ export default function BusinessAgent() {
 
   if (loadingAlerts || loadingSettings) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="flex items-center justify-center py-24">
         <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </div>
     );
@@ -244,14 +244,14 @@ export default function BusinessAgent() {
 
   if (showSettings) {
     return (
-      <div className="min-h-screen bg-background p-6 lg:p-8">
+      <div className="p-4 md:p-6 lg:p-8">
         <div className="max-w-2xl mx-auto">
           <div className="flex items-center justify-between mb-6">
-            <h1 className="text-3xl font-bold text-foreground">הגדרות סוכן</h1>
+            <h1 className="text-[28px] leading-9 font-bold text-foreground">הגדרות סוכן</h1>
             <Button variant="outline" onClick={() => setShowSettings(false)}>חזור</Button>
           </div>
 
-          <div className="bg-white rounded-2xl border border-border p-6 space-y-6">
+          <div className="bg-card rounded-xl border border-border p-6 space-y-6">
             <div className="space-y-2">
               <Label>אחוז רווח מינימלי (%)</Label>
               <Input
@@ -336,12 +336,12 @@ export default function BusinessAgent() {
   }
 
   return (
-    <div className="min-h-screen bg-background p-6 lg:p-8">
+    <div className="p-4 md:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">🤖 ניהול חכם</h1>
+            <h1 className="text-[28px] leading-9 font-bold text-foreground">🤖 ניהול חכם</h1>
             <p className="text-muted-foreground">מערכת התראות וניתוח עסקי אוטומטי</p>
           </div>
           <div className="flex gap-3">
@@ -365,11 +365,11 @@ export default function BusinessAgent() {
 
         {/* Top Priority Projects */}
         {projectsWithScores.length > 0 && (
-          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl border border-blue-200 p-6">
+          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border border-blue-200 p-6">
             <h2 className="text-xl font-bold text-foreground mb-4">🎯 פרויקטים בעדיפות</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {projectsWithScores.map(({ project, score, financials }, idx) => (
-                <div key={project.id} className="bg-white rounded-xl p-4 border border-border">
+                <div key={project.id} className="bg-card rounded-xl p-4 border border-border">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-2xl font-bold text-primary">#{idx + 1}</span>
                     <span className="text-sm font-semibold text-muted-foreground">{score.toFixed(1)} נק'</span>
@@ -398,7 +398,7 @@ export default function BusinessAgent() {
         )}
 
         {/* Alerts Section */}
-        <div className="bg-white rounded-2xl border border-border overflow-hidden">
+        <div className="bg-card rounded-xl border border-border overflow-hidden">
           <div className="p-6 border-b border-border">
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-bold text-foreground">התראות פעילות ({filteredAlerts.length})</h2>

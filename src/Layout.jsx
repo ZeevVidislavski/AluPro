@@ -24,6 +24,7 @@ import {
   UserPlus
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ConfirmHost } from "@/components/shared/confirm";
 
 // Sidebar groups (docs/DESIGN_SYSTEM_PROPOSAL.md section 8.1).
 // Deep pages highlight their parent item.
@@ -222,6 +223,7 @@ export default function Layout({ children, currentPageName }) {
         </header>
 
         {/* Page content */}
+        <ConfirmHost />
         <main>
           {children}
         </main>

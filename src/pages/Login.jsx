@@ -59,9 +59,9 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-6" dir="rtl">
-      <div className="w-full max-w-sm bg-white rounded-2xl border border-border p-8">
-        <h1 className="text-2xl font-bold text-foreground mb-1">התחברות</h1>
+    <div className="flex items-center justify-center py-24 bg-background p-6" dir="rtl">
+      <div className="w-full max-w-sm bg-card rounded-xl border border-border p-8">
+        <h1 className="text-[28px] leading-9 font-bold text-foreground mb-1">התחברות</h1>
         <p className="text-muted-foreground text-sm mb-6">ProjectFlow Pro</p>
 
         <form onSubmit={handleSubmit} className="space-y-4">

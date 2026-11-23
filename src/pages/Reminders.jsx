@@ -141,19 +141,19 @@ export default function Reminders() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="flex items-center justify-center py-24">
         <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background p-6 lg:p-8">
+    <div className="p-4 md:p-6 lg:p-8">
       <div className="max-w-5xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">תזכורות</h1>
+            <h1 className="text-[28px] leading-9 font-bold text-foreground">תזכורות</h1>
             <p className="text-muted-foreground mt-1">
               {openCount} פתוחות
               {overdueCount > 0 && (
@@ -170,7 +170,7 @@ export default function Reminders() {
         {/* Filters */}
         <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full sm:w-auto">
-            <TabsList className="bg-white border border-border">
+            <TabsList className="bg-card border border-border">
               <TabsTrigger value="open">פתוחות ({openCount})</TabsTrigger>
               <TabsTrigger value="done">בוצעו</TabsTrigger>
               <TabsTrigger value="postponed">נדחו</TabsTrigger>
@@ -207,7 +207,7 @@ export default function Reminders() {
               <div 
                 key={reminder.id}
                 className={cn(
-                  "bg-white rounded-2xl border p-6 transition-all hover:shadow-lg",
+                  "bg-card rounded-xl border p-6 transition-all hover:shadow-lg",
                   reminder.status === 'done' && "opacity-60",
                   isOverdue && reminder.status === 'open' && "border-red-300 bg-destructive-subtle"
                 )}
@@ -288,7 +288,7 @@ export default function Reminders() {
           })}
 
           {sortedReminders.length === 0 && (
-            <div className="text-center py-12 bg-white rounded-2xl border border-border">
+            <div className="text-center py-12 bg-card rounded-xl border border-border">
               <Bell className="w-12 h-12 mx-auto text-slate-300 mb-4" />
               <h3 className="text-lg font-medium text-foreground mb-1">אין תזכורות</h3>
               <p className="text-muted-foreground">לא נמצאו תזכורות בקטגוריה זו</p>

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { confirmAction } from "@/components/shared/confirm";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ModelPricingService, ModelComponentService, QuoteTemplateService, QuoteTemplateComponentService } from "@/services";
 import { Button } from "@/components/ui/button";
@@ -196,18 +197,18 @@ export default function ModelPricing() {
 
   const filtered = filterCat === "all" ? items : items.filter(i => i.category === filterCat);
 
-  if (isLoading) return <div className="min-h-screen flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>;
+  if (isLoading) return <div className="flex items-center justify-center py-24"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>;
 
   return (
-    <div className="min-h-screen bg-background p-6 lg:p-8" dir="rtl">
+    <div className="p-4 md:p-6 lg:p-8" dir="rtl">
       <div className="max-w-5xl mx-auto space-y-6">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">קטלוג רכיבים ותבניות</h1>
+          <h1 className="text-[28px] leading-9 font-bold text-foreground">קטלוג רכיבים ותבניות</h1>
           <p className="text-muted-foreground">בסיס לבניית הצעות מחיר חופשית</p>
         </div>
 
         <Tabs defaultValue="catalog">
-          <TabsList className="bg-white border border-border">
+          <TabsList className="bg-card border border-border">
             <TabsTrigger value="catalog">קטלוג רכיבים ({items.length})</TabsTrigger>
             <TabsTrigger value="templates">תבניות ({templates.length})</TabsTrigger>
           </TabsList>
@@ -241,7 +242,7 @@ export default function ModelPricing() {
               </Button>
             </div>
 
-            <div className="bg-white rounded-2xl border border-border overflow-hidden">
+            <div className="bg-card rounded-xl border border-border overflow-hidden">
               <table className="w-full">
                 <thead className="bg-background border-b border-border">
                   <tr>
@@ -280,7 +281,7 @@ export default function ModelPricing() {
                             <Pencil className="w-4 h-4" />
                           </Button>
                           <Button variant="ghost" size="icon" className="text-red-400 hover:text-destructive hover:bg-destructive-subtle"
-                            onClick={() => { if (window.confirm("למחוק רכיב זה?")) deleteMutation.mutate(item.id); }}>
+                            onClick={async () => { if (await confirmAction("למחוק רכיב זה?")) deleteMutation.mutate(item.id); }}>
                             <Trash2 className="w-4 h-4" />
                           </Button>
                         </div>
@@ -305,7 +306,7 @@ export default function ModelPricing() {
               </Button>
             </div>
             {templates.length === 0 && (
-              <div className="bg-white rounded-2xl border border-dashed border-input p-10 text-center text-muted-foreground">
+              <div className="bg-card rounded-xl border border-dashed border-input p-10 text-center text-muted-foreground">
                 <BookmarkPlus className="w-10 h-10 mx-auto mb-2 text-slate-300" />
                 <p>אין תבניות שמורות עדיין</p>
                 <p className="text-sm mt-1">לחץ "תבנית חדשה" כדי ליצור תבנית מהקטלוג</p>
@@ -315,7 +316,7 @@ export default function ModelPricing() {
               const comps = allTemplateComps.filter(c => c.template_id === t.id);
               const isExpanded = expandedTemplates[t.id];
               return (
-                <div key={t.id} className="bg-white rounded-2xl border border-border overflow-hidden">
+                <div key={t.id} className="bg-card rounded-xl border border-border overflow-hidden">
                   {/* Template header */}
                   <div className="flex items-center gap-3 p-4">
                     <button
@@ -337,8 +338,8 @@ export default function ModelPricing() {
                         variant="ghost"
                         size="icon"
                         className="text-red-400 hover:text-destructive hover:bg-destructive-subtle"
-                        onClick={() => {
-                          if (window.confirm("למחוק תבנית זו?")) deleteTemplateMutation.mutate(t.id);
+                        onClick={async () => {
+                          if (await confirmAction("למחוק תבנית זו?")) deleteTemplateMutation.mutate(t.id);
                         }}
                       >
                         <Trash2 className="w-4 h-4" />

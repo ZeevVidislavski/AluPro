@@ -101,11 +101,11 @@ export default function CompanyHeaders() {
   };
 
   return (
-    <div className="min-h-screen bg-background p-6" dir="rtl">
+    <div className="p-4 md:p-6" dir="rtl">
       <div className="max-w-2xl mx-auto">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-foreground">כותרות הדפסה</h1>
+            <h1 className="text-[28px] leading-9 font-bold text-foreground">כותרות הדפסה</h1>
             <p className="text-muted-foreground text-sm">לוגו / שם חברה שיופיע בראש הצעות המחיר</p>
           </div>
           <Button onClick={openNew} className="bg-primary hover:bg-primary-hover">
@@ -116,14 +116,14 @@ export default function CompanyHeaders() {
         {isLoading ? (
           <div className="flex justify-center py-20"><Loader2 className="w-8 h-8 animate-spin text-blue-500" /></div>
         ) : headers.length === 0 ? (
-          <div className="bg-white rounded-2xl border border-dashed border-input p-12 text-center text-muted-foreground">
+          <div className="bg-card rounded-xl border border-dashed border-input p-12 text-center text-muted-foreground">
             <p>אין כותרות עדיין</p>
             <p className="text-sm mt-1">הוסף כותרת חדשה עם שם חברה / לוגו</p>
           </div>
         ) : (
           <div className="space-y-3">
             {headers.map(h => (
-              <div key={h.id} className="bg-white rounded-2xl border border-border p-4 flex items-center gap-4">
+              <div key={h.id} className="bg-card rounded-xl border border-border p-4 flex items-center gap-4">
                 <HeaderLogo path={h.logo_url} className="h-14 w-24 rounded border border-border" />
                 <div className="flex-1">
                   <p className="font-semibold text-foreground">{h.name}</p>
