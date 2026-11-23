@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, TrendingDown, DollarSign, PackageCheck, Clock, RefreshCw } from "lucide-react";
+import { ArrowLeft, TrendingDown, DollarSign, PackageCheck, Clock, RefreshCw, CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const actionConfig = {
@@ -56,11 +56,11 @@ export default function SmartFocusCard({ tasks, summary, isLoading, onRefresh, m
   return (
     <div className="bg-card rounded-xl border border-border overflow-hidden">
       {/* Header */}
-      <div className="bg-gradient-to-l from-indigo-600 to-blue-600 p-5">
+      <div className="bg-foreground p-5 text-primary-foreground">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h2 className="text-xl font-bold text-white">🎯 מה הכי חשוב עכשיו</h2>
-            <p className="text-blue-100 text-sm mt-0.5">מנוע החלטות עסקי חכם</p>
+            <h2 className="text-xl font-bold text-white">מה הכי חשוב עכשיו</h2>
+            <p className="text-white/70 text-sm mt-0.5">מנוע החלטות עסקי חכם</p>
           </div>
           <Button
             variant="ghost"
@@ -77,15 +77,15 @@ export default function SmartFocusCard({ tasks, summary, isLoading, onRefresh, m
         {summary && (
           <div className="bg-white/10 rounded-xl p-4 space-y-2">
             <div className="flex flex-wrap gap-4 text-sm text-white">
-              <span>💰 <strong>{formatCurrency(summary.totalToCollect)}</strong> ממתין לגבייה</span>
-              <span>⚠️ <strong>{summary.projectsNeedingAttention}</strong> פרויקטים דורשים טיפול</span>
+              <span><strong>{formatCurrency(summary.totalToCollect)}</strong> ממתין לגבייה</span>
+              <span><strong>{summary.projectsNeedingAttention}</strong> פרויקטים דורשים טיפול</span>
               {summary.criticalAlerts > 0 && (
-                <span>🚨 <strong>{summary.criticalAlerts}</strong> התראות קריטיות</span>
+                <span><strong>{summary.criticalAlerts}</strong> התראות קריטיות</span>
               )}
             </div>
             {summary.topTask && (
               <div className="text-white/90 text-sm font-medium pt-1 border-t border-white/20">
-                🎯 היום הכי חשוב: {summary.topTask.message} — {summary.topTask.project_name}
+                היום הכי חשוב: {summary.topTask.message} — {summary.topTask.project_name}
               </div>
             )}
           </div>
@@ -100,7 +100,7 @@ export default function SmartFocusCard({ tasks, summary, isLoading, onRefresh, m
 
         {!isLoading && topTasks.length === 0 && (
           <div className="p-10 text-center">
-            <div className="text-4xl mb-3">✅</div>
+            <CheckCircle2 className="w-10 h-10 mx-auto mb-3 text-success" aria-hidden="true" />
             <p className="text-muted-foreground font-medium">אין משימות דחופות כרגע</p>
             <p className="text-muted-foreground text-sm mt-1">כל הפרויקטים במצב תקין</p>
           </div>

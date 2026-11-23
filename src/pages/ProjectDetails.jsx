@@ -350,28 +350,28 @@ export default function ProjectDetails() {
         </div>
 
         {/* Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="bg-card rounded-xl border border-border p-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="bg-card rounded-xl border shadow-sm p-5">
             <p className="text-sm text-muted-foreground mb-1">סכום הצעה</p>
-            <p className="text-2xl font-bold text-foreground">{formatCurrency(total_sale)}</p>
+            <p className="text-2xl font-bold tabular-nums text-foreground">{formatCurrency(total_sale)}</p>
           </div>
-          <div className="bg-card rounded-xl border border-border p-6">
+          <div className="bg-card rounded-xl border shadow-sm p-5">
             <p className="text-sm text-muted-foreground mb-1">סה״כ התקבל</p>
-            <p className="text-2xl font-bold text-success">{formatCurrency(total_received)}</p>
+            <p className="text-2xl font-bold tabular-nums text-success">{formatCurrency(total_received)}</p>
           </div>
-          <div className="bg-card rounded-xl border border-border p-6">
+          <div className="bg-card rounded-xl border shadow-sm p-5">
             <p className="text-sm text-muted-foreground mb-1">יתרה לגבייה</p>
             <p className={cn(
-              "text-2xl font-bold",
+              "text-2xl font-bold tabular-nums",
               balance_to_collect > 0 ? "text-warning" : "text-success"
             )}>
               {formatCurrency(balance_to_collect)}
             </p>
           </div>
-          <div className="bg-card rounded-xl border border-border p-6">
+          <div className="bg-card rounded-xl border shadow-sm p-5">
             <p className="text-sm text-muted-foreground mb-1">רווח צפוי</p>
             <p className={cn(
-              "text-2xl font-bold",
+              "text-2xl font-bold tabular-nums",
               (gross_profit || 0) >= 0 ? "text-success" : "text-destructive"
             )}>
               {formatCurrency(gross_profit || 0)}
@@ -383,9 +383,9 @@ export default function ProjectDetails() {
         </div>
 
         {/* Project Info */}
-        <div className="bg-card rounded-xl border border-border p-6">
+        <div className="bg-card rounded-xl border shadow-sm p-5">
           <h3 className="font-semibold text-foreground mb-4">פרטי פרויקט</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="flex items-center gap-3">
               <Building2 className="w-5 h-5 text-muted-foreground" />
               <div>

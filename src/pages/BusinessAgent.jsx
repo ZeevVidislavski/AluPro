@@ -1,4 +1,5 @@
 import { useState } from "react";
+import PageHeader from "@/components/shared/PageHeader";
 import { Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ProjectService, CustomerService, ClientPaymentService, SupplierOrderService, AgentSettingsService, AgentAlertService, ProjectQuoteService } from "@/services";
@@ -246,10 +247,11 @@ export default function BusinessAgent() {
     return (
       <div className="p-4 md:p-6 lg:p-8">
         <div className="max-w-2xl mx-auto">
-          <div className="flex items-center justify-between mb-6">
-            <h1 className="text-[28px] leading-9 font-bold text-foreground">הגדרות סוכן</h1>
-            <Button variant="outline" onClick={() => setShowSettings(false)}>חזור</Button>
-          </div>
+          <PageHeader
+            className="mb-6"
+            title="הגדרות סוכן"
+            actions={<Button variant="outline" onClick={() => setShowSettings(false)}>חזור</Button>}
+          />
 
           <div className="bg-card rounded-xl border border-border p-6 space-y-6">
             <div className="space-y-2">
@@ -299,7 +301,7 @@ export default function BusinessAgent() {
             </div>
 
             <div className="border-t pt-4 space-y-4">
-              <p className="text-sm font-semibold text-foreground">🎯 Smart Focus</p>
+              <p className="text-sm font-semibold text-foreground">Smart Focus</p>
               <div className="flex items-center justify-between">
                 <Label>הפעל Smart Focus</Label>
                 <input
@@ -339,34 +341,27 @@ export default function BusinessAgent() {
     <div className="p-4 md:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-[28px] leading-9 font-bold text-foreground">🤖 ניהול חכם</h1>
-            <p className="text-muted-foreground">מערכת התראות וניתוח עסקי אוטומטי</p>
-          </div>
-          <div className="flex gap-3">
-            <Button 
-              variant="outline"
-              onClick={() => setShowSettings(true)}
-            >
-              <SettingsIcon className="w-4 h-4 ml-2" />
-              הגדרות
-            </Button>
-            <Button 
-              onClick={() => runAnalysisMutation.mutate()}
-              disabled={runAnalysisMutation.isPending}
-              className="bg-primary hover:bg-primary-hover"
-            >
-              {runAnalysisMutation.isPending && <Loader2 className="w-4 h-4 ml-2 animate-spin" />}
-              הרץ ניתוח
-            </Button>
-          </div>
-        </div>
+        <PageHeader
+          title="ניהול חכם"
+          description="מערכת התראות וניתוח עסקי אוטומטי"
+          actions={
+            <>
+              <Button variant="outline" onClick={() => setShowSettings(true)}>
+                <SettingsIcon className="w-4 h-4" />
+                הגדרות
+              </Button>
+              <Button onClick={() => runAnalysisMutation.mutate()} disabled={runAnalysisMutation.isPending}>
+                {runAnalysisMutation.isPending && <Loader2 className="w-4 h-4 animate-spin" />}
+                הרץ ניתוח
+              </Button>
+            </>
+          }
+        />
 
         {/* Top Priority Projects */}
         {projectsWithScores.length > 0 && (
-          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border border-primary/30 p-6">
-            <h2 className="text-xl font-bold text-foreground mb-4">🎯 פרויקטים בעדיפות</h2>
+          <div className="bg-card rounded-xl border shadow-sm p-6">
+            <h2 className="text-xl font-bold text-foreground mb-4">פרויקטים בעדיפות</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {projectsWithScores.map(({ project, score, financials }, idx) => (
                 <div key={project.id} className="bg-card rounded-xl p-4 border border-border">

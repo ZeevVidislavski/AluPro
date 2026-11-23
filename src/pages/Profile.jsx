@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import PageHeader from "@/components/shared/PageHeader";
 import { useAuth } from "@/lib/AuthContext";
 import { ProfileService } from "@/services/profileService";
 import { Button } from "@/components/ui/button";
@@ -70,9 +71,8 @@ export default function Profile() {
   };
 
   return (
-    <div className="max-w-lg mx-auto p-6" dir="rtl">
-      <h1 className="text-[28px] leading-9 font-bold text-foreground mb-1">אזור אישי</h1>
-      <p className="text-muted-foreground text-sm mb-6">{user?.email}</p>
+    <div className="max-w-lg mx-auto p-4 md:p-6">
+      <PageHeader className="mb-6" title="אזור אישי" description={user?.email} />
 
       <div className="bg-card rounded-xl border border-border p-6 mb-4">
         <h2 className="font-semibold text-foreground mb-4">פרטים אישיים</h2>
