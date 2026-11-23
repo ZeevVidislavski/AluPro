@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 
 const ORDER_TYPE_LABELS = { profiles: "פרופילים", hardware: "פרזול", glass: "זכוכית" };
 const ORDER_TYPE_COLORS = {
-  profiles: "bg-blue-100 text-primary",
+  profiles: "bg-secondary text-primary",
   hardware: "bg-purple-100 text-purple-700",
   glass: "bg-cyan-100 text-cyan-700",
 };
@@ -98,14 +98,14 @@ export default function MaterialOrdersTab({ projectId, projectName }) {
       </div>
 
       {generateError && (
-        <div className="bg-destructive-subtle border border-red-200 rounded-xl px-4 py-3 text-sm text-destructive">
+        <div className="bg-destructive-subtle border border-destructive/30 rounded-xl px-4 py-3 text-sm text-destructive">
           {generateError}
         </div>
       )}
 
       {orders.length === 0 && !generateError && (
         <div className="border border-dashed border-border rounded-xl p-10 text-center text-muted-foreground">
-          <Package className="w-10 h-10 mx-auto mb-2 text-slate-300" />
+          <Package className="w-10 h-10 mx-auto mb-2 text-muted-foreground/60" />
           <p>לחץ "צור הזמנות חומר" כדי לייצר רשימות הזמנה מרכיבי הדגמים</p>
         </div>
       )}
@@ -140,7 +140,7 @@ export default function MaterialOrdersTab({ projectId, projectName }) {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-8 w-8 text-red-400 hover:text-destructive hover:bg-destructive-subtle"
+                  className="h-8 w-8 text-destructive/80 hover:text-destructive hover:bg-destructive-subtle"
                   onClick={async () => { if (await confirmAction("למחוק הזמנה זו?")) deleteOrderMutation.mutate(order.id); }}
                 >
                   <Trash2 className="w-4 h-4" />

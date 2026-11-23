@@ -29,8 +29,8 @@ export default function ProfitabilityReport({ project, payments, orders, quotes 
     ? 'text-warning' : 'text-destructive';
 
   const profitBg = (profit_percent || 0) >= 20
-    ? 'bg-success-subtle border-emerald-200' : (profit_percent || 0) >= 10
-    ? 'bg-warning-subtle border-amber-200' : 'bg-destructive-subtle border-red-200';
+    ? 'bg-success-subtle border-success/30' : (profit_percent || 0) >= 10
+    ? 'bg-warning-subtle border-warning/30' : 'bg-destructive-subtle border-destructive/30';
 
   const profitBarColor = (profit_percent || 0) >= 20
     ? 'bg-emerald-500' : (profit_percent || 0) >= 10
@@ -59,7 +59,7 @@ export default function ProfitabilityReport({ project, payments, orders, quotes 
               </p>
             </div>
           </div>
-          <div className="flex gap-6 text-sm text-slate-300 pt-4 border-t border-white/10">
+          <div className="flex gap-6 text-sm text-muted-foreground/60 pt-4 border-t border-white/10">
             <span>👤 {project.customer_name}</span>
             {project.address && <span>📍 {project.address}</span>}
             {project.target_date && (
@@ -119,8 +119,8 @@ export default function ProfitabilityReport({ project, payments, orders, quotes 
                 </div>
                 <div className="flex justify-between text-xs text-muted-foreground mt-1">
                   <span>0%</span>
-                  <span className="text-amber-500">10%</span>
-                  <span className="text-emerald-500">20%</span>
+                  <span className="text-warning">10%</span>
+                  <span className="text-success">20%</span>
                   <span>50%</span>
                   <span>100%</span>
                 </div>
@@ -159,7 +159,7 @@ export default function ProfitabilityReport({ project, payments, orders, quotes 
                   ) : (payments || []).map((payment, idx) => (
                     <tr key={idx} className={idx % 2 === 0 ? 'bg-card' : 'bg-background'}>
                       <td className="p-3 text-foreground">{format(new Date(payment.payment_date), 'dd/MM/yyyy', { locale: he })}</td>
-                      <td className="p-3"><span className="bg-blue-100 text-primary text-xs px-2 py-0.5 rounded-full">{paymentTypeLabels[payment.payment_type]}</span></td>
+                      <td className="p-3"><span className="bg-secondary text-primary text-xs px-2 py-0.5 rounded-full">{paymentTypeLabels[payment.payment_type]}</span></td>
                       <td className="p-3 text-muted-foreground">{paymentMethodLabels[payment.payment_method]}</td>
                       <td className="p-3 text-left font-bold text-foreground">{fmt(payment.amount)}</td>
                     </tr>
@@ -226,17 +226,17 @@ export default function ProfitabilityReport({ project, payments, orders, quotes 
           <section>
             <SectionTitle>💸 תזרים מזומנים בפועל</SectionTitle>
             <div className="grid grid-cols-3 gap-4">
-              <div className="bg-secondary border border-blue-200 rounded-xl p-5 text-center">
+              <div className="bg-secondary border border-primary/30 rounded-xl p-5 text-center">
                 <p className="text-xs text-muted-foreground mb-2">התקבל מלקוחות</p>
                 <p className="text-2xl font-bold text-primary">{fmt(total_received)}</p>
               </div>
-              <div className="bg-destructive-subtle border border-red-200 rounded-xl p-5 text-center">
+              <div className="bg-destructive-subtle border border-destructive/30 rounded-xl p-5 text-center">
                 <p className="text-xs text-muted-foreground mb-2">שולם לספקים</p>
                 <p className="text-2xl font-bold text-destructive">{fmt(total_paid_to_suppliers)}</p>
               </div>
               <div className={cn(
                 "rounded-xl p-5 text-center border",
-                cash_flow >= 0 ? "bg-success-subtle border-emerald-200" : "bg-destructive-subtle border-red-200"
+                cash_flow >= 0 ? "bg-success-subtle border-success/30" : "bg-destructive-subtle border-destructive/30"
               )}>
                 <p className="text-xs text-muted-foreground mb-2">תזרים נטו</p>
                 <p className={cn("text-2xl font-bold", cash_flow >= 0 ? "text-success" : "text-destructive")}>{fmt(cash_flow)}</p>

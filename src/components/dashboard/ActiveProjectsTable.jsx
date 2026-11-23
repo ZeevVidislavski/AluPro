@@ -44,7 +44,7 @@ export default function ActiveProjectsTable({ projects, allPayments, allQuotes, 
                 <tr key={project.id} className="hover:bg-background transition-colors">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2">
-                      {overdue && <AlertTriangle className="w-4 h-4 text-red-500" />}
+                      {overdue && <AlertTriangle className="w-4 h-4 text-destructive" />}
                       <span className="font-medium text-foreground">{project.name}</span>
                     </div>
                     {project.project_number && (

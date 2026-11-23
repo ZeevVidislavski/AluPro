@@ -13,7 +13,7 @@ export default function PlatformAdminLayout({ children }) {
           <ShieldCheck className="w-5 h-5" />
           <span className="font-bold">מסוף ניהול פלטפורמה</span>
         </div>
-        <Link to="/" className="flex items-center gap-1 text-sm text-slate-300 hover:text-white">
+        <Link to="/" className="flex items-center gap-1 text-sm text-muted-foreground/60 hover:text-white">
           <ChevronLeft className="w-4 h-4" />
           חזרה למערכת
         </Link>

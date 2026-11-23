@@ -247,7 +247,7 @@ export default function Projects() {
             const financials = calculateProjectFinancials(project.id, { allQuotes, allPayments, allOrders });
             
             return (
-              <div key={project.id} className="relative bg-card rounded-xl border border-border hover:shadow-lg transition-all hover:border-blue-200 group">
+              <div key={project.id} className="relative bg-card rounded-xl border border-border hover:shadow-lg transition-all hover:border-primary/30 group">
               <Link
                 to={createPageUrl("ProjectDetails") + `?id=${project.id}`}
                 className="block p-6"
@@ -264,7 +264,7 @@ export default function Projects() {
                       {project.name}
                     </h3>
                   </div>
-                  <ChevronLeft className="w-5 h-5 text-slate-300 group-hover:text-primary transition-colors" />
+                  <ChevronLeft className="w-5 h-5 text-muted-foreground/60 group-hover:text-primary transition-colors" />
                 </div>
 
                 <div className="space-y-2 text-sm text-muted-foreground mb-4">
@@ -309,7 +309,7 @@ export default function Projects() {
 
         {filteredProjects.length === 0 && (
           <div className="text-center py-12">
-            <Building2 className="w-12 h-12 mx-auto text-slate-300 mb-4" />
+            <Building2 className="w-12 h-12 mx-auto text-muted-foreground/60 mb-4" />
             <h3 className="text-lg font-medium text-foreground mb-1">לא נמצאו פרויקטים</h3>
             <p className="text-muted-foreground">נסה לשנות את פרמטרי החיפוש</p>
           </div>

@@ -39,8 +39,8 @@ import {
 import { cn } from "@/lib/utils";
 
 const priorityConfig = {
-  high: { label: "גבוהה", color: "bg-destructive-subtle text-destructive border-red-200", icon: AlertTriangle },
-  medium: { label: "בינונית", color: "bg-warning-subtle text-warning border-amber-200", icon: Clock },
+  high: { label: "גבוהה", color: "bg-destructive-subtle text-destructive border-destructive/30", icon: AlertTriangle },
+  medium: { label: "בינונית", color: "bg-warning-subtle text-warning border-warning/30", icon: Clock },
   low: { label: "נמוכה", color: "bg-secondary text-muted-foreground border-border", icon: Bell }
 };
 
@@ -210,7 +210,7 @@ export default function Reminders() {
                 className={cn(
                   "bg-card rounded-xl border p-6 transition-all hover:shadow-lg",
                   reminder.status === 'done' && "opacity-60",
-                  isOverdue && reminder.status === 'open' && "border-red-300 bg-destructive-subtle"
+                  isOverdue && reminder.status === 'open' && "border-destructive/40 bg-destructive-subtle"
                 )}
               >
                 <div className="flex items-start gap-4">
@@ -246,7 +246,7 @@ export default function Reminders() {
                         </span>
                       )}
                       {isDueTomorrow && reminder.status === 'open' && (
-                        <span className="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-primary font-medium">
+                        <span className="text-xs px-2 py-0.5 rounded-full bg-secondary text-primary font-medium">
                           מחר
                         </span>
                       )}
@@ -290,7 +290,7 @@ export default function Reminders() {
 
           {sortedReminders.length === 0 && (
             <div className="text-center py-12 bg-card rounded-xl border border-border">
-              <Bell className="w-12 h-12 mx-auto text-slate-300 mb-4" />
+              <Bell className="w-12 h-12 mx-auto text-muted-foreground/60 mb-4" />
               <h3 className="text-lg font-medium text-foreground mb-1">אין תזכורות</h3>
               <p className="text-muted-foreground">לא נמצאו תזכורות בקטגוריה זו</p>
             </div>

@@ -204,7 +204,7 @@ export default function Customers() {
                     "w-12 h-12 rounded-xl flex items-center justify-center",
                     customer.customer_type === 'contractor' 
                       ? "bg-purple-100 text-purple-600" 
-                      : "bg-blue-100 text-primary"
+                      : "bg-secondary text-primary"
                   )}>
                     {customer.customer_type === 'contractor' ? (
                       <Building2 className="w-6 h-6" />
@@ -218,7 +218,7 @@ export default function Customers() {
                       "text-xs px-2 py-0.5 rounded-full",
                       customer.customer_type === 'contractor'
                         ? "bg-purple-100 text-purple-700"
-                        : "bg-blue-100 text-primary"
+                        : "bg-secondary text-primary"
                     )}>
                       {customer.customer_type === 'contractor' ? 'קבלן' : 'פרטי'}
                     </span>
@@ -289,7 +289,7 @@ export default function Customers() {
 
         {filteredCustomers.length === 0 && (
           <div className="text-center py-12">
-            <User className="w-12 h-12 mx-auto text-slate-300 mb-4" />
+            <User className="w-12 h-12 mx-auto text-muted-foreground/60 mb-4" />
             <h3 className="text-lg font-medium text-foreground mb-1">לא נמצאו לקוחות</h3>
             <p className="text-muted-foreground">נסה לשנות את פרמטרי החיפוש</p>
           </div>

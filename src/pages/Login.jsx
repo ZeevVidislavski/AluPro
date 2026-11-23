@@ -62,7 +62,7 @@ export default function Login() {
     <div className="flex items-center justify-center py-24 bg-background p-6" dir="rtl">
       <div className="w-full max-w-sm bg-card rounded-xl border border-border p-8">
         <h1 className="text-[28px] leading-9 font-bold text-foreground mb-1">התחברות</h1>
-        <p className="text-muted-foreground text-sm mb-6">ProjectFlow Pro</p>
+        <p className="text-muted-foreground text-sm mb-6">AluPro</p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">

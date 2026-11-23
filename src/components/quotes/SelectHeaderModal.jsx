@@ -23,7 +23,7 @@ function HeaderThumbnail({ path }) {
   }, [path]);
 
   if (!path) return null;
-  if (!url) return <Loader2 className="w-4 h-4 animate-spin text-slate-300 shrink-0" />;
+  if (!url) return <Loader2 className="w-4 h-4 animate-spin text-muted-foreground/60 shrink-0" />;
   return <img src={url} alt="" className="h-10 w-auto object-contain rounded" />;
 }
 
@@ -52,7 +52,7 @@ export default function SelectHeaderModal({ open, onClose, headers, onConfirm })
             className={cn(
               "w-full text-right px-4 py-3 rounded-xl border transition-colors",
               selectedId === null
-                ? "border-blue-300 bg-secondary"
+                ? "border-primary/40 bg-secondary"
                 : "border-border hover:bg-background"
             )}
           >
@@ -65,7 +65,7 @@ export default function SelectHeaderModal({ open, onClose, headers, onConfirm })
               className={cn(
                 "w-full text-right px-4 py-3 rounded-xl border transition-colors flex items-center gap-3",
                 selectedId === h.id
-                  ? "border-blue-300 bg-secondary"
+                  ? "border-primary/40 bg-secondary"
                   : "border-border hover:bg-background"
               )}
             >
@@ -75,7 +75,7 @@ export default function SelectHeaderModal({ open, onClose, headers, onConfirm })
                 {h.company_name && <p className="text-xs text-muted-foreground">{h.company_name}</p>}
                 {h.subtitle && <p className="text-xs text-muted-foreground">{h.subtitle}</p>}
               </div>
-              {h.is_default && <span className="mr-auto text-xs text-blue-500">ברירת מחדל</span>}
+              {h.is_default && <span className="mr-auto text-xs text-primary/80">ברירת מחדל</span>}
             </button>
           ))}
         </div>

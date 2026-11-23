@@ -218,7 +218,7 @@ function EditMemberForm({ tenantId, member, onClose, onSaved }) {
         <Button
           type="button"
           variant="outline"
-          className="w-full text-destructive border-red-200 hover:bg-destructive-subtle"
+          className="w-full text-destructive border-destructive/30 hover:bg-destructive-subtle"
           disabled={removeMutation.isPending}
           onClick={async () => {
             if (await confirmAction(`למחוק את ${member.profiles?.full_name || "העובד"} מהצוות?`)) removeMutation.mutate();

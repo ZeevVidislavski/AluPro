@@ -3,10 +3,10 @@ import { cn } from "@/lib/utils";
 export default function StatsCard({ title, value, subtitle, icon: Icon, trend, trendUp, className, variant = "default" }) {
   const variants = {
     default: "bg-card border-border",
-    success: "bg-success-subtle border-emerald-200",
-    warning: "bg-warning-subtle border-amber-200",
-    danger: "bg-destructive-subtle border-red-200",
-    primary: "bg-secondary border-blue-200"
+    success: "bg-success-subtle border-success/30",
+    warning: "bg-warning-subtle border-warning/30",
+    danger: "bg-destructive-subtle border-destructive/30",
+    primary: "bg-secondary border-primary/30"
   };
 
   const iconVariants = {
@@ -14,12 +14,12 @@ export default function StatsCard({ title, value, subtitle, icon: Icon, trend, t
     success: "bg-success-subtle text-success",
     warning: "bg-warning-subtle text-warning",
     danger: "bg-destructive-subtle text-destructive",
-    primary: "bg-blue-100 text-primary"
+    primary: "bg-secondary text-primary"
   };
 
   return (
     <div className={cn(
-      "rounded-xl border p-6 transition-all hover:shadow-lg",
+      "rounded-xl border p-6 transition-all",
       variants[variant],
       className
     )}>

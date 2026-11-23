@@ -205,7 +205,7 @@ export default function CatalogPickerModal({ open, onClose, catalogItems, onConf
                     id={`catalog-row-${item.id}`}
                     className={cn(
                       "flex items-center justify-between gap-3 px-4 py-3 rounded-xl border transition-colors",
-                      isSelected ? "border-blue-300 bg-secondary" : "border-border hover:bg-background",
+                      isSelected ? "border-primary/40 bg-secondary" : "border-border hover:bg-background",
                       isActive && "ring-2 ring-blue-400"
                     )}
                   >
@@ -282,7 +282,7 @@ export default function CatalogPickerModal({ open, onClose, catalogItems, onConf
               {selected.length} רכיבים נבחרו: {selected.map(s => s.model_name).join("، ")}
             </div>
             <div className="space-y-1">
-              <Label>שם תבנית <span className="text-red-500">*</span></Label>
+              <Label>שם תבנית <span className="text-destructive">*</span></Label>
               <Input
                 value={templateName}
                 onChange={e => setTemplateName(e.target.value)}

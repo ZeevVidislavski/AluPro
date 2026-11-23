@@ -36,7 +36,7 @@ export default function LoadTemplateModal({ open, onClose, templates, onLoad }) 
               className={cn(
                 "w-full text-right px-4 py-3 rounded-xl border transition-colors",
                 selectedId === t.id
-                  ? "border-blue-300 bg-secondary"
+                  ? "border-primary/40 bg-secondary"
                   : "border-border hover:bg-background"
               )}
             >
@@ -55,7 +55,7 @@ export default function LoadTemplateModal({ open, onClose, templates, onLoad }) 
                 onClick={() => setPriceMode("snapshot")}
                 className={cn(
                   "flex-1 py-2 px-3 rounded-lg border text-sm transition-colors",
-                  priceMode === "snapshot" ? "border-blue-300 bg-secondary text-primary" : "border-border hover:bg-background"
+                  priceMode === "snapshot" ? "border-primary/40 bg-secondary text-primary" : "border-border hover:bg-background"
                 )}
               >
                 מחירים שמורים
@@ -64,7 +64,7 @@ export default function LoadTemplateModal({ open, onClose, templates, onLoad }) 
                 onClick={() => setPriceMode("catalog")}
                 className={cn(
                   "flex-1 py-2 px-3 rounded-lg border text-sm transition-colors",
-                  priceMode === "catalog" ? "border-blue-300 bg-secondary text-primary" : "border-border hover:bg-background"
+                  priceMode === "catalog" ? "border-primary/40 bg-secondary text-primary" : "border-border hover:bg-background"
                 )}
               >
                 מחירי קטלוג עדכניים

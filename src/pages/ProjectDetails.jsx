@@ -88,7 +88,7 @@ function QuoteFileLink({ path }) {
   }, [path]);
 
   if (!url) {
-    return <span className="p-2"><Loader2 className="w-4 h-4 animate-spin text-slate-300" /></span>;
+    return <span className="p-2"><Loader2 className="w-4 h-4 animate-spin text-muted-foreground/60" /></span>;
   }
   return (
     <a href={url} target="_blank" rel="noopener noreferrer" className="p-2 hover:bg-secondary rounded-lg text-primary hover:text-primary">
@@ -109,7 +109,7 @@ function DocumentFileLink({ path }) {
   }, [path]);
 
   if (!url) {
-    return <span className="p-2"><Loader2 className="w-4 h-4 animate-spin text-slate-300" /></span>;
+    return <span className="p-2"><Loader2 className="w-4 h-4 animate-spin text-muted-foreground/60" /></span>;
   }
   return (
     <a href={url} target="_blank" rel="noopener noreferrer" className="p-2 hover:bg-secondary rounded-lg text-muted-foreground hover:text-foreground">
@@ -308,7 +308,7 @@ export default function ProjectDetails() {
           </div>
           {project.settlement_status === "closed" ? (
             <div className="flex items-center gap-2">
-              <span className="flex items-center gap-1.5 text-sm font-medium text-success bg-success-subtle border border-emerald-200 px-3 py-1.5 rounded-lg">
+              <span className="flex items-center gap-1.5 text-sm font-medium text-success bg-success-subtle border border-success/30 px-3 py-1.5 rounded-lg">
                 <Lock className="w-4 h-4" /> סגור להתחשבנות
               </span>
               <Button variant="outline" size="sm" onClick={async () => { if (await confirmAction("לפתוח פרויקט זה מחדש?")) reopenSettlementMutation.mutate(); }}>
@@ -316,7 +316,7 @@ export default function ProjectDetails() {
               </Button>
             </div>
           ) : (
-            <Button variant="outline" onClick={handleCloseSettlement} className="gap-2 border-emerald-300 text-success hover:bg-success-subtle">
+            <Button variant="outline" onClick={handleCloseSettlement} className="gap-2 border-success/40 text-success hover:bg-success-subtle">
               {closeSettlementMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Lock className="w-4 h-4" />}
               סגור להתחשבנות
             </Button>
@@ -342,7 +342,7 @@ export default function ProjectDetails() {
           <Button
             variant="outline"
             onClick={() => setDeleteDialogOpen(true)}
-            className="border-red-200 text-destructive hover:bg-destructive-subtle"
+            className="border-destructive/30 text-destructive hover:bg-destructive-subtle"
           >
             <Trash2 className="w-4 h-4 ml-2" />
             מחיקה
@@ -537,7 +537,7 @@ export default function ProjectDetails() {
           <p className="text-muted-foreground text-sm py-2">
             האם אתה בטוח שברצונך למחוק את הפרויקט <strong>"{project.name}"</strong>?
             <br />
-            <span className="text-red-500 text-sm mt-1 block">פעולה זו אינה ניתנת לביטול.</span>
+            <span className="text-destructive text-sm mt-1 block">פעולה זו אינה ניתנת לביטול.</span>
           </p>
           <div className="flex gap-2 mt-2">
             <Button
@@ -568,7 +568,7 @@ export default function ProjectDetails() {
             <p className="text-sm text-muted-foreground">נמצאו יתרות פתוחות – יש לסגור אותן לפני סגירת ההתחשבנות:</p>
             <ul className="space-y-2">
               {closeBlockReasons.map((r, i) => (
-                <li key={i} className="flex items-center gap-2 text-sm text-destructive bg-destructive-subtle border border-red-200 rounded-lg px-4 py-2">
+                <li key={i} className="flex items-center gap-2 text-sm text-destructive bg-destructive-subtle border border-destructive/30 rounded-lg px-4 py-2">
                   <AlertCircle className="w-4 h-4 shrink-0" /> {r}
                 </li>
               ))}
@@ -749,7 +749,7 @@ function PaymentsSection({ payments, projectId, projectName, dialogOpen, setDial
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <span className="font-medium">{formatCurrency(payment.amount)}</span>
-                <span className="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-primary">
+                <span className="text-xs px-2 py-0.5 rounded-full bg-secondary text-primary">
                   {paymentTypeLabels[payment.payment_type]}
                 </span>
               </div>
@@ -978,7 +978,7 @@ function OrdersSection({ orders, projectId, projectName, dialogOpen, setDialogOp
                 <span className="font-medium">{order.supplier_name}</span>
                 <span className={cn(
                   "text-xs px-2 py-0.5 rounded-full",
-                  order.order_type === 'aluminum' ? "bg-blue-100 text-primary" :
+                  order.order_type === 'aluminum' ? "bg-secondary text-primary" :
                   order.order_type === 'hardware' ? "bg-purple-100 text-purple-700" :
                   order.order_type === 'glass' ? "bg-cyan-100 text-cyan-700" :
                   "bg-secondary text-foreground"
@@ -1295,7 +1295,7 @@ function QuotesSection({ quotes, projectId, projectName, customerName, projectSt
               {quote.status !== 'approved' && (
                 <Button
                   size="sm"
-                  className="bg-green-600 hover:bg-green-700"
+                  className="bg-success hover:bg-success/90"
                   disabled={approveMutation.isPending}
                   onClick={() => approveMutation.mutate(quote)}
                 >

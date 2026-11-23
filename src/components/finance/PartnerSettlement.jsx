@@ -140,8 +140,8 @@ export default function PartnerSettlement({ allPayments, allOrders, allQuotes, p
 
       {/* SHARE WARNING */}
       {shareWarning && (
-        <div className="bg-warning-subtle border border-amber-200 rounded-xl p-4 flex items-center gap-3 text-warning">
-          <AlertCircle className="w-5 h-5 text-amber-500 shrink-0" />
+        <div className="bg-warning-subtle border border-warning/30 rounded-xl p-4 flex items-center gap-3 text-warning">
+          <AlertCircle className="w-5 h-5 text-warning shrink-0" />
           <span className="text-sm">סה״כ אחוזי השותפות = <strong>{totalSharePercent}%</strong> (אמור להיות 100%)</span>
         </div>
       )}
@@ -167,10 +167,10 @@ export default function PartnerSettlement({ allPayments, allOrders, allQuotes, p
           {/* Business totals */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {[
-              { label: "סה״כ הכנסות (פרויקטים סגורים)", value: fmt(total_income), color: "text-success", bg: "bg-success-subtle border-emerald-200", icon: TrendingUp },
+              { label: "סה״כ הכנסות (פרויקטים סגורים)", value: fmt(total_income), color: "text-success", bg: "bg-success-subtle border-success/30", icon: TrendingUp },
               { label: "עלויות פרויקטים", value: fmt(total_project_costs), color: "text-foreground", bg: "bg-background border-border", icon: TrendingDown },
-              { label: "הוצאות כלליות", value: fmt(total_general_expenses), color: "text-warning", bg: "bg-warning-subtle border-amber-200", icon: Wallet },
-              { label: "רווח לחלוקת שותפים (פרויקטים סגורים)", value: fmt(net_business_profit), color: net_business_profit >= 0 ? "text-success" : "text-destructive", bg: net_business_profit >= 0 ? "bg-success-subtle border-emerald-200" : "bg-destructive-subtle border-red-200", icon: net_business_profit >= 0 ? TrendingUp : TrendingDown },
+              { label: "הוצאות כלליות", value: fmt(total_general_expenses), color: "text-warning", bg: "bg-warning-subtle border-warning/30", icon: Wallet },
+              { label: "רווח לחלוקת שותפים (פרויקטים סגורים)", value: fmt(net_business_profit), color: net_business_profit >= 0 ? "text-success" : "text-destructive", bg: net_business_profit >= 0 ? "bg-success-subtle border-success/30" : "bg-destructive-subtle border-destructive/30", icon: net_business_profit >= 0 ? TrendingUp : TrendingDown },
             ].map((card, i) => (
               <div key={i} className={cn("rounded-xl border p-4", card.bg)}>
                 <div className="flex items-center gap-2 mb-2">
@@ -184,11 +184,11 @@ export default function PartnerSettlement({ allPayments, allOrders, allQuotes, p
 
           {/* Projected banner */}
           {total_projected_profit !== 0 && (
-            <div className="bg-secondary border border-blue-200 rounded-xl p-4 flex items-center gap-3">
-              <Unlock className="w-5 h-5 text-blue-400 shrink-0" />
+            <div className="bg-secondary border border-primary/30 rounded-xl p-4 flex items-center gap-3">
+              <Unlock className="w-5 h-5 text-primary/70 shrink-0" />
               <p className="text-sm text-primary">
                 רווח תיאורטי צפוי מ-<strong>{open_projects_detail.length}</strong> פרויקטים פתוחים: <strong>{fmt(total_projected_profit)}</strong>
-                <span className="text-blue-400 mr-2">(לא נכנס לחלוקה)</span>
+                <span className="text-primary/70 mr-2">(לא נכנס לחלוקה)</span>
               </p>
             </div>
           )}
@@ -196,7 +196,7 @@ export default function PartnerSettlement({ allPayments, allOrders, allQuotes, p
           {/* Partner cards */}
           {partners.length === 0 ? (
             <div className="bg-card rounded-xl border border-border p-10 text-center text-muted-foreground">
-              <Users className="w-10 h-10 mx-auto mb-3 text-slate-300" />
+              <Users className="w-10 h-10 mx-auto mb-3 text-muted-foreground/60" />
               <p className="font-medium mb-2">אין שותפים מוגדרים</p>
               <Button size="sm" onClick={() => { setPartnerForm({ name: "", profit_share_percent: 50, active: true }); setPartnerDialogOpen(true); }}>
                 <Plus className="w-4 h-4 ml-1" /> הוסף שותף
@@ -266,8 +266,8 @@ export default function PartnerSettlement({ allPayments, allOrders, allQuotes, p
                       const net = collected - paid;
                       if (collected === 0 && paid === 0) return null;
                       return (
-                        <div className="mx-6 mb-4 bg-orange-50 border border-orange-200 rounded-lg px-4 py-3 text-sm space-y-1.5">
-                          <p className="text-orange-700 font-medium flex items-center gap-1.5">
+                        <div className="mx-6 mb-4 bg-warning-subtle border border-warning/30 rounded-lg px-4 py-3 text-sm space-y-1.5">
+                          <p className="text-warning font-medium flex items-center gap-1.5">
                             <Wallet className="w-3.5 h-3.5" />
                             פרויקטים פתוחים (לתצוגה בלבד)
                           </p>
@@ -279,9 +279,9 @@ export default function PartnerSettlement({ allPayments, allOrders, allQuotes, p
                             <span>שילם לספקים</span>
                             <span>- {fmt(paid)}</span>
                           </div>
-                          <div className="flex justify-between font-bold text-orange-800 border-t border-orange-200 pt-1.5">
+                          <div className="flex justify-between font-bold text-warning border-t border-warning/30 pt-1.5">
                             <span>יתרה נטו אצלו</span>
-                            <span className={net >= 0 ? "text-orange-800" : "text-destructive"}>{fmt(net)}</span>
+                            <span className={net >= 0 ? "text-warning" : "text-destructive"}>{fmt(net)}</span>
                           </div>
                         </div>
                       );
@@ -297,7 +297,7 @@ export default function PartnerSettlement({ allPayments, allOrders, allQuotes, p
             <div className="bg-card rounded-xl border border-border overflow-hidden">
               <div className="px-6 py-4 border-b border-border bg-background">
                 <h3 className="font-semibold text-foreground flex items-center gap-2">
-                  <ArrowLeftRight className="w-5 h-5 text-blue-500" />
+                  <ArrowLeftRight className="w-5 h-5 text-primary/80" />
                   העברות נדרשות בין שותפים
                 </h3>
               </div>
@@ -323,7 +323,7 @@ export default function PartnerSettlement({ allPayments, allOrders, allQuotes, p
         <div className="bg-card rounded-xl border border-border overflow-hidden">
           {closed_projects_detail.length === 0 ? (
             <div className="p-10 text-center text-muted-foreground">
-              <Lock className="w-10 h-10 mx-auto mb-3 text-slate-300" />
+              <Lock className="w-10 h-10 mx-auto mb-3 text-muted-foreground/60" />
               אין פרויקטים שנסגרו להתחשבנות
             </div>
           ) : (
@@ -360,7 +360,7 @@ export default function PartnerSettlement({ allPayments, allOrders, allQuotes, p
       {/* ===== OPEN PROJECTS TAB (projected) ===== */}
       {activeTab === "open" && (
         <div className="space-y-3">
-          <div className="bg-secondary border border-blue-200 rounded-xl p-4 text-sm text-primary flex items-center gap-2">
+          <div className="bg-secondary border border-primary/30 rounded-xl p-4 text-sm text-primary flex items-center gap-2">
             <AlertCircle className="w-4 h-4 shrink-0" />
             פרויקטים אלה מוצגים כרווח תיאורטי בלבד ולא משפיעים על חלוקת הרווחים
           </div>
@@ -428,7 +428,7 @@ export default function PartnerSettlement({ allPayments, allOrders, allQuotes, p
               </thead>
               <tbody className="divide-y divide-border">
                 {generalExpenses.map((exp, idx) => (
-                  <tr key={exp.id} className={idx % 2 === 0 ? "" : "bg-slate-50/50"}>
+                  <tr key={exp.id} className={idx % 2 === 0 ? "" : "bg-background"}>
                     <td className="p-3 text-muted-foreground">{exp.expense_date ? format(new Date(exp.expense_date), "dd/MM/yyyy", { locale: he }) : "—"}</td>
                     <td className="p-3 font-medium text-foreground">{exp.description}</td>
                     <td className="p-3">
@@ -443,7 +443,7 @@ export default function PartnerSettlement({ allPayments, allOrders, allQuotes, p
                           setExpenseForm({ description: exp.description, category: exp.category, amount: exp.amount, expense_date: exp.expense_date, paid_by_partner_id: exp.paid_by_partner_id, paid_by_partner_name: exp.paid_by_partner_name, notes: exp.notes || "" });
                           setExpenseDialogOpen(true);
                         }}><Pencil className="w-3.5 h-3.5" /></Button>
-                        <Button variant="ghost" size="icon" className="text-red-500 hover:text-destructive" onClick={async () => { if (await confirmAction("למחוק הוצאה זו?")) deleteExpense.mutate(exp.id); }}>
+                        <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive" onClick={async () => { if (await confirmAction("למחוק הוצאה זו?")) deleteExpense.mutate(exp.id); }}>
                           <Trash2 className="w-3.5 h-3.5" />
                         </Button>
                       </div>
@@ -474,7 +474,7 @@ export default function PartnerSettlement({ allPayments, allOrders, allQuotes, p
                     <Button variant="ghost" size="icon" onClick={() => { setEditingPartner(p); setPartnerForm({ name: p.name, profit_share_percent: p.profit_share_percent, active: p.active }); }}>
                       <Pencil className="w-4 h-4" />
                     </Button>
-                    <Button variant="ghost" size="icon" className="text-red-500" onClick={async () => { if (await confirmAction("למחוק שותף זה?")) deletePartner.mutate(p.id); }}>
+                    <Button variant="ghost" size="icon" className="text-destructive" onClick={async () => { if (await confirmAction("למחוק שותף זה?")) deletePartner.mutate(p.id); }}>
                       <Trash2 className="w-4 h-4" />
                     </Button>
                   </div>

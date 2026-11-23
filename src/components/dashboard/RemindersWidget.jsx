@@ -6,8 +6,8 @@ import { ReminderService } from "@/services";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const priorityConfig = {
-  high: { label: "גבוהה", color: "bg-destructive-subtle text-destructive border-red-200" },
-  medium: { label: "בינונית", color: "bg-warning-subtle text-warning border-amber-200" },
+  high: { label: "גבוהה", color: "bg-destructive-subtle text-destructive border-destructive/30" },
+  medium: { label: "בינונית", color: "bg-warning-subtle text-warning border-warning/30" },
   low: { label: "נמוכה", color: "bg-secondary text-muted-foreground border-border" }
 };
 
@@ -90,7 +90,7 @@ export default function RemindersWidget({ reminders }) {
         })}
         {sortedReminders.length === 0 && (
           <div className="p-8 text-center text-muted-foreground">
-            <Bell className="w-8 h-8 mx-auto mb-2 text-slate-300" />
+            <Bell className="w-8 h-8 mx-auto mb-2 text-muted-foreground/60" />
             <p>אין תזכורות פתוחות</p>
           </div>
         )}

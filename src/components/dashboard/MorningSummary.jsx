@@ -95,7 +95,7 @@ export default function MorningSummary() {
   };
 
   return (
-    <div className="bg-gradient-to-br from-indigo-50 via-blue-50 to-cyan-50 rounded-xl border-2 border-blue-200 p-6 shadow-lg">
+    <div className="bg-gradient-to-br from-indigo-50 via-blue-50 to-cyan-50 rounded-xl border-2 border-primary/30 p-6 shadow-lg">
       <div className="flex items-start justify-between mb-4">
         <div>
           <h2 className="text-2xl font-bold text-foreground mb-1">📊 סיכום עסקי יומי</h2>

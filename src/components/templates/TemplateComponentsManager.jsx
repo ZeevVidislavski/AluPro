@@ -56,7 +56,7 @@ export default function TemplateComponentsManager({ templateId, comps, catalogIt
             <th className="px-2 py-2 w-20 text-left">
               <button
                 onClick={() => setPickerOpen(true)}
-                className="text-blue-500 hover:text-primary flex items-center gap-1 text-xs font-medium"
+                className="text-primary/80 hover:text-primary flex items-center gap-1 text-xs font-medium"
               >
                 <Plus className="w-3.5 h-3.5" /> הוסף
               </button>
@@ -65,7 +65,7 @@ export default function TemplateComponentsManager({ templateId, comps, catalogIt
         </thead>
         <tbody className="divide-y divide-slate-50">
           {comps.map(comp => (
-            <tr key={comp.id} className="hover:bg-slate-50/50">
+            <tr key={comp.id} className="hover:bg-background">
               <td className="px-4 py-2 font-medium text-foreground">{comp.name_snapshot}</td>
               <td className="px-4 py-2 text-muted-foreground text-xs">{PRICING_METHOD_LABELS[comp.pricing_method_snapshot]}</td>
               <td className="px-4 py-2">
@@ -84,7 +84,7 @@ export default function TemplateComponentsManager({ templateId, comps, catalogIt
               <td className="px-2 py-2">
                 <button
                   onClick={async () => { if (await confirmAction("למחוק רכיב מהתבנית?")) deleteCompMutation.mutate(comp.id); }}
-                  className="text-red-300 hover:text-destructive"
+                  className="text-destructive/60 hover:text-destructive"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
                 </button>

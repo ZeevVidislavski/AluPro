@@ -278,7 +278,7 @@ export default function ModelPricing() {
                           <Button variant="ghost" size="icon" onClick={() => openEdit(item)}>
                             <Pencil className="w-4 h-4" />
                           </Button>
-                          <Button variant="ghost" size="icon" className="text-red-400 hover:text-destructive hover:bg-destructive-subtle"
+                          <Button variant="ghost" size="icon" className="text-destructive/80 hover:text-destructive hover:bg-destructive-subtle"
                             onClick={async () => { if (await confirmAction("למחוק רכיב זה?")) deleteMutation.mutate(item.id); }}>
                             <Trash2 className="w-4 h-4" />
                           </Button>
@@ -305,7 +305,7 @@ export default function ModelPricing() {
             </div>
             {templates.length === 0 && (
               <div className="bg-card rounded-xl border border-dashed border-input p-10 text-center text-muted-foreground">
-                <BookmarkPlus className="w-10 h-10 mx-auto mb-2 text-slate-300" />
+                <BookmarkPlus className="w-10 h-10 mx-auto mb-2 text-muted-foreground/60" />
                 <p>אין תבניות שמורות עדיין</p>
                 <p className="text-sm mt-1">לחץ "תבנית חדשה" כדי ליצור תבנית מהקטלוג</p>
               </div>
@@ -335,7 +335,7 @@ export default function ModelPricing() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="text-red-400 hover:text-destructive hover:bg-destructive-subtle"
+                        className="text-destructive/80 hover:text-destructive hover:bg-destructive-subtle"
                         onClick={async () => {
                           if (await confirmAction("למחוק תבנית זו?")) deleteTemplateMutation.mutate(t.id);
                         }}

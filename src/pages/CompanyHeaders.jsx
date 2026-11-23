@@ -33,10 +33,10 @@ function useLogoSignedUrl(path) {
 function HeaderLogo({ path, className }) {
   const url = useLogoSignedUrl(path);
   if (!path) {
-    return <div className={className + " border-dashed flex items-center justify-center text-slate-300 text-xs"}>אין לוגו</div>;
+    return <div className={className + " border-dashed flex items-center justify-center text-muted-foreground/60 text-xs"}>אין לוגו</div>;
   }
   if (!url) {
-    return <div className={className + " flex items-center justify-center"}><Loader2 className="w-4 h-4 animate-spin text-slate-300" /></div>;
+    return <div className={className + " flex items-center justify-center"}><Loader2 className="w-4 h-4 animate-spin text-muted-foreground/60" /></div>;
   }
   return <img src={url} alt="" className={className + " object-contain"} />;
 }
@@ -116,7 +116,7 @@ export default function CompanyHeaders() {
         />
 
         {isLoading ? (
-          <div className="flex justify-center py-20"><Loader2 className="w-8 h-8 animate-spin text-blue-500" /></div>
+          <div className="flex justify-center py-20"><Loader2 className="w-8 h-8 animate-spin text-primary/80" /></div>
         ) : headers.length === 0 ? (
           <div className="bg-card rounded-xl border border-dashed border-input p-12 text-center text-muted-foreground">
             <p>אין כותרות עדיין</p>
@@ -140,7 +140,7 @@ export default function CompanyHeaders() {
                     </Button>
                   )}
                   <Button size="sm" variant="ghost" onClick={() => openEdit(h)}><Pencil className="w-4 h-4" /></Button>
-                  <Button size="sm" variant="ghost" onClick={() => remove.mutate(h.id)} className="text-red-500 hover:text-destructive"><Trash2 className="w-4 h-4" /></Button>
+                  <Button size="sm" variant="ghost" onClick={() => remove.mutate(h.id)} className="text-destructive hover:text-destructive"><Trash2 className="w-4 h-4" /></Button>
                 </div>
               </div>
             ))}
@@ -177,7 +177,7 @@ export default function CompanyHeaders() {
                 <input type="file" accept="image/*" className="hidden" onChange={handleUpload} />
               </label>
               {form.logo_url && (
-                <button className="text-xs text-red-500 hover:underline" onClick={() => setForm(f => ({ ...f, logo_url: "" }))}>הסר לוגו</button>
+                <button className="text-xs text-destructive hover:underline" onClick={() => setForm(f => ({ ...f, logo_url: "" }))}>הסר לוגו</button>
               )}
             </div>
             <div className="flex items-center gap-2">

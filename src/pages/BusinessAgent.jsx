@@ -36,10 +36,10 @@ import { generateSmartFocusTasks, calculateDailySummary } from "@/components/lib
 import SmartFocusCard from "@/components/agent/SmartFocusCard";
 
 const severityConfig = {
-  critical: { icon: AlertCircle, color: "text-destructive", bg: "bg-destructive-subtle", border: "border-red-200" },
-  high: { icon: AlertTriangle, color: "text-orange-600", bg: "bg-orange-50", border: "border-orange-200" },
+  critical: { icon: AlertCircle, color: "text-destructive", bg: "bg-destructive-subtle", border: "border-destructive/30" },
+  high: { icon: AlertTriangle, color: "text-warning", bg: "bg-warning-subtle", border: "border-warning/30" },
   medium: { icon: AlertCircle, color: "text-yellow-600", bg: "bg-yellow-50", border: "border-yellow-200" },
-  low: { icon: AlertCircle, color: "text-primary", bg: "bg-secondary", border: "border-blue-200" }
+  low: { icon: AlertCircle, color: "text-primary", bg: "bg-secondary", border: "border-primary/30" }
 };
 
 const alertTypeLabels = {
@@ -365,7 +365,7 @@ export default function BusinessAgent() {
 
         {/* Top Priority Projects */}
         {projectsWithScores.length > 0 && (
-          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border border-blue-200 p-6">
+          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border border-primary/30 p-6">
             <h2 className="text-xl font-bold text-foreground mb-4">🎯 פרויקטים בעדיפות</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {projectsWithScores.map(({ project, score, financials }, idx) => (
@@ -421,7 +421,7 @@ export default function BusinessAgent() {
           <div className="divide-y divide-border">
             {filteredAlerts.length === 0 && (
               <div className="p-12 text-center">
-                <CheckCircle2 className="w-12 h-12 text-emerald-500 mx-auto mb-3" />
+                <CheckCircle2 className="w-12 h-12 text-success mx-auto mb-3" />
                 <p className="text-muted-foreground">אין התראות פעילות</p>
               </div>
             )}
@@ -445,7 +445,7 @@ export default function BusinessAgent() {
                         </span>
                         {alert.project_name && (
                           <>
-                            <span className="text-slate-300">•</span>
+                            <span className="text-muted-foreground/60">•</span>
                             <span className="text-xs text-muted-foreground">{alert.project_name}</span>
                           </>
                         )}

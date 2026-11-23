@@ -48,11 +48,11 @@ function TenantUsageBadge({ tenantId, plan }) {
       <span className={cn(usersNearLimit && "text-warning font-semibold")}>
         {usage.user_count} משתמשים
       </span>
-      <span className="text-slate-300">·</span>
+      <span className="text-muted-foreground/60">·</span>
       <span className={cn(projectsNearLimit && "text-warning font-semibold")}>
         {usage.project_count} פרויקטים
       </span>
-      {warning && <AlertTriangle className="w-4 h-4 text-amber-500" />}
+      {warning && <AlertTriangle className="w-4 h-4 text-warning" />}
     </div>
   );
 }

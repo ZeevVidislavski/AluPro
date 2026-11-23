@@ -11,7 +11,7 @@ import { Plus, Trash2, Loader2, Pencil, Calculator } from "lucide-react";
 import { calculateComponents } from "@/lib/formulaEngine";
 
 const COMPONENT_TYPES = { profile: "פרופיל", glass: "זכוכית", hardware: "פרזול", accessory: "אביזר" };
-const TYPE_COLORS = { profile: "bg-blue-100 text-primary", glass: "bg-cyan-100 text-cyan-700", hardware: "bg-orange-100 text-orange-700", accessory: "bg-purple-100 text-purple-700" };
+const TYPE_COLORS = { profile: "bg-secondary text-primary", glass: "bg-cyan-100 text-cyan-700", hardware: "bg-warning-subtle text-warning", accessory: "bg-purple-100 text-purple-700" };
 const BASE_OPTIONS = [
   { value: "opening_width", label: "רוחב פתיחה" },
   { value: "opening_height", label: "גובה פתיחה" },
@@ -268,7 +268,7 @@ export default function ModelComponentsTab({ modelId }) {
                   <td className="px-3 py-2">
                     <div className="flex gap-1">
                       <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => openEdit(comp)}><Pencil className="w-3 h-3" /></Button>
-                      <Button variant="ghost" size="icon" className="h-7 w-7 text-red-400 hover:text-destructive hover:bg-destructive-subtle"
+                      <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive/80 hover:text-destructive hover:bg-destructive-subtle"
                         onClick={async () => { if (await confirmAction("למחוק?")) deleteMutation.mutate(comp.id); }}>
                         <Trash2 className="w-3 h-3" />
                       </Button>
@@ -374,7 +374,7 @@ export default function ModelComponentsTab({ modelId }) {
                     </tbody>
                   </table>
                 </div>
-                <Button onClick={handleSaveCalcResults} disabled={calcSaving} className="w-full bg-green-600 hover:bg-green-700">
+                <Button onClick={handleSaveCalcResults} disabled={calcSaving} className="w-full bg-success hover:bg-success/90">
                   {calcSaving && <Loader2 className="w-4 h-4 ml-2 animate-spin" />}
                   שמור תוצאות
                 </Button>

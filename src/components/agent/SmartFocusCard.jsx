@@ -8,15 +8,15 @@ const actionConfig = {
     icon: DollarSign,
     color: "text-destructive",
     bg: "bg-destructive-subtle",
-    border: "border-red-200",
+    border: "border-destructive/30",
     badge: "bg-destructive-subtle text-destructive"
   },
   fix_profit: {
     icon: TrendingDown,
-    color: "text-orange-600",
-    bg: "bg-orange-50",
-    border: "border-orange-200",
-    badge: "bg-orange-100 text-orange-700"
+    color: "text-warning",
+    bg: "bg-warning-subtle",
+    border: "border-warning/30",
+    badge: "bg-warning-subtle text-warning"
   },
   supplier_payment: {
     icon: PackageCheck,
@@ -29,8 +29,8 @@ const actionConfig = {
     icon: Clock,
     color: "text-primary",
     bg: "bg-secondary",
-    border: "border-blue-200",
-    badge: "bg-blue-100 text-primary"
+    border: "border-primary/30",
+    badge: "bg-secondary text-primary"
   },
   general: {
     icon: RefreshCw,
