@@ -51,10 +51,10 @@ function InviteForm({ tenantId, onInvited }) {
         e.preventDefault();
         mutation.mutate();
       }}
-      className="bg-white rounded-2xl border border-slate-200 p-6 space-y-4"
+      className="bg-white rounded-2xl border border-border p-6 space-y-4"
     >
-      <h2 className="font-semibold text-slate-900 flex items-center gap-2">
-        <UserPlus className="w-5 h-5 text-slate-400" />
+      <h2 className="font-semibold text-foreground flex items-center gap-2">
+        <UserPlus className="w-5 h-5 text-muted-foreground" />
         הזמנת עובד חדש
       </h2>
 
@@ -101,13 +101,13 @@ function InviteForm({ tenantId, onInvited }) {
             חדש
           </Button>
         </div>
-        <p className="text-xs text-slate-400">
+        <p className="text-xs text-muted-foreground">
           יש למסור סיסמה זו לעובד — הוא יוכל להחליף אותה מאוחר יותר דרך "שכחתי סיסמה" או האזור האישי שלו.
         </p>
       </div>
 
       {error && (
-        <p className="text-sm text-red-600 bg-red-50 rounded-md px-3 py-2">{error}</p>
+        <p className="text-sm text-destructive bg-destructive-subtle rounded-md px-3 py-2">{error}</p>
       )}
 
       <Button type="submit" className="w-full" disabled={mutation.isPending}>
@@ -159,9 +159,9 @@ function EditMemberForm({ tenantId, member, onClose, onSaved }) {
   });
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 p-6 space-y-4">
-      <h2 className="font-semibold text-slate-900 flex items-center gap-2">
-        <Pencil className="w-5 h-5 text-slate-400" />
+    <div className="bg-white rounded-2xl border border-border p-6 space-y-4">
+      <h2 className="font-semibold text-foreground flex items-center gap-2">
+        <Pencil className="w-5 h-5 text-muted-foreground" />
         עריכת עובד
       </h2>
 
@@ -193,7 +193,7 @@ function EditMemberForm({ tenantId, member, onClose, onSaved }) {
         {saveMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : "שמור שינויים"}
       </Button>
 
-      <div className="border-t border-slate-100 pt-4 space-y-2">
+      <div className="border-t border-border pt-4 space-y-2">
         <Label htmlFor="resetPassword">איפוס סיסמה</Label>
         <div className="flex gap-2">
           <Input id="resetPassword" dir="ltr" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
@@ -210,14 +210,14 @@ function EditMemberForm({ tenantId, member, onClose, onSaved }) {
         </Button>
       </div>
 
-      {error && <p className="text-sm text-red-600 bg-red-50 rounded-md px-3 py-2">{error}</p>}
-      {message && <p className="text-sm text-green-700 bg-green-50 rounded-md px-3 py-2">{message}</p>}
+      {error && <p className="text-sm text-destructive bg-destructive-subtle rounded-md px-3 py-2">{error}</p>}
+      {message && <p className="text-sm text-success bg-success-subtle rounded-md px-3 py-2">{message}</p>}
 
       {!isOwner && (
         <Button
           type="button"
           variant="outline"
-          className="w-full text-red-600 border-red-200 hover:bg-red-50"
+          className="w-full text-destructive border-red-200 hover:bg-destructive-subtle"
           disabled={removeMutation.isPending}
           onClick={() => {
             if (window.confirm(`למחוק את ${member.profiles?.full_name || "העובד"} מהצוות?`)) removeMutation.mutate();
@@ -254,19 +254,19 @@ export default function Team() {
   if (isLoadingContext) {
     return (
       <div className="flex items-center justify-center py-20">
-        <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
+        <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
       </div>
     );
   }
 
   return (
     <div className="max-w-4xl mx-auto p-6" dir="rtl">
-      <h1 className="text-2xl font-bold text-slate-900 mb-6">צוות</h1>
+      <h1 className="text-2xl font-bold text-foreground mb-6">צוות</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="bg-white rounded-2xl border border-slate-200 p-6">
+        <div className="bg-white rounded-2xl border border-border p-6">
           <div className="flex items-center justify-between mb-3">
-            <h2 className="font-semibold text-slate-900">חברי צוות</h2>
+            <h2 className="font-semibold text-foreground">חברי צוות</h2>
             {canManageTeam && editing && (
               <Button size="sm" variant="outline" onClick={() => setEditing(null)}>
                 <UserPlus className="w-4 h-4 ml-1" /> עובד חדש
@@ -274,15 +274,15 @@ export default function Team() {
             )}
           </div>
           {isLoadingMembers ? (
-            <Loader2 className="w-4 h-4 animate-spin text-slate-400" />
+            <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
           ) : (
             <>
-              {(members ?? []).length === 0 && <p className="text-slate-400 text-sm">אין חברי צוות</p>}
+              {(members ?? []).length === 0 && <p className="text-muted-foreground text-sm">אין חברי צוות</p>}
               {(members ?? []).map((member) => (
-                <div key={member.id} className="flex items-center justify-between py-2 border-b border-slate-100 last:border-0 text-sm gap-2">
+                <div key={member.id} className="flex items-center justify-between py-2 border-b border-border last:border-0 text-sm gap-2">
                   <span>{member.profiles?.full_name ?? "—"}</span>
                   <div className="flex items-center gap-2">
-                    <span className="text-slate-500">{ROLE_LABELS[member.role] ?? member.role}</span>
+                    <span className="text-muted-foreground">{ROLE_LABELS[member.role] ?? member.role}</span>
                     {canManageTeam && (member.role !== "owner" || context?.role === "owner") && (
                       <Button size="sm" variant="ghost" onClick={() => setEditing(member)} title="עריכה / איפוס סיסמה">
                         <Pencil className="w-4 h-4" />

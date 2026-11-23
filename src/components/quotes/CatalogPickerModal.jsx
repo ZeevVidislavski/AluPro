@@ -162,7 +162,7 @@ export default function CatalogPickerModal({ open, onClose, catalogItems, onConf
           <>
             {/* Search */}
             <div className="relative">
-              <Search className="absolute right-3 top-2.5 w-4 h-4 text-slate-400" />
+              <Search className="absolute right-3 top-2.5 w-4 h-4 text-muted-foreground" />
               <Input
                 placeholder="חיפוש רכיב..."
                 value={search}
@@ -182,8 +182,8 @@ export default function CatalogPickerModal({ open, onClose, catalogItems, onConf
                   className={cn(
                     "text-xs px-3 py-1 rounded-full border transition-colors",
                     filterCat === cat
-                      ? "bg-blue-600 text-white border-blue-600"
-                      : "border-slate-200 text-slate-600 hover:bg-slate-50"
+                      ? "bg-primary text-white border-primary"
+                      : "border-border text-muted-foreground hover:bg-background"
                   )}
                 >
                   {cat === ALL ? "הכל" : CATEGORY_LABELS[cat]}
@@ -194,7 +194,7 @@ export default function CatalogPickerModal({ open, onClose, catalogItems, onConf
             {/* Items list */}
             <div className="flex-1 overflow-y-auto space-y-1 min-h-0">
               {filtered.length === 0 && (
-                <p className="text-center text-slate-400 py-8">אין רכיבים</p>
+                <p className="text-center text-muted-foreground py-8">אין רכיבים</p>
               )}
               {filtered.map((item, index) => {
                 const isSelected = !!selected.find(s => s.id === item.id);
@@ -205,7 +205,7 @@ export default function CatalogPickerModal({ open, onClose, catalogItems, onConf
                     id={`catalog-row-${item.id}`}
                     className={cn(
                       "flex items-center justify-between gap-3 px-4 py-3 rounded-xl border transition-colors",
-                      isSelected ? "border-blue-300 bg-blue-50" : "border-slate-100 hover:bg-slate-50",
+                      isSelected ? "border-blue-300 bg-secondary" : "border-border hover:bg-background",
                       isActive && "ring-2 ring-blue-400"
                     )}
                   >
@@ -215,13 +215,13 @@ export default function CatalogPickerModal({ open, onClose, catalogItems, onConf
                     >
                       <div className={cn(
                         "w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0",
-                        isSelected ? "border-blue-500 bg-blue-500" : "border-slate-300"
+                        isSelected ? "border-blue-500 bg-blue-500" : "border-input"
                       )}>
                         {isSelected && <Check className="w-3 h-3 text-white" />}
                       </div>
                       <div className="flex-1">
-                        <p className="font-medium text-slate-800">{item.model_name}</p>
-                        {item.notes && <p className="text-xs text-slate-400">{item.notes}</p>}
+                        <p className="font-medium text-foreground">{item.model_name}</p>
+                        {item.notes && <p className="text-xs text-muted-foreground">{item.notes}</p>}
                       </div>
                     </button>
                     <div className="flex items-center gap-2 shrink-0">
@@ -230,15 +230,15 @@ export default function CatalogPickerModal({ open, onClose, catalogItems, onConf
                       </span>
                       {/* Editable price */}
                       <div className="flex items-center gap-1">
-                        <span className="text-xs text-slate-400">₪</span>
+                        <span className="text-xs text-muted-foreground">₪</span>
                         <Input
                           type="number"
                           value={priceOverrides[item.id] !== undefined ? priceOverrides[item.id] : item.base_price ?? ""}
                           onChange={e => setPriceOverrides(prev => ({ ...prev, [item.id]: parseFloat(e.target.value) || 0 }))}
                           onClick={e => e.stopPropagation()}
-                          className="w-20 h-7 text-xs text-blue-700 font-semibold"
+                          className="w-20 h-7 text-xs text-primary font-semibold"
                         />
-                        <span className="text-xs text-slate-500">{PRICING_METHOD_LABELS[item.pricing_method]}</span>
+                        <span className="text-xs text-muted-foreground">{PRICING_METHOD_LABELS[item.pricing_method]}</span>
                       </div>
                     </div>
                   </div>
@@ -247,8 +247,8 @@ export default function CatalogPickerModal({ open, onClose, catalogItems, onConf
             </div>
 
             {/* Footer */}
-            <div className="flex items-center justify-between pt-2 border-t border-slate-100">
-              <span className="text-sm text-slate-500">
+            <div className="flex items-center justify-between pt-2 border-t border-border">
+              <span className="text-sm text-muted-foreground">
                 {selected.length > 0
                   ? `${selected.length} רכיבים נבחרו · Ctrl+Enter להוספה`
                   : "←→ קטגוריה, ↑↓ לבחירה, Enter לסימון"}
@@ -258,7 +258,7 @@ export default function CatalogPickerModal({ open, onClose, catalogItems, onConf
                   ביטול
                 </Button>
                 <Button
-                  className="bg-blue-600 hover:bg-blue-700"
+                  className="bg-primary hover:bg-primary-hover"
                   disabled={selected.length === 0}
                   onClick={handleConfirmPick}
                 >
@@ -274,11 +274,11 @@ export default function CatalogPickerModal({ open, onClose, catalogItems, onConf
           <div className="flex flex-col gap-4 py-2 flex-1">
             <button
               onClick={() => setStep("pick")}
-              className="flex items-center gap-1 text-sm text-slate-500 hover:text-slate-800 w-fit"
+              className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground w-fit"
             >
               <ArrowRight className="w-4 h-4" /> חזור לבחירת רכיבים
             </button>
-            <div className="bg-slate-50 rounded-xl p-3 text-sm text-slate-600">
+            <div className="bg-background rounded-xl p-3 text-sm text-muted-foreground">
               {selected.length} רכיבים נבחרו: {selected.map(s => s.model_name).join("، ")}
             </div>
             <div className="space-y-1">
@@ -298,9 +298,9 @@ export default function CatalogPickerModal({ open, onClose, catalogItems, onConf
                 placeholder="תיאור קצר..."
               />
             </div>
-            <div className="flex gap-2 mt-auto pt-4 border-t border-slate-100">
+            <div className="flex gap-2 mt-auto pt-4 border-t border-border">
               <Button
-                className="flex-1 bg-blue-600 hover:bg-blue-700"
+                className="flex-1 bg-primary hover:bg-primary-hover"
                 disabled={!templateName.trim() || isSaving}
                 onClick={handleConfirmTemplate}
               >

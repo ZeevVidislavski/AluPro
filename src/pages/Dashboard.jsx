@@ -92,18 +92,18 @@ export default function Dashboard() {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 p-6 lg:p-8">
+    <div className="min-h-screen bg-background p-6 lg:p-8">
       <div className="max-w-7xl mx-auto space-y-8">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold text-slate-900">דשבורד</h1>
-          <p className="text-slate-500 mt-1">סקירה כללית של העסק</p>
+          <h1 className="text-3xl font-bold text-foreground">דשבורד</h1>
+          <p className="text-muted-foreground mt-1">סקירה כללית של העסק</p>
         </div>
 
         {/* Morning Summary */}

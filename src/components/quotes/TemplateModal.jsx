@@ -21,7 +21,7 @@ export default function SaveTemplateModal({ open, onClose, onSave, isSaving }) {
       <DialogContent className="max-w-sm" dir="rtl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <BookmarkPlus className="w-5 h-5 text-blue-600" />
+            <BookmarkPlus className="w-5 h-5 text-primary" />
             שמור כתבנית
           </DialogTitle>
         </DialogHeader>
@@ -45,7 +45,7 @@ export default function SaveTemplateModal({ open, onClose, onSave, isSaving }) {
           </div>
           <div className="flex gap-2 pt-1">
             <Button
-              className="flex-1 bg-blue-600 hover:bg-blue-700"
+              className="flex-1 bg-primary hover:bg-primary-hover"
               onClick={handleSave}
               disabled={!name.trim() || isSaving}
             >

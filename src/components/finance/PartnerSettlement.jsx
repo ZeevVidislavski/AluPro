@@ -107,7 +107,7 @@ export default function PartnerSettlement({ allPayments, allOrders, allQuotes, p
   const totalSharePercent = partners.reduce((s, p) => s + (p.profit_share_percent || 0), 0);
   const shareWarning = Math.abs(totalSharePercent - 100) > 0.1 && partners.length > 0;
 
-  if (isLoading) return <div className="flex items-center justify-center h-48"><Loader2 className="w-6 h-6 animate-spin text-blue-600" /></div>;
+  if (isLoading) return <div className="flex items-center justify-center h-48"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div>;
 
   const tabs = [
     { id: "summary", label: "סיכום" },
@@ -122,8 +122,8 @@ export default function PartnerSettlement({ allPayments, allOrders, allQuotes, p
       {/* TOP CONTROLS */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <Filter className="w-4 h-4 text-slate-400" />
-          <Label className="text-slate-600 text-sm">חשב עד תאריך:</Label>
+          <Filter className="w-4 h-4 text-muted-foreground" />
+          <Label className="text-muted-foreground text-sm">חשב עד תאריך:</Label>
           <Input type="date" value={untilDate} onChange={(e) => setUntilDate(e.target.value)} className="w-[160px]" />
         </div>
         <div className="flex gap-2">
@@ -139,21 +139,21 @@ export default function PartnerSettlement({ allPayments, allOrders, allQuotes, p
 
       {/* SHARE WARNING */}
       {shareWarning && (
-        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-center gap-3 text-amber-800">
+        <div className="bg-warning-subtle border border-amber-200 rounded-xl p-4 flex items-center gap-3 text-warning">
           <AlertCircle className="w-5 h-5 text-amber-500 shrink-0" />
           <span className="text-sm">סה״כ אחוזי השותפות = <strong>{totalSharePercent}%</strong> (אמור להיות 100%)</span>
         </div>
       )}
 
       {/* TABS */}
-      <div className="flex gap-1 bg-slate-100 rounded-xl p-1 w-fit flex-wrap">
+      <div className="flex gap-1 bg-secondary rounded-xl p-1 w-fit flex-wrap">
         {tabs.map((t) => (
           <button
             key={t.id}
             onClick={() => setActiveTab(t.id)}
             className={cn(
               "px-3 py-1.5 rounded-lg text-sm font-medium transition-all",
-              activeTab === t.id ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-700"
+              activeTab === t.id ? "bg-white text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
             )}
           >{t.label}</button>
         ))}
@@ -166,15 +166,15 @@ export default function PartnerSettlement({ allPayments, allOrders, allQuotes, p
           {/* Business totals */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {[
-              { label: "סה״כ הכנסות (פרויקטים סגורים)", value: fmt(total_income), color: "text-emerald-700", bg: "bg-emerald-50 border-emerald-200", icon: TrendingUp },
-              { label: "עלויות פרויקטים", value: fmt(total_project_costs), color: "text-slate-700", bg: "bg-slate-50 border-slate-200", icon: TrendingDown },
-              { label: "הוצאות כלליות", value: fmt(total_general_expenses), color: "text-amber-700", bg: "bg-amber-50 border-amber-200", icon: Wallet },
-              { label: "רווח לחלוקת שותפים (פרויקטים סגורים)", value: fmt(net_business_profit), color: net_business_profit >= 0 ? "text-emerald-700" : "text-red-700", bg: net_business_profit >= 0 ? "bg-emerald-50 border-emerald-200" : "bg-red-50 border-red-200", icon: net_business_profit >= 0 ? TrendingUp : TrendingDown },
+              { label: "סה״כ הכנסות (פרויקטים סגורים)", value: fmt(total_income), color: "text-success", bg: "bg-success-subtle border-emerald-200", icon: TrendingUp },
+              { label: "עלויות פרויקטים", value: fmt(total_project_costs), color: "text-foreground", bg: "bg-background border-border", icon: TrendingDown },
+              { label: "הוצאות כלליות", value: fmt(total_general_expenses), color: "text-warning", bg: "bg-warning-subtle border-amber-200", icon: Wallet },
+              { label: "רווח לחלוקת שותפים (פרויקטים סגורים)", value: fmt(net_business_profit), color: net_business_profit >= 0 ? "text-success" : "text-destructive", bg: net_business_profit >= 0 ? "bg-success-subtle border-emerald-200" : "bg-destructive-subtle border-red-200", icon: net_business_profit >= 0 ? TrendingUp : TrendingDown },
             ].map((card, i) => (
               <div key={i} className={cn("rounded-xl border p-4", card.bg)}>
                 <div className="flex items-center gap-2 mb-2">
                   <card.icon className={cn("w-4 h-4", card.color)} />
-                  <p className="text-xs text-slate-500">{card.label}</p>
+                  <p className="text-xs text-muted-foreground">{card.label}</p>
                 </div>
                 <p className={cn("text-xl font-bold", card.color)}>{card.value}</p>
               </div>
@@ -183,9 +183,9 @@ export default function PartnerSettlement({ allPayments, allOrders, allQuotes, p
 
           {/* Projected banner */}
           {total_projected_profit !== 0 && (
-            <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 flex items-center gap-3">
+            <div className="bg-secondary border border-blue-200 rounded-xl p-4 flex items-center gap-3">
               <Unlock className="w-5 h-5 text-blue-400 shrink-0" />
-              <p className="text-sm text-blue-700">
+              <p className="text-sm text-primary">
                 רווח תיאורטי צפוי מ-<strong>{open_projects_detail.length}</strong> פרויקטים פתוחים: <strong>{fmt(total_projected_profit)}</strong>
                 <span className="text-blue-400 mr-2">(לא נכנס לחלוקה)</span>
               </p>
@@ -194,7 +194,7 @@ export default function PartnerSettlement({ allPayments, allOrders, allQuotes, p
 
           {/* Partner cards */}
           {partners.length === 0 ? (
-            <div className="bg-white rounded-xl border border-slate-200 p-10 text-center text-slate-500">
+            <div className="bg-white rounded-xl border border-border p-10 text-center text-muted-foreground">
               <Users className="w-10 h-10 mx-auto mb-3 text-slate-300" />
               <p className="font-medium mb-2">אין שותפים מוגדרים</p>
               <Button size="sm" onClick={() => { setPartnerForm({ name: "", profit_share_percent: 50, active: true }); setPartnerDialogOpen(true); }}>
@@ -207,22 +207,22 @@ export default function PartnerSettlement({ allPayments, allOrders, allQuotes, p
                 const isPositive = p.settlement_balance >= 0;
                 const isBalanced = Math.abs(p.settlement_balance) < 1;
                 return (
-                  <div key={p.id} className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+                  <div key={p.id} className="bg-white rounded-2xl border border-border overflow-hidden shadow-sm">
                     {/* Header */}
-                    <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50">
+                    <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-background">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-lg">
+                        <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold text-lg">
                           {p.name?.[0] || "?"}
                         </div>
                         <div>
-                          <p className="font-bold text-slate-900">{p.name}</p>
-                          <p className="text-xs text-slate-500">{p.share_percent}% שותפות</p>
+                          <p className="font-bold text-foreground">{p.name}</p>
+                          <p className="text-xs text-muted-foreground">{p.share_percent}% שותפות</p>
                         </div>
                       </div>
                       <div className={cn(
                         "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-bold",
-                        isBalanced ? "bg-slate-100 text-slate-600" :
-                        isPositive ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700"
+                        isBalanced ? "bg-secondary text-muted-foreground" :
+                        isPositive ? "bg-success-subtle text-success" : "bg-destructive-subtle text-destructive"
                       )}>
                         {isBalanced ? "מאוזן" : isPositive ? <><CheckCircle2 className="w-4 h-4" /> זכאי</> : <><AlertCircle className="w-4 h-4" /> חייב</>}
                         {!isBalanced && <span className="mr-1">{fmt(Math.abs(p.settlement_balance))}</span>}
@@ -232,28 +232,28 @@ export default function PartnerSettlement({ allPayments, allOrders, allQuotes, p
                     {/* Body */}
                     <div className="px-6 py-4 grid grid-cols-3 gap-y-3 text-sm">
                       <div>
-                        <p className="text-xs text-slate-400 mb-0.5">כסף שגבה (פרויקטים סגורים)</p>
-                        <p className="font-semibold text-blue-700">{fmt(p.collected)}</p>
+                        <p className="text-xs text-muted-foreground mb-0.5">כסף שגבה (פרויקטים סגורים)</p>
+                        <p className="font-semibold text-primary">{fmt(p.collected)}</p>
                       </div>
                       <div>
-                        <p className="text-xs text-slate-400 mb-0.5">עלויות ספקים ששילם</p>
-                        <p className="font-semibold text-slate-700">{fmt(p.project_costs_paid)}</p>
+                        <p className="text-xs text-muted-foreground mb-0.5">עלויות ספקים ששילם</p>
+                        <p className="font-semibold text-foreground">{fmt(p.project_costs_paid)}</p>
                       </div>
                       <div>
-                        <p className="text-xs text-slate-400 mb-0.5">הוצאות כלליות ששילם</p>
-                        <p className="font-semibold text-amber-700">{fmt(p.general_expenses_paid)}</p>
+                        <p className="text-xs text-muted-foreground mb-0.5">הוצאות כלליות ששילם</p>
+                        <p className="font-semibold text-warning">{fmt(p.general_expenses_paid)}</p>
                       </div>
                       <div>
-                        <p className="text-xs text-slate-400 mb-0.5">יתרה בפועל</p>
-                        <p className={cn("font-semibold", p.cash_position >= 0 ? "text-emerald-700" : "text-red-600")}>{fmt(p.cash_position)}</p>
+                        <p className="text-xs text-muted-foreground mb-0.5">יתרה בפועל</p>
+                        <p className={cn("font-semibold", p.cash_position >= 0 ? "text-success" : "text-destructive")}>{fmt(p.cash_position)}</p>
                       </div>
                       <div>
-                        <p className="text-xs text-slate-400 mb-0.5">רווח שמגיע לו</p>
-                        <p className="font-semibold text-slate-900">{fmt(p.profit_due)}</p>
+                        <p className="text-xs text-muted-foreground mb-0.5">רווח שמגיע לו</p>
+                        <p className="font-semibold text-foreground">{fmt(p.profit_due)}</p>
                       </div>
                       <div>
-                        <p className="text-xs text-slate-400 mb-0.5">מאזן התחשבנות</p>
-                        <p className={cn("font-bold", isBalanced ? "text-slate-500" : isPositive ? "text-emerald-700" : "text-red-600")}>
+                        <p className="text-xs text-muted-foreground mb-0.5">מאזן התחשבנות</p>
+                        <p className={cn("font-bold", isBalanced ? "text-muted-foreground" : isPositive ? "text-success" : "text-destructive")}>
                           {isPositive ? "+" : ""}{fmt(p.settlement_balance)}
                         </p>
                       </div>
@@ -280,7 +280,7 @@ export default function PartnerSettlement({ allPayments, allOrders, allQuotes, p
                           </div>
                           <div className="flex justify-between font-bold text-orange-800 border-t border-orange-200 pt-1.5">
                             <span>יתרה נטו אצלו</span>
-                            <span className={net >= 0 ? "text-orange-800" : "text-red-700"}>{fmt(net)}</span>
+                            <span className={net >= 0 ? "text-orange-800" : "text-destructive"}>{fmt(net)}</span>
                           </div>
                         </div>
                       );
@@ -293,22 +293,22 @@ export default function PartnerSettlement({ allPayments, allOrders, allQuotes, p
 
           {/* Transfer summary */}
           {transfers.length > 0 && (
-            <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
-              <div className="px-6 py-4 border-b border-slate-100 bg-slate-50">
-                <h3 className="font-semibold text-slate-900 flex items-center gap-2">
+            <div className="bg-white rounded-2xl border border-border overflow-hidden">
+              <div className="px-6 py-4 border-b border-border bg-background">
+                <h3 className="font-semibold text-foreground flex items-center gap-2">
                   <ArrowLeftRight className="w-5 h-5 text-blue-500" />
                   העברות נדרשות בין שותפים
                 </h3>
               </div>
-              <div className="divide-y divide-slate-100">
+              <div className="divide-y divide-border">
                 {transfers.map((t, i) => (
                   <div key={i} className="px-6 py-4 flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <span className="font-semibold text-red-700">{t.from_partner_name}</span>
-                      <ArrowLeftRight className="w-4 h-4 text-slate-400" />
-                      <span className="font-semibold text-emerald-700">{t.to_partner_name}</span>
+                      <span className="font-semibold text-destructive">{t.from_partner_name}</span>
+                      <ArrowLeftRight className="w-4 h-4 text-muted-foreground" />
+                      <span className="font-semibold text-success">{t.to_partner_name}</span>
                     </div>
-                    <span className="text-xl font-bold text-slate-900">{fmt(t.amount)}</span>
+                    <span className="text-xl font-bold text-foreground">{fmt(t.amount)}</span>
                   </div>
                 ))}
               </div>
@@ -319,35 +319,35 @@ export default function PartnerSettlement({ allPayments, allOrders, allQuotes, p
 
       {/* ===== CLOSED PROJECTS TAB ===== */}
       {activeTab === "closed" && (
-        <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+        <div className="bg-white rounded-2xl border border-border overflow-hidden">
           {closed_projects_detail.length === 0 ? (
-            <div className="p-10 text-center text-slate-400">
+            <div className="p-10 text-center text-muted-foreground">
               <Lock className="w-10 h-10 mx-auto mb-3 text-slate-300" />
               אין פרויקטים שנסגרו להתחשבנות
             </div>
           ) : (
             <table className="w-full text-sm">
               <thead>
-                <tr className="bg-slate-50 border-b border-slate-100 text-right">
-                  <th className="p-3 text-slate-600">פרויקט</th>
-                  <th className="p-3 text-slate-600">לקוח</th>
-                  <th className="p-3 text-slate-600">נגבה</th>
-                  <th className="p-3 text-slate-600">עלויות</th>
-                  <th className="p-3 text-slate-600">רווח נקי</th>
-                  <th className="p-3 text-slate-600">נסגר ע״י</th>
-                  <th className="p-3 text-slate-600">תאריך סגירה</th>
+                <tr className="bg-background border-b border-border text-right">
+                  <th className="p-3 text-muted-foreground">פרויקט</th>
+                  <th className="p-3 text-muted-foreground">לקוח</th>
+                  <th className="p-3 text-muted-foreground">נגבה</th>
+                  <th className="p-3 text-muted-foreground">עלויות</th>
+                  <th className="p-3 text-muted-foreground">רווח נקי</th>
+                  <th className="p-3 text-muted-foreground">נסגר ע״י</th>
+                  <th className="p-3 text-muted-foreground">תאריך סגירה</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-border">
                 {closed_projects_detail.map((proj) => (
-                  <tr key={proj.id} className="hover:bg-slate-50">
-                    <td className="p-3 font-medium text-slate-900">{proj.name}</td>
-                    <td className="p-3 text-slate-600">{proj.customer_name}</td>
-                    <td className="p-3 text-emerald-700 font-semibold">{fmt(proj.total_received)}</td>
-                    <td className="p-3 text-slate-700">{fmt(proj.total_costs)}</td>
-                    <td className={cn("p-3 font-bold", proj.net_cash >= 0 ? "text-emerald-700" : "text-red-600")}>{fmt(proj.net_cash)}</td>
-                    <td className="p-3 text-slate-500">{proj.closed_by || "—"}</td>
-                    <td className="p-3 text-slate-500">{proj.closed_at ? format(new Date(proj.closed_at), "dd/MM/yyyy", { locale: he }) : "—"}</td>
+                  <tr key={proj.id} className="hover:bg-background">
+                    <td className="p-3 font-medium text-foreground">{proj.name}</td>
+                    <td className="p-3 text-muted-foreground">{proj.customer_name}</td>
+                    <td className="p-3 text-success font-semibold">{fmt(proj.total_received)}</td>
+                    <td className="p-3 text-foreground">{fmt(proj.total_costs)}</td>
+                    <td className={cn("p-3 font-bold", proj.net_cash >= 0 ? "text-success" : "text-destructive")}>{fmt(proj.net_cash)}</td>
+                    <td className="p-3 text-muted-foreground">{proj.closed_by || "—"}</td>
+                    <td className="p-3 text-muted-foreground">{proj.closed_at ? format(new Date(proj.closed_at), "dd/MM/yyyy", { locale: he }) : "—"}</td>
                   </tr>
                 ))}
               </tbody>
@@ -359,36 +359,36 @@ export default function PartnerSettlement({ allPayments, allOrders, allQuotes, p
       {/* ===== OPEN PROJECTS TAB (projected) ===== */}
       {activeTab === "open" && (
         <div className="space-y-3">
-          <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-sm text-blue-700 flex items-center gap-2">
+          <div className="bg-secondary border border-blue-200 rounded-xl p-4 text-sm text-primary flex items-center gap-2">
             <AlertCircle className="w-4 h-4 shrink-0" />
             פרויקטים אלה מוצגים כרווח תיאורטי בלבד ולא משפיעים על חלוקת הרווחים
           </div>
-          <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+          <div className="bg-white rounded-2xl border border-border overflow-hidden">
             {open_projects_detail.length === 0 ? (
-              <div className="p-10 text-center text-slate-400">אין פרויקטים פתוחים</div>
+              <div className="p-10 text-center text-muted-foreground">אין פרויקטים פתוחים</div>
             ) : (
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="bg-slate-50 border-b border-slate-100 text-right">
-                    <th className="p-3 text-slate-600">פרויקט</th>
-                    <th className="p-3 text-slate-600">לקוח</th>
-                    <th className="p-3 text-slate-600">נגבה עד כה</th>
-                    <th className="p-3 text-slate-600">יתרה לגבייה</th>
-                    <th className="p-3 text-slate-600">עלויות</th>
-                    <th className="p-3 text-slate-600">יתרה לספקים</th>
-                    <th className="p-3 text-slate-600">רווח תיאורטי</th>
+                  <tr className="bg-background border-b border-border text-right">
+                    <th className="p-3 text-muted-foreground">פרויקט</th>
+                    <th className="p-3 text-muted-foreground">לקוח</th>
+                    <th className="p-3 text-muted-foreground">נגבה עד כה</th>
+                    <th className="p-3 text-muted-foreground">יתרה לגבייה</th>
+                    <th className="p-3 text-muted-foreground">עלויות</th>
+                    <th className="p-3 text-muted-foreground">יתרה לספקים</th>
+                    <th className="p-3 text-muted-foreground">רווח תיאורטי</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-border">
                   {open_projects_detail.map((proj) => (
-                    <tr key={proj.id} className="hover:bg-slate-50">
-                      <td className="p-3 font-medium text-slate-900">{proj.name}</td>
-                      <td className="p-3 text-slate-600">{proj.customer_name}</td>
-                      <td className="p-3 text-emerald-700">{fmt(proj.total_received)}</td>
-                      <td className="p-3 text-amber-600">{fmt(proj.balance_to_collect)}</td>
-                      <td className="p-3 text-slate-700">{fmt(proj.total_costs)}</td>
-                      <td className="p-3 text-red-600">{fmt(proj.balance_to_suppliers)}</td>
-                      <td className={cn("p-3 font-bold", proj.projected_net >= 0 ? "text-blue-700" : "text-red-600")}>{fmt(proj.projected_net)}</td>
+                    <tr key={proj.id} className="hover:bg-background">
+                      <td className="p-3 font-medium text-foreground">{proj.name}</td>
+                      <td className="p-3 text-muted-foreground">{proj.customer_name}</td>
+                      <td className="p-3 text-success">{fmt(proj.total_received)}</td>
+                      <td className="p-3 text-warning">{fmt(proj.balance_to_collect)}</td>
+                      <td className="p-3 text-foreground">{fmt(proj.total_costs)}</td>
+                      <td className="p-3 text-destructive">{fmt(proj.balance_to_suppliers)}</td>
+                      <td className={cn("p-3 font-bold", proj.projected_net >= 0 ? "text-primary" : "text-destructive")}>{fmt(proj.projected_net)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -400,9 +400,9 @@ export default function PartnerSettlement({ allPayments, allOrders, allQuotes, p
 
       {/* ===== EXPENSES TAB ===== */}
       {activeTab === "expenses" && (
-        <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
-          <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
-            <h3 className="font-semibold text-slate-900">הוצאות כלליות עסקיות</h3>
+        <div className="bg-white rounded-2xl border border-border overflow-hidden">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-border">
+            <h3 className="font-semibold text-foreground">הוצאות כלליות עסקיות</h3>
             <Button size="sm" onClick={() => {
               setEditingExpense(null);
               setExpenseForm({ description: "", category: "other", amount: 0, expense_date: format(new Date(), "yyyy-MM-dd"), paid_by_partner_id: "", paid_by_partner_name: "", notes: "" });
@@ -412,29 +412,29 @@ export default function PartnerSettlement({ allPayments, allOrders, allQuotes, p
             </Button>
           </div>
           {generalExpenses.length === 0 ? (
-            <div className="p-8 text-center text-slate-400">אין הוצאות כלליות רשומות</div>
+            <div className="p-8 text-center text-muted-foreground">אין הוצאות כלליות רשומות</div>
           ) : (
             <table className="w-full text-sm">
               <thead>
-                <tr className="bg-slate-50 border-b border-slate-100">
-                  <th className="text-right p-3 text-slate-600">תאריך</th>
-                  <th className="text-right p-3 text-slate-600">תיאור</th>
-                  <th className="text-right p-3 text-slate-600">קטגוריה</th>
-                  <th className="text-right p-3 text-slate-600">שילם</th>
-                  <th className="text-left p-3 text-slate-600">סכום</th>
+                <tr className="bg-background border-b border-border">
+                  <th className="text-right p-3 text-muted-foreground">תאריך</th>
+                  <th className="text-right p-3 text-muted-foreground">תיאור</th>
+                  <th className="text-right p-3 text-muted-foreground">קטגוריה</th>
+                  <th className="text-right p-3 text-muted-foreground">שילם</th>
+                  <th className="text-left p-3 text-muted-foreground">סכום</th>
                   <th className="p-3"></th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-border">
                 {generalExpenses.map((exp, idx) => (
                   <tr key={exp.id} className={idx % 2 === 0 ? "" : "bg-slate-50/50"}>
-                    <td className="p-3 text-slate-600">{exp.expense_date ? format(new Date(exp.expense_date), "dd/MM/yyyy", { locale: he }) : "—"}</td>
-                    <td className="p-3 font-medium text-slate-800">{exp.description}</td>
+                    <td className="p-3 text-muted-foreground">{exp.expense_date ? format(new Date(exp.expense_date), "dd/MM/yyyy", { locale: he }) : "—"}</td>
+                    <td className="p-3 font-medium text-foreground">{exp.description}</td>
                     <td className="p-3">
-                      <span className="bg-slate-100 text-slate-600 text-xs px-2 py-0.5 rounded-full">{categoryLabels[exp.category] || exp.category}</span>
+                      <span className="bg-secondary text-muted-foreground text-xs px-2 py-0.5 rounded-full">{categoryLabels[exp.category] || exp.category}</span>
                     </td>
-                    <td className="p-3 text-slate-700">{exp.paid_by_partner_name || "—"}</td>
-                    <td className="p-3 text-left font-bold text-red-700">{fmt(exp.amount)}</td>
+                    <td className="p-3 text-foreground">{exp.paid_by_partner_name || "—"}</td>
+                    <td className="p-3 text-left font-bold text-destructive">{fmt(exp.amount)}</td>
                     <td className="p-3 text-left">
                       <div className="flex gap-1 justify-end">
                         <Button variant="ghost" size="icon" onClick={() => {
@@ -442,7 +442,7 @@ export default function PartnerSettlement({ allPayments, allOrders, allQuotes, p
                           setExpenseForm({ description: exp.description, category: exp.category, amount: exp.amount, expense_date: exp.expense_date, paid_by_partner_id: exp.paid_by_partner_id, paid_by_partner_name: exp.paid_by_partner_name, notes: exp.notes || "" });
                           setExpenseDialogOpen(true);
                         }}><Pencil className="w-3.5 h-3.5" /></Button>
-                        <Button variant="ghost" size="icon" className="text-red-500 hover:text-red-700" onClick={() => { if (window.confirm("למחוק הוצאה זו?")) deleteExpense.mutate(exp.id); }}>
+                        <Button variant="ghost" size="icon" className="text-red-500 hover:text-destructive" onClick={() => { if (window.confirm("למחוק הוצאה זו?")) deleteExpense.mutate(exp.id); }}>
                           <Trash2 className="w-3.5 h-3.5" />
                         </Button>
                       </div>
@@ -466,8 +466,8 @@ export default function PartnerSettlement({ allPayments, allOrders, allQuotes, p
               {partners.map((p) => (
                 <div key={p.id} className="flex items-center justify-between p-3">
                   <div>
-                    <p className="font-medium text-slate-900">{p.name}</p>
-                    <p className="text-xs text-slate-500">{p.profit_share_percent}%</p>
+                    <p className="font-medium text-foreground">{p.name}</p>
+                    <p className="text-xs text-muted-foreground">{p.profit_share_percent}%</p>
                   </div>
                   <div className="flex gap-1">
                     <Button variant="ghost" size="icon" onClick={() => { setEditingPartner(p); setPartnerForm({ name: p.name, profit_share_percent: p.profit_share_percent, active: p.active }); }}>
@@ -486,7 +486,7 @@ export default function PartnerSettlement({ allPayments, allOrders, allQuotes, p
             if (editingPartner) updatePartner.mutate({ id: editingPartner.id, data: partnerForm });
             else createPartner.mutate(partnerForm);
           }} className="space-y-3">
-            <p className="text-sm font-medium text-slate-700">{editingPartner ? "עריכת שותף" : "הוספת שותף"}</p>
+            <p className="text-sm font-medium text-foreground">{editingPartner ? "עריכת שותף" : "הוספת שותף"}</p>
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1">
                 <Label>שם</Label>
@@ -498,7 +498,7 @@ export default function PartnerSettlement({ allPayments, allOrders, allQuotes, p
               </div>
             </div>
             <div className="flex gap-2">
-              <Button type="submit" className="flex-1 bg-blue-600 hover:bg-blue-700">
+              <Button type="submit" className="flex-1 bg-primary hover:bg-primary-hover">
                 {(createPartner.isPending || updatePartner.isPending) && <Loader2 className="w-4 h-4 ml-1 animate-spin" />}
                 {editingPartner ? "עדכון" : "הוספה"}
               </Button>
@@ -563,7 +563,7 @@ export default function PartnerSettlement({ allPayments, allOrders, allQuotes, p
               <Input value={expenseForm.notes} onChange={(e) => setExpenseForm({ ...expenseForm, notes: e.target.value })} />
             </div>
             <div className="flex gap-2 pt-2">
-              <Button type="submit" className="flex-1 bg-blue-600 hover:bg-blue-700">
+              <Button type="submit" className="flex-1 bg-primary hover:bg-primary-hover">
                 {(createExpense.isPending || updateExpense.isPending) && <Loader2 className="w-4 h-4 ml-1 animate-spin" />}
                 {editingExpense ? "עדכון" : "הוספה"}
               </Button>

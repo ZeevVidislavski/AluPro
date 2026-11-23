@@ -10,7 +10,7 @@ import { Plus, Trash2, Loader2, Pencil, Calculator } from "lucide-react";
 import { calculateComponents } from "@/lib/formulaEngine";
 
 const COMPONENT_TYPES = { profile: "פרופיל", glass: "זכוכית", hardware: "פרזול", accessory: "אביזר" };
-const TYPE_COLORS = { profile: "bg-blue-100 text-blue-700", glass: "bg-cyan-100 text-cyan-700", hardware: "bg-orange-100 text-orange-700", accessory: "bg-purple-100 text-purple-700" };
+const TYPE_COLORS = { profile: "bg-blue-100 text-primary", glass: "bg-cyan-100 text-cyan-700", hardware: "bg-orange-100 text-orange-700", accessory: "bg-purple-100 text-purple-700" };
 const BASE_OPTIONS = [
   { value: "opening_width", label: "רוחב פתיחה" },
   { value: "opening_height", label: "גובה פתיחה" },
@@ -42,7 +42,7 @@ const emptyForm = {
 };
 
 function DimSummary({ base, op1, val1, op2, val2 }) {
-  if (!base) return <span className="text-slate-400">—</span>;
+  if (!base) return <span className="text-muted-foreground">—</span>;
   const baseLabel = BASE_OPTIONS.find(o => o.value === base)?.label || base;
   if (base === "fixed") return <span className="font-mono text-xs">{val1 ?? 0} ס"מ</span>;
   const parts = [baseLabel];
@@ -213,61 +213,61 @@ export default function ModelComponentsTab({ modelId }) {
     setOpeningHeight("");
   };
 
-  if (isLoading) return <div className="flex justify-center py-8"><Loader2 className="w-5 h-5 animate-spin text-blue-600" /></div>;
+  if (isLoading) return <div className="flex justify-center py-8"><Loader2 className="w-5 h-5 animate-spin text-primary" /></div>;
 
   return (
     <div className="space-y-3">
       <div className="flex justify-between items-center">
-        <p className="text-sm text-slate-500">{components.length} רכיבי ייצור</p>
+        <p className="text-sm text-muted-foreground">{components.length} רכיבי ייצור</p>
         <div className="flex gap-2">
           {components.length > 0 && (
             <Button size="sm" variant="outline" onClick={() => setCalcOpen(true)}>
               <Calculator className="w-4 h-4 ml-1" /> חשב רכיבים
             </Button>
           )}
-          <Button size="sm" onClick={() => { setEditingId(null); setFormData(emptyForm); setDialogOpen(true); }} className="bg-blue-600 hover:bg-blue-700">
+          <Button size="sm" onClick={() => { setEditingId(null); setFormData(emptyForm); setDialogOpen(true); }} className="bg-primary hover:bg-primary-hover">
             <Plus className="w-4 h-4 ml-1" /> הוסף רכיב
           </Button>
         </div>
       </div>
 
       {components.length === 0 ? (
-        <div className="text-center py-8 text-slate-400 border border-dashed border-slate-200 rounded-xl">
+        <div className="text-center py-8 text-muted-foreground border border-dashed border-border rounded-xl">
           <p className="text-sm">אין רכיבי ייצור לדגם זה</p>
         </div>
       ) : (
-        <div className="border border-slate-200 rounded-xl overflow-hidden">
+        <div className="border border-border rounded-xl overflow-hidden">
           <table className="w-full text-sm">
-            <thead className="bg-slate-50 border-b border-slate-200">
+            <thead className="bg-background border-b border-border">
               <tr>
-                <th className="text-right px-3 py-2 text-slate-600 font-medium">סוג</th>
-                <th className="text-right px-3 py-2 text-slate-600 font-medium">קוד פריט</th>
-                <th className="text-right px-3 py-2 text-slate-600 font-medium">כמות</th>
-                <th className="text-right px-3 py-2 text-slate-600 font-medium">חישוב אורך</th>
-                <th className="text-right px-3 py-2 text-slate-600 font-medium">אורך מחושב (ס"מ)</th>
-                <th className="text-right px-3 py-2 text-slate-600 font-medium">רוחב מחושב (ס"מ)</th>
+                <th className="text-right px-3 py-2 text-muted-foreground font-medium">סוג</th>
+                <th className="text-right px-3 py-2 text-muted-foreground font-medium">קוד פריט</th>
+                <th className="text-right px-3 py-2 text-muted-foreground font-medium">כמות</th>
+                <th className="text-right px-3 py-2 text-muted-foreground font-medium">חישוב אורך</th>
+                <th className="text-right px-3 py-2 text-muted-foreground font-medium">אורך מחושב (ס"מ)</th>
+                <th className="text-right px-3 py-2 text-muted-foreground font-medium">רוחב מחושב (ס"מ)</th>
                 <th className="px-3 py-2 w-16"></th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-border">
               {components.map(comp => (
-                <tr key={comp.id} className="hover:bg-slate-50">
+                <tr key={comp.id} className="hover:bg-background">
                   <td className="px-3 py-2">
                     <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${TYPE_COLORS[comp.component_type]}`}>
                       {COMPONENT_TYPES[comp.component_type]}
                     </span>
                   </td>
-                  <td className="px-3 py-2 font-mono text-slate-800">{comp.item_code}</td>
-                  <td className="px-3 py-2 text-slate-700">{comp.quantity}</td>
+                  <td className="px-3 py-2 font-mono text-foreground">{comp.item_code}</td>
+                  <td className="px-3 py-2 text-foreground">{comp.quantity}</td>
                   <td className="px-3 py-2">
                     <DimSummary base={comp.length_base} op1={comp.length_op1} val1={comp.length_val1} op2={comp.length_op2} val2={comp.length_val2} />
                   </td>
-                  <td className="px-3 py-2 font-semibold text-blue-700">{comp.calculated_length != null ? `${comp.calculated_length} ס"מ` : "—"}</td>
-                  <td className="px-3 py-2 font-semibold text-blue-700">{comp.calculated_width != null ? `${comp.calculated_width} ס"מ` : "—"}</td>
+                  <td className="px-3 py-2 font-semibold text-primary">{comp.calculated_length != null ? `${comp.calculated_length} ס"מ` : "—"}</td>
+                  <td className="px-3 py-2 font-semibold text-primary">{comp.calculated_width != null ? `${comp.calculated_width} ס"מ` : "—"}</td>
                   <td className="px-3 py-2">
                     <div className="flex gap-1">
                       <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => openEdit(comp)}><Pencil className="w-3 h-3" /></Button>
-                      <Button variant="ghost" size="icon" className="h-7 w-7 text-red-400 hover:text-red-600 hover:bg-red-50"
+                      <Button variant="ghost" size="icon" className="h-7 w-7 text-red-400 hover:text-destructive hover:bg-destructive-subtle"
                         onClick={() => { if (window.confirm("למחוק?")) deleteMutation.mutate(comp.id); }}>
                         <Trash2 className="w-3 h-3" />
                       </Button>
@@ -303,13 +303,13 @@ export default function ModelComponentsTab({ modelId }) {
               <Input type="number" value={formData.quantity} onChange={e => setFormData({ ...formData, quantity: e.target.value })} required min="0.01" step="0.01" />
             </div>
 
-            <div className="border border-slate-200 rounded-lg p-3 space-y-2">
-              <p className="text-sm font-medium text-slate-700">חישוב אורך</p>
+            <div className="border border-border rounded-lg p-3 space-y-2">
+              <p className="text-sm font-medium text-foreground">חישוב אורך</p>
               <DimForm prefix="length" formData={formData} setFormData={setFormData} />
             </div>
 
-            <div className="border border-slate-200 rounded-lg p-3 space-y-2">
-              <p className="text-sm font-medium text-slate-700">חישוב רוחב <span className="text-slate-400 text-xs font-normal">(אופציונלי)</span></p>
+            <div className="border border-border rounded-lg p-3 space-y-2">
+              <p className="text-sm font-medium text-foreground">חישוב רוחב <span className="text-muted-foreground text-xs font-normal">(אופציונלי)</span></p>
               <DimForm prefix="width" formData={formData} setFormData={setFormData} />
             </div>
 
@@ -318,7 +318,7 @@ export default function ModelComponentsTab({ modelId }) {
               <Input value={formData.notes} onChange={e => setFormData({ ...formData, notes: e.target.value })} />
             </div>
             <div className="flex gap-2 pt-1">
-              <Button type="submit" className="flex-1 bg-blue-600 hover:bg-blue-700" disabled={createMutation.isPending || updateMutation.isPending}>
+              <Button type="submit" className="flex-1 bg-primary hover:bg-primary-hover" disabled={createMutation.isPending || updateMutation.isPending}>
                 {(createMutation.isPending || updateMutation.isPending) && <Loader2 className="w-4 h-4 ml-2 animate-spin" />}
                 {editingId ? "עדכון" : "הוספה"}
               </Button>
@@ -343,31 +343,31 @@ export default function ModelComponentsTab({ modelId }) {
                 <Input type="number" value={openingHeight} onChange={e => { setOpeningHeight(e.target.value); setCalcResults(null); }} placeholder="90" />
               </div>
             </div>
-            <Button onClick={handleCalculate} disabled={!openingWidth || !openingHeight} className="w-full bg-blue-600 hover:bg-blue-700">
+            <Button onClick={handleCalculate} disabled={!openingWidth || !openingHeight} className="w-full bg-primary hover:bg-primary-hover">
               <Calculator className="w-4 h-4 ml-2" /> חשב
             </Button>
 
             {calcResults && (
               <div className="space-y-2">
-                <div className="border border-slate-200 rounded-xl overflow-hidden">
+                <div className="border border-border rounded-xl overflow-hidden">
                   <table className="w-full text-sm">
-                    <thead className="bg-slate-50 border-b border-slate-200">
+                    <thead className="bg-background border-b border-border">
                       <tr>
-                        <th className="text-right px-3 py-2 text-slate-600 font-medium">קוד פריט</th>
-                        <th className="text-right px-3 py-2 text-slate-600 font-medium">חישוב</th>
-                        <th className="text-right px-3 py-2 text-slate-600 font-medium">אורך</th>
-                        <th className="text-right px-3 py-2 text-slate-600 font-medium">רוחב</th>
+                        <th className="text-right px-3 py-2 text-muted-foreground font-medium">קוד פריט</th>
+                        <th className="text-right px-3 py-2 text-muted-foreground font-medium">חישוב</th>
+                        <th className="text-right px-3 py-2 text-muted-foreground font-medium">אורך</th>
+                        <th className="text-right px-3 py-2 text-muted-foreground font-medium">רוחב</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100">
+                    <tbody className="divide-y divide-border">
                       {calcResults.map(comp => (
                         <tr key={comp.id}>
-                          <td className="px-3 py-2 font-mono text-slate-800">{comp.item_code}</td>
-                          <td className="px-3 py-2 text-xs text-slate-500">
+                          <td className="px-3 py-2 font-mono text-foreground">{comp.item_code}</td>
+                          <td className="px-3 py-2 text-xs text-muted-foreground">
                             <DimSummary base={comp.length_base} op1={comp.length_op1} val1={comp.length_val1} op2={comp.length_op2} val2={comp.length_val2} />
                           </td>
-                          <td className="px-3 py-2 font-semibold text-green-700">{comp.calculated_length != null ? `${comp.calculated_length} ס"מ` : "—"}</td>
-                          <td className="px-3 py-2 font-semibold text-green-700">{comp.calculated_width != null ? `${comp.calculated_width} ס"מ` : "—"}</td>
+                          <td className="px-3 py-2 font-semibold text-success">{comp.calculated_length != null ? `${comp.calculated_length} ס"מ` : "—"}</td>
+                          <td className="px-3 py-2 font-semibold text-success">{comp.calculated_width != null ? `${comp.calculated_width} ס"מ` : "—"}</td>
                         </tr>
                       ))}
                     </tbody>

@@ -36,7 +36,7 @@ function TenantUsageBadge({ tenantId, plan }) {
     queryFn: () => PlatformAdminService.getTenantUsage(tenantId),
   });
 
-  if (!usage) return <span className="text-slate-400 text-sm">טוען...</span>;
+  if (!usage) return <span className="text-muted-foreground text-sm">טוען...</span>;
 
   const limits = PLAN_LIMITS[plan] ?? PLAN_LIMITS.starter;
   const usersNearLimit = isApproachingLimit(usage.user_count, limits.users);
@@ -45,11 +45,11 @@ function TenantUsageBadge({ tenantId, plan }) {
 
   return (
     <div className="flex items-center gap-2 text-sm">
-      <span className={cn(usersNearLimit && "text-amber-600 font-semibold")}>
+      <span className={cn(usersNearLimit && "text-warning font-semibold")}>
         {usage.user_count} משתמשים
       </span>
       <span className="text-slate-300">·</span>
-      <span className={cn(projectsNearLimit && "text-amber-600 font-semibold")}>
+      <span className={cn(projectsNearLimit && "text-warning font-semibold")}>
         {usage.project_count} פרויקטים
       </span>
       {warning && <AlertTriangle className="w-4 h-4 text-amber-500" />}
@@ -66,7 +66,7 @@ export default function PlatformTenantList() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
+        <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
       </div>
     );
   }
@@ -74,7 +74,7 @@ export default function PlatformTenantList() {
   return (
     <div className="max-w-6xl mx-auto">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-slate-900">חברות במערכת</h1>
+        <h1 className="text-2xl font-bold text-foreground">חברות במערכת</h1>
         <Link to="/admin/tenants/new">
           <Button className="gap-2">
             <Plus className="w-4 h-4" />
@@ -83,10 +83,10 @@ export default function PlatformTenantList() {
         </Link>
       </div>
 
-      <div className="bg-white rounded-xl border border-slate-200 overflow-x-auto">
+      <div className="bg-white rounded-xl border border-border overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-slate-200 text-slate-500 text-right">
+            <tr className="border-b border-border text-muted-foreground text-right">
               <th className="px-4 py-3 font-medium">שם חברה</th>
               <th className="px-4 py-3 font-medium">סטטוס</th>
               <th className="px-4 py-3 font-medium">תוכנית</th>
@@ -100,15 +100,15 @@ export default function PlatformTenantList() {
             {(tenants ?? []).map((tenant) => {
               const subscription = tenant.tenant_subscriptions?.[0];
               return (
-                <tr key={tenant.id} className="border-b border-slate-100 last:border-0">
-                  <td className="px-4 py-3 font-medium text-slate-900">{tenant.name}</td>
+                <tr key={tenant.id} className="border-b border-border last:border-0">
+                  <td className="px-4 py-3 font-medium text-foreground">{tenant.name}</td>
                   <td className="px-4 py-3">
                     <span
                       className={cn(
                         "px-2 py-0.5 rounded-full text-xs font-medium",
-                        tenant.status === "active" && "bg-green-100 text-green-700",
-                        tenant.status === "suspended" && "bg-amber-100 text-amber-700",
-                        tenant.status === "cancelled" && "bg-red-100 text-red-700"
+                        tenant.status === "active" && "bg-success-subtle text-success",
+                        tenant.status === "suspended" && "bg-warning-subtle text-warning",
+                        tenant.status === "cancelled" && "bg-destructive-subtle text-destructive"
                       )}
                     >
                       {STATUS_LABELS[tenant.status] ?? tenant.status}
@@ -125,7 +125,7 @@ export default function PlatformTenantList() {
                   <td className="px-4 py-3 text-left whitespace-nowrap">
                     <Link
                       to={`/admin/tenants/${tenant.id}`}
-                      className="text-slate-400 hover:text-slate-700 inline-flex items-center"
+                      className="text-muted-foreground hover:text-foreground inline-flex items-center"
                     >
                       <ChevronLeft className="w-4 h-4" />
                     </Link>
@@ -136,7 +136,7 @@ export default function PlatformTenantList() {
           </tbody>
         </table>
         {(tenants ?? []).length === 0 && (
-          <p className="text-center text-slate-400 py-10">אין עדיין חברות רשומות במערכת</p>
+          <p className="text-center text-muted-foreground py-10">אין עדיין חברות רשומות במערכת</p>
         )}
       </div>
     </div>

@@ -7,24 +7,21 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { Plus, FileText, Search, Loader2, ExternalLink, Pencil, Trash2 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Plus, FileText, Search, Loader2, Pencil, Trash2 } from "lucide-react";
+import PageHeader from "@/components/shared/PageHeader";
+import StatusBadge from "@/components/shared/StatusBadge";
+import EmptyState from "@/components/shared/EmptyState";
+import ConfirmDialog from "@/components/shared/ConfirmDialog";
+import { QUOTE_STATUS } from "@/lib/statuses";
 import { format } from "date-fns";
 import { he } from "date-fns/locale";
-
-const statusLabels = { draft: "טיוטה", sent: "נשלח", approved: "אושר", rejected: "נדחה" };
-const statusColors = {
-  draft: "bg-slate-100 text-slate-700",
-  sent: "bg-blue-100 text-blue-700",
-  approved: "bg-green-100 text-green-700",
-  rejected: "bg-red-100 text-red-700"
-};
 
 export default function Quotes() {
   const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
   const [newQuoteDialog, setNewQuoteDialog] = useState(false);
   const [selectedProjectId, setSelectedProjectId] = useState("");
+  const [quoteToDelete, setQuoteToDelete] = useState(null);
 
   const queryClient = useQueryClient();
 
@@ -95,123 +92,152 @@ export default function Quotes() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+      <div className="flex items-center justify-center py-24" role="status" aria-label="טוען">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </div>
     );
   }
 
+  const hasFilters = search !== "" || filterStatus !== "all";
+  const th = "px-4 h-10 text-[13px] font-semibold whitespace-nowrap";
+
   return (
-    <div className="min-h-screen bg-slate-50 p-6 lg:p-8" dir="rtl">
+    <div className="p-4 md:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-slate-900">הצעות מחיר</h1>
-            <p className="text-slate-500">{quotes.length} הצעות סה"כ</p>
-          </div>
-          <Button onClick={() => setNewQuoteDialog(true)} className="bg-blue-600 hover:bg-blue-700">
-            <Plus className="w-4 h-4 ml-2" />
-            הצעה חדשה
-          </Button>
-        </div>
+        <PageHeader
+          title="הצעות מחיר"
+          description={`${quotes.length} הצעות סה"כ`}
+          actions={
+            <Button onClick={() => setNewQuoteDialog(true)}>
+              <Plus className="w-4 h-4" />
+              הצעה חדשה
+            </Button>
+          }
+        />
 
-        {/* Filters */}
-        <div className="flex gap-3 flex-wrap">
-          <div className="relative flex-1 min-w-[200px]">
-            <Search className="absolute right-3 top-2.5 w-4 h-4 text-slate-400" />
-            <Input
-              placeholder="חיפוש לפי לקוח / פרויקט..."
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              className="pr-9"
-            />
+        <div className="bg-card rounded-xl border shadow-sm overflow-hidden">
+          {/* Filters */}
+          <div className="flex gap-3 flex-wrap items-center p-4 border-b" role="search">
+            <div className="relative flex-1 min-w-[200px]">
+              <Search className="absolute right-3 top-3 w-4 h-4 text-primary/70" aria-hidden="true" />
+              <Input
+                aria-label="חיפוש הצעות"
+                placeholder="חיפוש לפי לקוח / פרויקט..."
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                className="pr-9"
+              />
+            </div>
+            <Select value={filterStatus} onValueChange={setFilterStatus}>
+              <SelectTrigger className="w-44 h-10" aria-label="סינון לפי סטטוס">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">כל הסטטוסים</SelectItem>
+                <SelectItem value="draft">טיוטה</SelectItem>
+                <SelectItem value="sent">נשלח</SelectItem>
+                <SelectItem value="approved">אושר</SelectItem>
+                <SelectItem value="rejected">נדחה</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
-          <Select value={filterStatus} onValueChange={setFilterStatus}>
-            <SelectTrigger className="w-44">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">כל הסטטוסים</SelectItem>
-              <SelectItem value="draft">טיוטה</SelectItem>
-              <SelectItem value="sent">נשלח</SelectItem>
-              <SelectItem value="approved">אושר</SelectItem>
-              <SelectItem value="rejected">נדחה</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
 
-        {/* Table */}
-        <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+          {/* Table */}
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-slate-50 border-b border-slate-200">
+              <thead className="bg-secondary">
                 <tr>
-                  <th className="text-right px-4 py-3 text-sm font-medium text-slate-600">מס' הצעה</th>
-                  <th className="text-right px-4 py-3 text-sm font-medium text-slate-600">לקוח</th>
-                  <th className="text-right px-4 py-3 text-sm font-medium text-slate-600">פרויקט</th>
-                  <th className="text-right px-4 py-3 text-sm font-medium text-slate-600">סכום</th>
-                  <th className="text-right px-4 py-3 text-sm font-medium text-slate-600">כולל מע"מ</th>
-                  <th className="text-right px-4 py-3 text-sm font-medium text-slate-600">סטטוס</th>
-                  <th className="text-right px-4 py-3 text-sm font-medium text-slate-600">תאריך</th>
-                  <th className="px-4 py-3"></th>
+                  <th scope="col" className={`text-start ${th}`}>מס' הצעה</th>
+                  <th scope="col" className={`text-start ${th}`}>לקוח</th>
+                  <th scope="col" className={`text-start ${th}`}>פרויקט</th>
+                  <th scope="col" className={`text-end ${th}`}>סכום</th>
+                  <th scope="col" className={`text-end ${th}`}>כולל מע"מ</th>
+                  <th scope="col" className={`text-start ${th}`}>סטטוס</th>
+                  <th scope="col" className={`text-start ${th}`}>תאריך</th>
+                  <th scope="col" className="px-4 h-10"><span className="sr-only">פעולות</span></th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
-                {filteredQuotes.map(quote => (
-                  <tr key={quote.id} className="hover:bg-slate-50 transition-colors">
-                    <td className="px-4 py-3 text-sm">
-                      {quote.quote_number || (quote.addition_number === 0 ? "ראשונית" : `תוספת ${quote.addition_number}`)}
-                    </td>
-                    <td className="px-4 py-3 text-sm font-medium">{quote.customer_name || "—"}</td>
-                    <td className="px-4 py-3 text-sm text-slate-600">{quote.project_name}</td>
-                    <td className="px-4 py-3 text-sm">{formatCurrency(quote.subtotal || quote.amount)}</td>
-                    <td className="px-4 py-3 text-sm font-medium">{formatCurrency(quote.total_with_vat || quote.amount)}</td>
-                    <td className="px-4 py-3">
-                      <span className={cn("text-xs px-2 py-1 rounded-full font-medium", statusColors[quote.status])}>
-                        {statusLabels[quote.status]}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-sm text-slate-500">
-                      {quote.quote_date ? format(new Date(quote.quote_date), "dd/MM/yy", { locale: he }) : "—"}
-                    </td>
-                    <td className="px-4 py-3">
-                     <div className="flex items-center gap-2">
-                       <Link to={`/QuoteEditor?quote_id=${quote.id}`}>
-                         <Button size="sm" variant="outline" className="gap-1">
-                           <Pencil className="w-3.5 h-3.5" />
-                           ערוך
-                         </Button>
-                       </Link>
-                       <Button
-                         size="sm"
-                         variant="ghost"
-                         className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                         onClick={() => {
-                           if (window.confirm("האם אתה בטוח שברצונך למחוק הצעה זו?")) {
-                             deleteQuoteMutation.mutate(quote.id);
-                           }
-                         }}
-                       >
-                         <Trash2 className="w-3.5 h-3.5" />
-                       </Button>
-                     </div>
-                    </td>
-                  </tr>
-                ))}
-                {filteredQuotes.length === 0 && (
-                  <tr>
-                    <td colSpan={8} className="px-4 py-12 text-center text-slate-500">
-                      <FileText className="w-10 h-10 mx-auto mb-2 text-slate-300" />
-                      אין הצעות מחיר
-                    </td>
-                  </tr>
-                )}
+              <tbody className="divide-y">
+                {filteredQuotes.map(quote => {
+                  const status = QUOTE_STATUS[quote.status];
+                  return (
+                    <tr key={quote.id} className="hover:bg-background transition-colors">
+                      <td className="px-4 h-[52px] text-sm whitespace-nowrap tabular-nums">
+                        {quote.quote_number || (quote.addition_number === 0 ? "ראשונית" : `תוספת ${quote.addition_number}`)}
+                      </td>
+                      <td className="px-4 h-[52px] text-sm font-medium">{quote.customer_name || "—"}</td>
+                      <td className="px-4 h-[52px] text-sm text-muted-foreground">{quote.project_name}</td>
+                      <td className="px-4 h-[52px] text-sm text-end tabular-nums whitespace-nowrap">{formatCurrency(quote.subtotal || quote.amount)}</td>
+                      <td className="px-4 h-[52px] text-sm font-semibold text-end tabular-nums whitespace-nowrap">{formatCurrency(quote.total_with_vat || quote.amount)}</td>
+                      <td className="px-4">
+                        {status && <StatusBadge tone={status.tone}>{status.label}</StatusBadge>}
+                      </td>
+                      <td className="px-4 text-sm text-muted-foreground whitespace-nowrap tabular-nums">
+                        {quote.quote_date ? format(new Date(quote.quote_date), "dd/MM/yy", { locale: he }) : "—"}
+                      </td>
+                      <td className="px-4">
+                        <div className="flex items-center gap-2">
+                          <Link to={`/QuoteEditor?quote_id=${quote.id}`}>
+                            <Button size="sm" variant="outline" className="gap-1">
+                              <Pencil className="w-3.5 h-3.5" />
+                              ערוך
+                            </Button>
+                          </Link>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            aria-label="מחק הצעה"
+                            className="text-destructive hover:text-destructive hover:bg-destructive-subtle"
+                            onClick={() => setQuoteToDelete(quote)}
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
+
+          {filteredQuotes.length === 0 && (
+            hasFilters ? (
+              <EmptyState
+                icon={Search}
+                title="לא נמצאו הצעות"
+                description="נסו חיפוש אחר או נקו את הסינון."
+                action={<Button variant="outline" size="sm" onClick={() => { setSearch(""); setFilterStatus("all"); }}>נקה סינון</Button>}
+              />
+            ) : (
+              <EmptyState
+                icon={FileText}
+                title="אין הצעות מחיר"
+                description="צרו הצעה ראשונה ושלחו אותה ללקוח."
+                action={<Button size="sm" onClick={() => setNewQuoteDialog(true)}><Plus className="w-4 h-4" />הצעה חדשה</Button>}
+              />
+            )
+          )}
+          {filteredQuotes.length > 0 && (
+            <div className="px-4 py-3 border-t text-[13px] text-muted-foreground">
+              מוצגות {filteredQuotes.length} מתוך {quotes.length} הצעות
+            </div>
+          )}
         </div>
       </div>
+
+      <ConfirmDialog
+        open={!!quoteToDelete}
+        onOpenChange={(o) => { if (!o) setQuoteToDelete(null); }}
+        title="למחוק את ההצעה?"
+        description={quoteToDelete ? `ההצעה${quoteToDelete.project_name ? ` "${quoteToDelete.project_name}"` : ""} וכל הפריטים שבה יימחקו. אי אפשר לשחזר.` : ""}
+        confirmLabel="מחק הצעה"
+        destructive
+        onConfirm={() => {
+          if (quoteToDelete) deleteQuoteMutation.mutate(quoteToDelete.id);
+          setQuoteToDelete(null);
+        }}
+      />
 
       {/* New Quote Dialog */}
       <Dialog open={newQuoteDialog} onOpenChange={setNewQuoteDialog}>
@@ -237,7 +263,7 @@ export default function Quotes() {
             </div>
             <div className="flex gap-2 pt-2">
               <Button
-                className="flex-1 bg-blue-600 hover:bg-blue-700"
+                className="flex-1"
                 disabled={!selectedProjectId || createQuoteMutation.isPending}
                 onClick={() => createQuoteMutation.mutate(selectedProjectId)}
               >

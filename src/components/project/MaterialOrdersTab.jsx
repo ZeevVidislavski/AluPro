@@ -10,15 +10,15 @@ import { cn } from "@/lib/utils";
 
 const ORDER_TYPE_LABELS = { profiles: "פרופילים", hardware: "פרזול", glass: "זכוכית" };
 const ORDER_TYPE_COLORS = {
-  profiles: "bg-blue-100 text-blue-700",
+  profiles: "bg-blue-100 text-primary",
   hardware: "bg-purple-100 text-purple-700",
   glass: "bg-cyan-100 text-cyan-700",
 };
 const STATUS_LABELS = { draft: "טיוטה", sent: "נשלח", received: "התקבל" };
 const STATUS_COLORS = {
-  draft: "bg-slate-100 text-slate-600",
-  sent: "bg-amber-100 text-amber-700",
-  received: "bg-green-100 text-green-700",
+  draft: "bg-secondary text-muted-foreground",
+  sent: "bg-warning-subtle text-warning",
+  received: "bg-success-subtle text-success",
 };
 
 export default function MaterialOrdersTab({ projectId, projectName }) {
@@ -81,16 +81,16 @@ export default function MaterialOrdersTab({ projectId, projectName }) {
 
   const toggleExpand = (id) => setExpandedOrders(prev => ({ ...prev, [id]: !prev[id] }));
 
-  if (isLoading) return <div className="flex justify-center py-8"><Loader2 className="w-5 h-5 animate-spin text-blue-600" /></div>;
+  if (isLoading) return <div className="flex justify-center py-8"><Loader2 className="w-5 h-5 animate-spin text-primary" /></div>;
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <p className="text-sm text-slate-500">{orders.length} הזמנות חומר</p>
+        <p className="text-sm text-muted-foreground">{orders.length} הזמנות חומר</p>
         <Button
           onClick={handleGenerate}
           disabled={generating}
-          className="bg-blue-600 hover:bg-blue-700"
+          className="bg-primary hover:bg-primary-hover"
         >
           {generating ? <Loader2 className="w-4 h-4 ml-2 animate-spin" /> : <RefreshCw className="w-4 h-4 ml-2" />}
           {orders.length > 0 ? "עדכן הזמנות" : "צור הזמנות חומר"}
@@ -98,13 +98,13 @@ export default function MaterialOrdersTab({ projectId, projectName }) {
       </div>
 
       {generateError && (
-        <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-700">
+        <div className="bg-destructive-subtle border border-red-200 rounded-xl px-4 py-3 text-sm text-destructive">
           {generateError}
         </div>
       )}
 
       {orders.length === 0 && !generateError && (
-        <div className="border border-dashed border-slate-200 rounded-xl p-10 text-center text-slate-400">
+        <div className="border border-dashed border-border rounded-xl p-10 text-center text-muted-foreground">
           <Package className="w-10 h-10 mx-auto mb-2 text-slate-300" />
           <p>לחץ "צור הזמנות חומר" כדי לייצר רשימות הזמנה מרכיבי הדגמים</p>
         </div>
@@ -114,15 +114,15 @@ export default function MaterialOrdersTab({ projectId, projectName }) {
         const items = allItems.filter(i => i.material_order_id === order.id);
         const isExpanded = expandedOrders[order.id];
         return (
-          <div key={order.id} className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
+          <div key={order.id} className="bg-white border border-border rounded-2xl overflow-hidden">
             <div className="flex items-center gap-3 p-4">
-              <button onClick={() => toggleExpand(order.id)} className="text-slate-400 hover:text-slate-600">
+              <button onClick={() => toggleExpand(order.id)} className="text-muted-foreground hover:text-muted-foreground">
                 {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
               </button>
               <span className={cn("text-xs px-2 py-1 rounded-full font-medium", ORDER_TYPE_COLORS[order.order_type])}>
                 {ORDER_TYPE_LABELS[order.order_type]}
               </span>
-              <span className="text-sm text-slate-500">{items.length} פריטים</span>
+              <span className="text-sm text-muted-foreground">{items.length} פריטים</span>
               <div className="flex items-center gap-2 mr-auto">
                 <Select
                   value={order.status}
@@ -140,7 +140,7 @@ export default function MaterialOrdersTab({ projectId, projectName }) {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-8 w-8 text-red-400 hover:text-red-600 hover:bg-red-50"
+                  className="h-8 w-8 text-red-400 hover:text-destructive hover:bg-destructive-subtle"
                   onClick={() => { if (window.confirm("למחוק הזמנה זו?")) deleteOrderMutation.mutate(order.id); }}
                 >
                   <Trash2 className="w-4 h-4" />
@@ -149,33 +149,33 @@ export default function MaterialOrdersTab({ projectId, projectName }) {
             </div>
 
             {isExpanded && (
-              <div className="border-t border-slate-100">
+              <div className="border-t border-border">
                 <table className="w-full text-sm">
-                  <thead className="bg-slate-50">
+                  <thead className="bg-background">
                     <tr>
-                      <th className="text-right px-4 py-2 text-slate-600 font-medium">קוד פריט</th>
-                      <th className="text-right px-4 py-2 text-slate-600 font-medium">כמות כוללת</th>
+                      <th className="text-right px-4 py-2 text-muted-foreground font-medium">קוד פריט</th>
+                      <th className="text-right px-4 py-2 text-muted-foreground font-medium">כמות כוללת</th>
                       {order.order_type === "profiles" && (
-                        <th className="text-right px-4 py-2 text-slate-600 font-medium">אורך כולל (ס"מ)</th>
+                        <th className="text-right px-4 py-2 text-muted-foreground font-medium">אורך כולל (ס"מ)</th>
                       )}
-                      <th className="text-right px-4 py-2 text-slate-600 font-medium">הערות</th>
+                      <th className="text-right px-4 py-2 text-muted-foreground font-medium">הערות</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100">
+                  <tbody className="divide-y divide-border">
                     {items.map(item => (
-                      <tr key={item.id} className="hover:bg-slate-50">
-                        <td className="px-4 py-2 font-mono font-medium text-slate-800">{item.item_code}</td>
-                        <td className="px-4 py-2 text-slate-700">{item.total_quantity}</td>
+                      <tr key={item.id} className="hover:bg-background">
+                        <td className="px-4 py-2 font-mono font-medium text-foreground">{item.item_code}</td>
+                        <td className="px-4 py-2 text-foreground">{item.total_quantity}</td>
                         {order.order_type === "profiles" && (
-                          <td className="px-4 py-2 font-semibold text-blue-700">
+                          <td className="px-4 py-2 font-semibold text-primary">
                             {item.total_length != null ? `${item.total_length} ס"מ` : "—"}
                           </td>
                         )}
-                        <td className="px-4 py-2 text-slate-400 text-xs">{item.notes || ""}</td>
+                        <td className="px-4 py-2 text-muted-foreground text-xs">{item.notes || ""}</td>
                       </tr>
                     ))}
                     {items.length === 0 && (
-                      <tr><td colSpan={4} className="px-4 py-4 text-center text-slate-400">אין פריטים</td></tr>
+                      <tr><td colSpan={4} className="px-4 py-4 text-center text-muted-foreground">אין פריטים</td></tr>
                     )}
                   </tbody>
                 </table>

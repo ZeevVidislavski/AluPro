@@ -147,21 +147,21 @@ export default function Customers() {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 p-6 lg:p-8">
+    <div className="min-h-screen bg-background p-6 lg:p-8">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900">לקוחות</h1>
-            <p className="text-slate-500 mt-1">{customers.length} לקוחות במערכת</p>
+            <h1 className="text-3xl font-bold text-foreground">לקוחות</h1>
+            <p className="text-muted-foreground mt-1">{customers.length} לקוחות במערכת</p>
           </div>
-          <Button onClick={openCreateDialog} className="bg-blue-600 hover:bg-blue-700">
+          <Button onClick={openCreateDialog} className="bg-primary hover:bg-primary-hover">
             <Plus className="w-5 h-5 ml-2" />
             לקוח חדש
           </Button>
@@ -170,7 +170,7 @@ export default function Customers() {
         {/* Filters */}
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="relative flex-1">
-            <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+            <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
             <Input
               placeholder="חיפוש לפי שם, טלפון או אימייל..."
               value={search}
@@ -195,7 +195,7 @@ export default function Customers() {
           {filteredCustomers.map((customer) => (
             <div 
               key={customer.id}
-              className="bg-white rounded-2xl border border-slate-200 p-6 hover:shadow-lg transition-shadow"
+              className="bg-white rounded-2xl border border-border p-6 hover:shadow-lg transition-shadow"
             >
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
@@ -203,7 +203,7 @@ export default function Customers() {
                     "w-12 h-12 rounded-xl flex items-center justify-center",
                     customer.customer_type === 'contractor' 
                       ? "bg-purple-100 text-purple-600" 
-                      : "bg-blue-100 text-blue-600"
+                      : "bg-blue-100 text-primary"
                   )}>
                     {customer.customer_type === 'contractor' ? (
                       <Building2 className="w-6 h-6" />
@@ -212,12 +212,12 @@ export default function Customers() {
                     )}
                   </div>
                   <div>
-                    <h3 className="font-semibold text-slate-900">{customer.name}</h3>
+                    <h3 className="font-semibold text-foreground">{customer.name}</h3>
                     <span className={cn(
                       "text-xs px-2 py-0.5 rounded-full",
                       customer.customer_type === 'contractor'
                         ? "bg-purple-100 text-purple-700"
-                        : "bg-blue-100 text-blue-700"
+                        : "bg-blue-100 text-primary"
                     )}>
                       {customer.customer_type === 'contractor' ? 'קבלן' : 'פרטי'}
                     </span>
@@ -236,7 +236,7 @@ export default function Customers() {
                     </DropdownMenuItem>
                     <DropdownMenuItem 
                       onClick={() => deleteMutation.mutate(customer.id)}
-                      className="text-red-600"
+                      className="text-destructive"
                     >
                       <Trash2 className="w-4 h-4 ml-2" />
                       מחיקה
@@ -245,38 +245,38 @@ export default function Customers() {
                 </DropdownMenu>
               </div>
 
-              <div className="space-y-2 text-sm text-slate-600 mb-4">
+              <div className="space-y-2 text-sm text-muted-foreground mb-4">
                 {customer.phone && (
                   <div className="flex items-center gap-2">
-                    <Phone className="w-4 h-4 text-slate-400" />
-                    <a href={`tel:${customer.phone}`} className="hover:text-blue-600">
+                    <Phone className="w-4 h-4 text-muted-foreground" />
+                    <a href={`tel:${customer.phone}`} className="hover:text-primary">
                       {customer.phone}
                     </a>
                   </div>
                 )}
                 {customer.email && (
                   <div className="flex items-center gap-2">
-                    <Mail className="w-4 h-4 text-slate-400" />
-                    <a href={`mailto:${customer.email}`} className="hover:text-blue-600 truncate">
+                    <Mail className="w-4 h-4 text-muted-foreground" />
+                    <a href={`mailto:${customer.email}`} className="hover:text-primary truncate">
                       {customer.email}
                     </a>
                   </div>
                 )}
                 {customer.address && (
                   <div className="flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-slate-400" />
+                    <MapPin className="w-4 h-4 text-muted-foreground" />
                     <span className="truncate">{customer.address}</span>
                   </div>
                 )}
               </div>
 
-              <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
-                <span className="text-sm text-slate-500">
+              <div className="pt-4 border-t border-border flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">
                   {getProjectCount(customer.id)} פרויקטים
                 </span>
                 <Link
                   to={createPageUrl("Projects") + `?customer=${customer.id}`}
-                  className="text-blue-600 hover:text-blue-700 text-sm flex items-center gap-1"
+                  className="text-primary hover:text-primary text-sm flex items-center gap-1"
                 >
                   צפייה בפרויקטים
                   <ChevronLeft className="w-4 h-4" />
@@ -289,8 +289,8 @@ export default function Customers() {
         {filteredCustomers.length === 0 && (
           <div className="text-center py-12">
             <User className="w-12 h-12 mx-auto text-slate-300 mb-4" />
-            <h3 className="text-lg font-medium text-slate-900 mb-1">לא נמצאו לקוחות</h3>
-            <p className="text-slate-500">נסה לשנות את פרמטרי החיפוש</p>
+            <h3 className="text-lg font-medium text-foreground mb-1">לא נמצאו לקוחות</h3>
+            <p className="text-muted-foreground">נסה לשנות את פרמטרי החיפוש</p>
           </div>
         )}
       </div>
@@ -373,7 +373,7 @@ export default function Customers() {
             <div className="flex gap-3 pt-4">
               <Button 
                 type="submit" 
-                className="flex-1 bg-blue-600 hover:bg-blue-700"
+                className="flex-1 bg-primary hover:bg-primary-hover"
                 disabled={createMutation.isPending || updateMutation.isPending}
               >
                 {(createMutation.isPending || updateMutation.isPending) && (

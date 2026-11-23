@@ -71,11 +71,11 @@ export default function Profile() {
 
   return (
     <div className="max-w-lg mx-auto p-6" dir="rtl">
-      <h1 className="text-2xl font-bold text-slate-900 mb-1">אזור אישי</h1>
-      <p className="text-slate-500 text-sm mb-6">{user?.email}</p>
+      <h1 className="text-2xl font-bold text-foreground mb-1">אזור אישי</h1>
+      <p className="text-muted-foreground text-sm mb-6">{user?.email}</p>
 
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 mb-4">
-        <h2 className="font-semibold text-slate-900 mb-4">פרטים אישיים</h2>
+      <div className="bg-white rounded-2xl border border-border p-6 mb-4">
+        <h2 className="font-semibold text-foreground mb-4">פרטים אישיים</h2>
         <form onSubmit={handleSaveName} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="fullName">שם מלא</Label>
@@ -87,10 +87,10 @@ export default function Profile() {
             />
           </div>
           {nameError && (
-            <p className="text-sm text-red-600 bg-red-50 rounded-md px-3 py-2">{nameError}</p>
+            <p className="text-sm text-destructive bg-destructive-subtle rounded-md px-3 py-2">{nameError}</p>
           )}
           {nameMessage && (
-            <p className="text-sm text-green-700 bg-green-50 rounded-md px-3 py-2">{nameMessage}</p>
+            <p className="text-sm text-success bg-success-subtle rounded-md px-3 py-2">{nameMessage}</p>
           )}
           <Button type="submit" disabled={isSavingName || isLoadingProfile}>
             {isSavingName ? <Loader2 className="w-4 h-4 animate-spin" /> : "שמור שם"}
@@ -98,8 +98,8 @@ export default function Profile() {
         </form>
       </div>
 
-      <div className="bg-white rounded-2xl border border-slate-200 p-6">
-        <h2 className="font-semibold text-slate-900 mb-4">החלפת סיסמה</h2>
+      <div className="bg-white rounded-2xl border border-border p-6">
+        <h2 className="font-semibold text-foreground mb-4">החלפת סיסמה</h2>
         <form onSubmit={handleSavePassword} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="newPassword">סיסמה חדשה</Label>
@@ -122,10 +122,10 @@ export default function Profile() {
             />
           </div>
           {passwordError && (
-            <p className="text-sm text-red-600 bg-red-50 rounded-md px-3 py-2">{passwordError}</p>
+            <p className="text-sm text-destructive bg-destructive-subtle rounded-md px-3 py-2">{passwordError}</p>
           )}
           {passwordMessage && (
-            <p className="text-sm text-green-700 bg-green-50 rounded-md px-3 py-2">{passwordMessage}</p>
+            <p className="text-sm text-success bg-success-subtle rounded-md px-3 py-2">{passwordMessage}</p>
           )}
           <Button type="submit" disabled={isSavingPassword}>
             {isSavingPassword ? <Loader2 className="w-4 h-4 animate-spin" /> : "עדכן סיסמה"}

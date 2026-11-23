@@ -64,14 +64,14 @@ export default function PlatformTenantCreate() {
 
   return (
     <div className="max-w-lg mx-auto">
-      <Link to="/admin/tenants" className="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-slate-800 mb-4">
+      <Link to="/admin/tenants" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-4">
         <ChevronRight className="w-4 h-4" />
         חזרה לרשימת החברות
       </Link>
 
-      <h1 className="text-2xl font-bold text-slate-900 mb-6">חברה חדשה</h1>
+      <h1 className="text-2xl font-bold text-foreground mb-6">חברה חדשה</h1>
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-slate-200 p-6 space-y-4">
+      <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-border p-6 space-y-4">
         <div className="space-y-2">
           <Label htmlFor="name">שם החברה</Label>
           <Input id="name" value={name} onChange={(e) => handleNameChange(e.target.value)} required />
@@ -91,8 +91,8 @@ export default function PlatformTenantCreate() {
           />
         </div>
 
-        <div className="border-t border-slate-100 pt-4 space-y-4">
-          <p className="text-sm font-medium text-slate-700">משתמש הבעלים הראשון של החברה</p>
+        <div className="border-t border-border pt-4 space-y-4">
+          <p className="text-sm font-medium text-foreground">משתמש הבעלים הראשון של החברה</p>
 
           <div className="space-y-2">
             <Label htmlFor="ownerFullName">שם מלא</Label>
@@ -125,14 +125,14 @@ export default function PlatformTenantCreate() {
                 חדש
               </Button>
             </div>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-muted-foreground">
               יש למסור סיסמה זו ללקוח — הוא יוכל להחליף אותה מאוחר יותר דרך "שכחתי סיסמה" או האזור האישי שלו.
             </p>
           </div>
         </div>
 
         {error && (
-          <p className="text-sm text-red-600 bg-red-50 rounded-md px-3 py-2">{error}</p>
+          <p className="text-sm text-destructive bg-destructive-subtle rounded-md px-3 py-2">{error}</p>
         )}
 
         <Button type="submit" className="w-full" disabled={isSubmitting}>

@@ -98,8 +98,8 @@ export default function MorningSummary() {
     <div className="bg-gradient-to-br from-indigo-50 via-blue-50 to-cyan-50 rounded-2xl border-2 border-blue-200 p-6 shadow-lg">
       <div className="flex items-start justify-between mb-4">
         <div>
-          <h2 className="text-2xl font-bold text-slate-900 mb-1">📊 סיכום עסקי יומי</h2>
-          <p className="text-sm text-slate-600">{new Date().toLocaleDateString('he-IL', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+          <h2 className="text-2xl font-bold text-foreground mb-1">📊 סיכום עסקי יומי</h2>
+          <p className="text-sm text-muted-foreground">{new Date().toLocaleDateString('he-IL', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
         </div>
         <Button variant="ghost" size="icon" onClick={handleDismiss}>
           <X className="w-4 h-4" />
@@ -109,12 +109,12 @@ export default function MorningSummary() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="bg-white/70 backdrop-blur rounded-xl p-4">
           <div className="flex items-center gap-2 mb-2">
-            <TrendingUp className="w-4 h-4 text-emerald-600" />
-            <span className="text-xs text-slate-600">רווחיות ממוצעת</span>
+            <TrendingUp className="w-4 h-4 text-success" />
+            <span className="text-xs text-muted-foreground">רווחיות ממוצעת</span>
           </div>
           <p className={cn(
             "text-2xl font-bold",
-            avgProfitPercent >= 15 ? "text-emerald-600" : "text-amber-600"
+            avgProfitPercent >= 15 ? "text-success" : "text-warning"
           )}>
             {avgProfitPercent.toFixed(1)}%
           </p>
@@ -122,40 +122,40 @@ export default function MorningSummary() {
 
         <div className="bg-white/70 backdrop-blur rounded-xl p-4">
           <div className="flex items-center gap-2 mb-2">
-            <AlertTriangle className="w-4 h-4 text-amber-600" />
-            <span className="text-xs text-slate-600">דורשים טיפול</span>
+            <AlertTriangle className="w-4 h-4 text-warning" />
+            <span className="text-xs text-muted-foreground">דורשים טיפול</span>
           </div>
           <p className={cn(
             "text-2xl font-bold",
-            projectsNeedAttention > 0 ? "text-amber-600" : "text-emerald-600"
+            projectsNeedAttention > 0 ? "text-warning" : "text-success"
           )}>
             {projectsNeedAttention} פרויקטים
           </p>
           {criticalAlerts > 0 && (
-            <p className="text-xs text-red-600 mt-1">{criticalAlerts} קריטי</p>
+            <p className="text-xs text-destructive mt-1">{criticalAlerts} קריטי</p>
           )}
         </div>
 
         <div className="bg-white/70 backdrop-blur rounded-xl p-4">
           <div className="flex items-center gap-2 mb-2">
-            <CheckCircle2 className="w-4 h-4 text-blue-600" />
-            <span className="text-xs text-slate-600">תזרים מזומנים</span>
+            <CheckCircle2 className="w-4 h-4 text-primary" />
+            <span className="text-xs text-muted-foreground">תזרים מזומנים</span>
           </div>
           <p className={cn(
             "text-2xl font-bold",
-            cashFlow >= 0 ? "text-emerald-600" : "text-red-600"
+            cashFlow >= 0 ? "text-success" : "text-destructive"
           )}>
             {cashFlow >= 0 ? 'חיובי' : 'שלילי'}
           </p>
-          <p className="text-xs text-slate-600 mt-1">{formatCurrency(Math.abs(cashFlow))}</p>
+          <p className="text-xs text-muted-foreground mt-1">{formatCurrency(Math.abs(cashFlow))}</p>
         </div>
 
         <div className="bg-white/70 backdrop-blur rounded-xl p-4">
           <div className="flex items-center gap-2 mb-2">
             <DollarSign className="w-4 h-4 text-purple-600" />
-            <span className="text-xs text-slate-600">ממתינים לגבייה</span>
+            <span className="text-xs text-muted-foreground">ממתינים לגבייה</span>
           </div>
-          <p className="text-2xl font-bold text-slate-900">
+          <p className="text-2xl font-bold text-foreground">
             {formatCurrency(pendingCollection)}
           </p>
         </div>

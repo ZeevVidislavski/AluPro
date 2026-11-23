@@ -41,7 +41,7 @@ export default function SelectHeaderModal({ open, onClose, headers, onConfirm })
       <DialogContent className="max-w-md" dir="rtl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Printer className="w-5 h-5 text-blue-600" />
+            <Printer className="w-5 h-5 text-primary" />
             בחר כותרת להדפסה
           </DialogTitle>
         </DialogHeader>
@@ -52,11 +52,11 @@ export default function SelectHeaderModal({ open, onClose, headers, onConfirm })
             className={cn(
               "w-full text-right px-4 py-3 rounded-xl border transition-colors",
               selectedId === null
-                ? "border-blue-300 bg-blue-50"
-                : "border-slate-100 hover:bg-slate-50"
+                ? "border-blue-300 bg-secondary"
+                : "border-border hover:bg-background"
             )}
           >
-            <p className="font-medium text-slate-700">ללא כותרת</p>
+            <p className="font-medium text-foreground">ללא כותרת</p>
           </button>
           {headers.map(h => (
             <button
@@ -65,15 +65,15 @@ export default function SelectHeaderModal({ open, onClose, headers, onConfirm })
               className={cn(
                 "w-full text-right px-4 py-3 rounded-xl border transition-colors flex items-center gap-3",
                 selectedId === h.id
-                  ? "border-blue-300 bg-blue-50"
-                  : "border-slate-100 hover:bg-slate-50"
+                  ? "border-blue-300 bg-secondary"
+                  : "border-border hover:bg-background"
               )}
             >
               <HeaderThumbnail path={h.logo_url} />
               <div>
-                <p className="font-medium text-slate-800">{h.name}</p>
-                {h.company_name && <p className="text-xs text-slate-500">{h.company_name}</p>}
-                {h.subtitle && <p className="text-xs text-slate-400">{h.subtitle}</p>}
+                <p className="font-medium text-foreground">{h.name}</p>
+                {h.company_name && <p className="text-xs text-muted-foreground">{h.company_name}</p>}
+                {h.subtitle && <p className="text-xs text-muted-foreground">{h.subtitle}</p>}
               </div>
               {h.is_default && <span className="mr-auto text-xs text-blue-500">ברירת מחדל</span>}
             </button>
@@ -81,7 +81,7 @@ export default function SelectHeaderModal({ open, onClose, headers, onConfirm })
         </div>
 
         <div className="flex gap-2 pt-1">
-          <Button className="flex-1 bg-blue-600 hover:bg-blue-700" onClick={handleConfirm}>
+          <Button className="flex-1 bg-primary hover:bg-primary-hover" onClick={handleConfirm}>
             הדפס PDF
           </Button>
           <Button variant="outline" onClick={onClose}>ביטול</Button>

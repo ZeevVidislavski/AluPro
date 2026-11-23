@@ -10,15 +10,15 @@ import {
   CompanyHeaderService,
   ProjectService,
 } from "@/services";
-import { Link } from "react-router-dom";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowRight, Plus, Loader2, Printer, Save, FileDown, GripVertical, Check } from "lucide-react";
-import { generateDescription, calcItemTotal } from "@/lib/quoteCalculations";
+import { Plus, Loader2, Printer, Save, FileDown, GripVertical, Check } from "lucide-react";
+import { generateDescription, calcItemTotal, calcQuoteTotals } from "@/lib/quoteCalculations";
 import QuoteItemCard from "@/components/quotes/QuoteItemCard";
+import PageHeader from "@/components/shared/PageHeader";
 import CatalogPickerModal from "@/components/quotes/CatalogPickerModal";
 import SaveTemplateModal from "@/components/quotes/TemplateModal";
 import LoadTemplateModal from "@/components/quotes/LoadTemplateModal";
@@ -26,18 +26,6 @@ import SelectHeaderModal from "@/components/quotes/SelectHeaderModal";
 import QuotePrintView from "@/components/quotes/QuotePrintView";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
-
-function calcQuoteTotals(items, itemComponentsMap, discountPercent, vatPercent) {
-  const linesTotal = items.reduce((sum, item) => {
-    const comps = itemComponentsMap[item.id || item._tempId] || [];
-    const itemQty = item.quantity || 1;
-    return sum + calcItemTotal(comps, item.width_cm, item.height_cm, itemQty);
-  }, 0);
-  const afterDiscount = linesTotal * (1 - (discountPercent || 0) / 100);
-  const vatAmount = afterDiscount * (vatPercent || 17) / 100;
-  const totalWithVat = afterDiscount + vatAmount;
-  return { linesTotal, subtotal: afterDiscount, vatAmount, totalWithVat };
-}
 
 export default function QuoteEditor() {
   const [quoteId, setQuoteId] = useState(null);
@@ -556,41 +544,43 @@ export default function QuoteEditor() {
 
   // ─── Render ───────────────────────────────────────────────────────────────────
   if (loadingQuote || loadingItems) {
-    return <div className="min-h-screen flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-blue-600" /></div>;
+    return <div className="min-h-screen flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>;
   }
   if (!quote) {
-    return <div className="min-h-screen flex items-center justify-center text-slate-500">הצעה לא נמצאה</div>;
+    return <div className="min-h-screen flex items-center justify-center text-muted-foreground">הצעה לא נמצאה</div>;
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 p-4 lg:p-8" dir="rtl">
-      <div className="max-w-5xl mx-auto space-y-6">
+    <div className="p-4 md:p-6 lg:p-8">
+      <div className="max-w-6xl mx-auto space-y-6">
         {/* Header */}
-        <div className="flex items-center gap-4">
-          <Link to={quote.project_id ? `/ProjectDetails?id=${quote.project_id}` : "/Dashboard"} className="p-2 rounded-lg hover:bg-slate-200 transition-colors">
-            <ArrowRight className="w-5 h-5" />
-          </Link>
-          <div className="flex-1">
-            <h1 className="text-2xl font-bold text-slate-900">עריכת הצעת מחיר — {quote.project_name}</h1>
-            <p className="text-slate-500 text-sm">{quote.customer_name}</p>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-slate-400 min-w-20 text-left">
-              {saving ? "שומר..." : savedAt ? (<span className="inline-flex items-center gap-1 text-green-600"><Check className="w-3 h-3" /> נשמר אוטומטית</span>) : null}
-            </span>
-            <Button variant="outline" onClick={handlePDFClick} disabled={saving}>
-              <Printer className="w-4 h-4 ml-2" /> PDF
-            </Button>
-            <Button onClick={handleSave} disabled={saving} className="bg-blue-600 hover:bg-blue-700">
-              {saving ? <Loader2 className="w-4 h-4 ml-2 animate-spin" /> : <Save className="w-4 h-4 ml-2" />}
-              שמור
-            </Button>
-          </div>
-        </div>
+        <PageHeader
+          breadcrumbs={[
+            { label: quote.project_id ? "פרויקטים" : "דשבורד", to: quote.project_id ? "/Projects" : "/Dashboard" },
+            ...(quote.project_id ? [{ label: quote.project_name || "פרויקט", to: `/ProjectDetails?id=${quote.project_id}` }] : []),
+            { label: "הצעת מחיר" },
+          ]}
+          title={`עריכת הצעת מחיר — ${quote.project_name}`}
+          description={quote.customer_name}
+          actions={
+            <>
+              <span className="text-[13px] text-muted-foreground min-w-24 text-end" role="status" aria-live="polite">
+                {saving ? "שומר..." : savedAt ? (<span className="inline-flex items-center gap-1 text-success font-medium"><Check className="w-3.5 h-3.5" /> נשמר אוטומטית</span>) : null}
+              </span>
+              <Button variant="outline" onClick={handlePDFClick} disabled={saving}>
+                <Printer className="w-4 h-4" /> PDF
+              </Button>
+              <Button onClick={handleSave} disabled={saving}>
+                {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                שמור
+              </Button>
+            </>
+          }
+        />
 
         {/* Quote meta */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-6">
-          <h2 className="font-semibold text-slate-800 mb-4">פרטי הצעה</h2>
+        <div className="bg-card rounded-xl border shadow-sm p-6">
+          <h2 className="font-semibold text-foreground mb-4">פרטי הצעה</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             <div className="space-y-1">
               <Label>תאריך הצעה</Label>
@@ -610,19 +600,19 @@ export default function QuoteEditor() {
         {/* Items section */}
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <h2 className="font-semibold text-slate-800">פריטי ההצעה</h2>
+            <h2 className="font-semibold text-foreground">פריטי ההצעה</h2>
             <div className="flex gap-2">
               <Button size="sm" variant="outline" onClick={() => setShowLoadTemplate(true)}>
                 <FileDown className="w-4 h-4 ml-1" /> טען תבנית
               </Button>
-              <Button size="sm" onClick={addNewItem} className="bg-blue-600 hover:bg-blue-700">
+              <Button size="sm" onClick={addNewItem}>
                 <Plus className="w-4 h-4 ml-1" /> פריט חדש
               </Button>
             </div>
           </div>
 
           {items.length === 0 && (
-            <div className="bg-white rounded-2xl border border-dashed border-slate-300 p-10 text-center text-slate-400">
+            <div className="bg-card rounded-xl border border-dashed border-input p-10 text-center text-muted-foreground">
               <p className="text-lg mb-2">אין פריטים בהצעה</p>
               <p className="text-sm">לחץ "פריט חדש" או "טען תבנית" להתחלה</p>
             </div>
@@ -647,7 +637,7 @@ export default function QuoteEditor() {
                               <div
                                 {...dragProvided.dragHandleProps}
                                 title="גרור לשינוי סדר"
-                                className="pt-5 text-slate-300 hover:text-slate-500 cursor-grab"
+                                className="pt-5 text-muted-foreground/60 hover:text-muted-foreground cursor-grab"
                               >
                                 <GripVertical className="w-5 h-5" />
                               </div>
@@ -682,7 +672,7 @@ export default function QuoteEditor() {
             <button
               type="button"
               onClick={addNewItem}
-              className="w-full flex items-center justify-center gap-1 py-3 rounded-2xl border border-dashed border-slate-300 text-slate-500 hover:border-blue-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
+              className="w-full flex items-center justify-center gap-1 py-3 rounded-xl border border-dashed border-input text-muted-foreground hover:border-primary hover:text-primary hover:bg-secondary transition-colors"
             >
               <Plus className="w-5 h-5" /> פריט חדש
             </button>
@@ -691,40 +681,40 @@ export default function QuoteEditor() {
 
         {/* Totals */}
         {items.length > 0 && (
-          <div className="bg-white rounded-2xl border border-slate-200 p-6">
-            <div className="flex flex-col items-end gap-2 max-w-xs mr-0 ml-auto w-full">
+          <div className="bg-card rounded-xl border shadow-sm p-6">
+            <div className="flex flex-col items-end gap-2 max-w-xs mr-0 ml-auto w-full tabular-nums">
               <div className="flex justify-between w-full text-sm">
-                <span className="text-slate-600">סכום לפני הנחה</span>
+                <span className="text-muted-foreground">סכום לפני הנחה</span>
                 <span>{formatCurrency(totals.linesTotal)}</span>
               </div>
               <div className="flex items-center justify-between w-full text-sm gap-2">
-                <span className="text-slate-600">הנחה (%)</span>
+                <span className="text-muted-foreground">הנחה (%)</span>
                 <Input
                   type="number"
                   value={quoteForm.discount_percent}
                   onChange={e => editForm({ discount_percent: parseFloat(e.target.value) || 0 })}
-                  className="w-16 h-7 text-sm"
+                  className="w-16 h-8 text-sm"
                 />
-                <span className="text-red-500">-{formatCurrency(totals.linesTotal - totals.subtotal)}</span>
+                <span className="text-destructive">-{formatCurrency(totals.linesTotal - totals.subtotal)}</span>
               </div>
               <div className="flex justify-between w-full text-sm">
-                <span className="text-slate-600">לפני מע"מ</span>
+                <span className="text-muted-foreground">לפני מע"מ</span>
                 <span>{formatCurrency(totals.subtotal)}</span>
               </div>
               <div className="flex justify-between w-full text-sm">
-                <span className="text-slate-600">מע"מ {quoteForm.vat_percent}%</span>
+                <span className="text-muted-foreground">מע"מ {quoteForm.vat_percent}%</span>
                 <span>{formatCurrency(totals.vatAmount)}</span>
               </div>
-              <div className="flex justify-between w-full text-base font-bold border-t border-slate-200 pt-2">
-                <span>סה"כ כולל מע"מ</span>
-                <span className="text-blue-700">{formatCurrency(totals.totalWithVat)}</span>
+              <div className="flex justify-between items-baseline w-full text-2xl font-bold border-t border-border pt-3" aria-live="polite">
+                <span className="text-base">סה"כ כולל מע"מ</span>
+                <span className="text-foreground">{formatCurrency(totals.totalWithVat)}</span>
               </div>
             </div>
           </div>
         )}
 
         {/* Notes */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-6">
+        <div className="bg-card rounded-xl border shadow-sm p-6">
           <Label className="mb-2 block">הערות</Label>
           <Textarea
             value={quoteForm.notes}

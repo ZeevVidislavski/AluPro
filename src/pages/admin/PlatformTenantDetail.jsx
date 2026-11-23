@@ -27,9 +27,9 @@ const ROLE_LABELS = { owner: "בעלים", admin: "מנהל", member: "חבר צ
 
 function InfoRow({ label, value }) {
   return (
-    <div className="flex justify-between py-2 border-b border-slate-100 last:border-0">
-      <span className="text-slate-500">{label}</span>
-      <span className="text-slate-900 font-medium">{value ?? "—"}</span>
+    <div className="flex justify-between py-2 border-b border-border last:border-0">
+      <span className="text-muted-foreground">{label}</span>
+      <span className="text-foreground font-medium">{value ?? "—"}</span>
     </div>
   );
 }
@@ -143,10 +143,10 @@ function BillingForm({ tenantId, subscription, onSaved }) {
       </div>
 
       {error && (
-        <p className="text-sm text-red-600 bg-red-50 rounded-md px-3 py-2">{error}</p>
+        <p className="text-sm text-destructive bg-destructive-subtle rounded-md px-3 py-2">{error}</p>
       )}
       {mutation.isSuccess && !mutation.isPending && (
-        <p className="text-sm text-green-700 bg-green-50 rounded-md px-3 py-2">נשמר בהצלחה</p>
+        <p className="text-sm text-success bg-success-subtle rounded-md px-3 py-2">נשמר בהצלחה</p>
       )}
 
       <Button type="submit" disabled={mutation.isPending} className="w-full">
@@ -195,13 +195,13 @@ export default function PlatformTenantDetail() {
   if (isLoadingTenant) {
     return (
       <div className="flex items-center justify-center py-20">
-        <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
+        <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
       </div>
     );
   }
 
   if (!tenant) {
-    return <p className="text-center text-slate-400 py-20">חברה לא נמצאה</p>;
+    return <p className="text-center text-muted-foreground py-20">חברה לא נמצאה</p>;
   }
 
   const subscription = tenant.tenant_subscriptions?.[0];
@@ -209,20 +209,20 @@ export default function PlatformTenantDetail() {
 
   return (
     <div className="max-w-4xl mx-auto">
-      <Link to="/admin/tenants" className="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-slate-800 mb-4">
+      <Link to="/admin/tenants" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-4">
         <ChevronRight className="w-4 h-4" />
         חזרה לרשימת החברות
       </Link>
 
-      <div className="bg-white rounded-xl border border-slate-200 p-5 mb-4 flex flex-wrap items-center justify-between gap-4">
+      <div className="bg-white rounded-xl border border-border p-5 mb-4 flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <h1 className="text-2xl font-bold text-slate-900">{tenant.name}</h1>
+          <h1 className="text-2xl font-bold text-foreground">{tenant.name}</h1>
           <span
             className={cn(
               "text-xs font-medium rounded-full px-2.5 py-1",
-              tenant.status === "active" && "bg-green-50 text-green-700",
-              tenant.status === "suspended" && "bg-amber-50 text-amber-700",
-              tenant.status === "cancelled" && "bg-red-50 text-red-700"
+              tenant.status === "active" && "bg-success-subtle text-success",
+              tenant.status === "suspended" && "bg-warning-subtle text-warning",
+              tenant.status === "cancelled" && "bg-destructive-subtle text-destructive"
             )}
           >
             {STATUS_LABELS[tenant.status] ?? tenant.status}
@@ -233,20 +233,20 @@ export default function PlatformTenantDetail() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
         <div className="space-y-4">
-        <div className="bg-white rounded-xl border border-slate-200 p-5">
-          <h2 className="font-semibold text-slate-900 mb-3">פרטי חברה</h2>
+        <div className="bg-white rounded-xl border border-border p-5">
+          <h2 className="font-semibold text-foreground mb-3">פרטי חברה</h2>
           <InfoRow label="סטטוס" value={STATUS_LABELS[tenant.status] ?? tenant.status} />
           <InfoRow label="נוצרה בתאריך" value={new Date(tenant.created_at).toLocaleDateString("he-IL")} />
         </div>
 
-        <div className="bg-white rounded-xl border border-slate-200 p-5">
-          <h2 className="font-semibold text-slate-900 mb-3">שימוש</h2>
+        <div className="bg-white rounded-xl border border-border p-5">
+          <h2 className="font-semibold text-foreground mb-3">שימוש</h2>
           {usage ? (
             <>
               <InfoRow
                 label="משתמשים"
                 value={
-                  <span className={cn(isApproachingLimit(usage.user_count, limits.users) && "text-amber-600")}>
+                  <span className={cn(isApproachingLimit(usage.user_count, limits.users) && "text-warning")}>
                     {usage.user_count} מתוך {Number.isFinite(limits.users) ? limits.users : "∞"}
                     {isApproachingLimit(usage.user_count, limits.users) && (
                       <AlertTriangle className="inline w-4 h-4 mr-1" />
@@ -257,7 +257,7 @@ export default function PlatformTenantDetail() {
               <InfoRow
                 label="פרויקטים פעילים"
                 value={
-                  <span className={cn(isApproachingLimit(usage.project_count, limits.projects) && "text-amber-600")}>
+                  <span className={cn(isApproachingLimit(usage.project_count, limits.projects) && "text-warning")}>
                     {usage.project_count} מתוך {Number.isFinite(limits.projects) ? limits.projects : "∞"}
                     {isApproachingLimit(usage.project_count, limits.projects) && (
                       <AlertTriangle className="inline w-4 h-4 mr-1" />
@@ -268,41 +268,41 @@ export default function PlatformTenantDetail() {
               <InfoRow label="לקוחות" value={usage.customer_count} />
             </>
           ) : (
-            <Loader2 className="w-4 h-4 animate-spin text-slate-400" />
+            <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
           )}
 
-          <div className="mt-4 pt-4 border-t border-slate-100">
+          <div className="mt-4 pt-4 border-t border-border">
             {!storageMutation.data && !storageMutation.isError && (
-              <p className="text-sm text-slate-400">שימוש אחסון: לחץ "חשב שימוש אחסון"</p>
+              <p className="text-sm text-muted-foreground">שימוש אחסון: לחץ "חשב שימוש אחסון"</p>
             )}
             {storageMutation.data && (
-              <p className="text-sm text-slate-600">
-                שימוש אחסון: <span className="font-medium text-slate-900">{storageMutation.data.gb.toFixed(2)} GB</span>
+              <p className="text-sm text-muted-foreground">
+                שימוש אחסון: <span className="font-medium text-foreground">{storageMutation.data.gb.toFixed(2)} GB</span>
               </p>
             )}
             {storageMutation.isError && (
-              <p className="text-sm text-red-600 mt-2">
+              <p className="text-sm text-destructive mt-2">
                 {storageMutation.error?.message || "שגיאה בחישוב שימוש אחסון"}
               </p>
             )}
           </div>
         </div>
 
-        <div className="bg-white rounded-xl border border-slate-200 p-5">
-          <h2 className="font-semibold text-slate-900 mb-3">חברי צוות</h2>
-          {(members ?? []).length === 0 && <p className="text-slate-400 text-sm">אין חברי צוות</p>}
+        <div className="bg-white rounded-xl border border-border p-5">
+          <h2 className="font-semibold text-foreground mb-3">חברי צוות</h2>
+          {(members ?? []).length === 0 && <p className="text-muted-foreground text-sm">אין חברי צוות</p>}
           {(members ?? []).map((member) => (
-            <div key={member.id} className="flex justify-between py-2 border-b border-slate-100 last:border-0 text-sm">
+            <div key={member.id} className="flex justify-between py-2 border-b border-border last:border-0 text-sm">
               <span>{member.profiles?.full_name ?? "—"}</span>
-              <span className="text-slate-500">{ROLE_LABELS[member.role] ?? member.role}</span>
+              <span className="text-muted-foreground">{ROLE_LABELS[member.role] ?? member.role}</span>
             </div>
           ))}
         </div>
         </div>
 
-        <div className="bg-white rounded-xl border border-slate-200 p-5">
-          <h2 className="font-semibold text-slate-900 mb-3">תשלום ותוכנית</h2>
-          <div className="flex flex-wrap gap-2 mb-4 pb-4 border-b border-slate-100">
+        <div className="bg-white rounded-xl border border-border p-5">
+          <h2 className="font-semibold text-foreground mb-3">תשלום ותוכנית</h2>
+          <div className="flex flex-wrap gap-2 mb-4 pb-4 border-b border-border">
             <AddModelsDialog tenantId={tenantId} tenantName={tenant.name} />
             <Button
               variant="outline"
@@ -322,7 +322,7 @@ export default function PlatformTenantDetail() {
               <Button
                 variant="outline"
                 size="sm"
-                className="gap-2 text-amber-700"
+                className="gap-2 text-warning"
                 disabled={statusMutation.isPending}
                 onClick={() => statusMutation.mutate("suspended")}
               >

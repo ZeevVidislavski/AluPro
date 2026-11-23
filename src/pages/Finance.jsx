@@ -190,8 +190,8 @@ export default function Finance() {
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-white p-4 rounded-xl shadow-lg border border-slate-200">
-          <p className="font-medium text-slate-900 mb-2">{label}</p>
+        <div className="bg-white p-4 rounded-xl shadow-lg border border-border">
+          <p className="font-medium text-foreground mb-2">{label}</p>
           {payload.map((entry, index) => (
             <p key={index} style={{ color: entry.color }} className="text-sm">
               {entry.name}: {formatCurrency(entry.value)}
@@ -206,7 +206,7 @@ export default function Finance() {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </div>
     );
   }
@@ -217,20 +217,20 @@ export default function Finance() {
   const supplierDebts = getSupplierDebts();
 
   return (
-    <div className="min-h-screen bg-slate-50 p-6 lg:p-8">
+    <div className="min-h-screen bg-background p-6 lg:p-8">
       <div className="max-w-7xl mx-auto space-y-8">
         {/* Header */}
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900">פיננסים</h1>
-            <p className="text-slate-500 mt-1">ניתוח הכנסות, הוצאות ורווחיות</p>
+            <h1 className="text-3xl font-bold text-foreground">פיננסים</h1>
+            <p className="text-muted-foreground mt-1">ניתוח הכנסות, הוצאות ורווחיות</p>
           </div>
           
           {/* Filters */}
           <div className="flex flex-wrap items-center gap-4">
             <div className="flex items-center gap-2">
-              <Filter className="w-5 h-5 text-slate-400" />
-              <span className="text-sm text-slate-600">מתאריך:</span>
+              <Filter className="w-5 h-5 text-muted-foreground" />
+              <span className="text-sm text-muted-foreground">מתאריך:</span>
               <Input
                 type="date"
                 value={dateFrom}
@@ -239,7 +239,7 @@ export default function Finance() {
               />
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-sm text-slate-600">עד:</span>
+              <span className="text-sm text-muted-foreground">עד:</span>
               <Input
                 type="date"
                 value={dateTo}
@@ -251,11 +251,11 @@ export default function Finance() {
         </div>
 
         {/* Sub-tabs */}
-        <div className="flex gap-1 bg-white border border-slate-200 rounded-xl p-1 w-fit">
+        <div className="flex gap-1 bg-white border border-border rounded-xl p-1 w-fit">
           <button
             onClick={() => setActiveTab("finance")}
             className={cn("px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2",
-              activeTab === "finance" ? "bg-blue-600 text-white shadow-sm" : "text-slate-600 hover:bg-slate-100"
+              activeTab === "finance" ? "bg-primary text-white shadow-sm" : "text-muted-foreground hover:bg-secondary"
             )}
           >
             <Wallet className="w-4 h-4" /> סקירה פיננסית
@@ -263,7 +263,7 @@ export default function Finance() {
           <button
             onClick={() => setActiveTab("settlement")}
             className={cn("px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2",
-              activeTab === "settlement" ? "bg-blue-600 text-white shadow-sm" : "text-slate-600 hover:bg-slate-100"
+              activeTab === "settlement" ? "bg-primary text-white shadow-sm" : "text-muted-foreground hover:bg-secondary"
             )}
           >
             <Users className="w-4 h-4" /> התחשבנות שותפים
@@ -315,8 +315,8 @@ export default function Finance() {
         {/* Charts Row */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Income vs Expenses Chart */}
-          <div className="bg-white rounded-2xl border border-slate-200 p-6">
-            <h3 className="text-lg font-semibold text-slate-900 mb-6">הכנסות והוצאות לפי חודש</h3>
+          <div className="bg-white rounded-2xl border border-border p-6">
+            <h3 className="text-lg font-semibold text-foreground mb-6">הכנסות והוצאות לפי חודש</h3>
             {monthlyData.length > 0 ? (
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={monthlyData}>
@@ -330,15 +330,15 @@ export default function Finance() {
                 </BarChart>
               </ResponsiveContainer>
             ) : (
-              <div className="h-[300px] flex items-center justify-center text-slate-500">
+              <div className="h-[300px] flex items-center justify-center text-muted-foreground">
                 אין נתונים להצגה
               </div>
             )}
           </div>
 
           {/* Expenses by Type */}
-          <div className="bg-white rounded-2xl border border-slate-200 p-6">
-            <h3 className="text-lg font-semibold text-slate-900 mb-6">הוצאות לפי סוג</h3>
+          <div className="bg-white rounded-2xl border border-border p-6">
+            <h3 className="text-lg font-semibold text-foreground mb-6">הוצאות לפי סוג</h3>
             {expensesByType.length > 0 ? (
               <ResponsiveContainer width="100%" height={300}>
                 <PieChart>
@@ -360,7 +360,7 @@ export default function Finance() {
                 </PieChart>
               </ResponsiveContainer>
             ) : (
-              <div className="h-[300px] flex items-center justify-center text-slate-500">
+              <div className="h-[300px] flex items-center justify-center text-muted-foreground">
                 אין נתונים להצגה
               </div>
             )}
@@ -368,8 +368,8 @@ export default function Finance() {
         </div>
 
         {/* Profit Trend */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-6">
-          <h3 className="text-lg font-semibold text-slate-900 mb-6">מגמת רווח</h3>
+        <div className="bg-white rounded-2xl border border-border p-6">
+          <h3 className="text-lg font-semibold text-foreground mb-6">מגמת רווח</h3>
           {monthlyData.length > 0 ? (
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={monthlyData}>
@@ -388,7 +388,7 @@ export default function Finance() {
               </LineChart>
             </ResponsiveContainer>
           ) : (
-            <div className="h-[300px] flex items-center justify-center text-slate-500">
+            <div className="h-[300px] flex items-center justify-center text-muted-foreground">
               אין נתונים להצגה
             </div>
           )}
@@ -397,27 +397,27 @@ export default function Finance() {
         {/* Debts Tables */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Client Debts */}
-          <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
-            <div className="p-6 border-b border-slate-100 flex items-center justify-between">
-              <h3 className="font-semibold text-slate-900">חובות לקוחות פתוחים</h3>
-              <span className="text-sm text-slate-500">{formatCurrency(outstandingFromClients)}</span>
+          <div className="bg-white rounded-2xl border border-border overflow-hidden">
+            <div className="p-6 border-b border-border flex items-center justify-between">
+              <h3 className="font-semibold text-foreground">חובות לקוחות פתוחים</h3>
+              <span className="text-sm text-muted-foreground">{formatCurrency(outstandingFromClients)}</span>
             </div>
-            <div className="divide-y divide-slate-100 max-h-[400px] overflow-y-auto">
+            <div className="divide-y divide-border max-h-[400px] overflow-y-auto">
               {clientDebts.map((item, index) => (
-                <div key={index} className="p-4 hover:bg-slate-50">
+                <div key={index} className="p-4 hover:bg-background">
                   <div className="flex items-center justify-between mb-1">
-                    <span className="font-medium text-slate-900">{item.name}</span>
-                    <span className="font-semibold text-amber-600">{formatCurrency(item.debt)}</span>
+                    <span className="font-medium text-foreground">{item.name}</span>
+                    <span className="font-semibold text-warning">{formatCurrency(item.debt)}</span>
                   </div>
-                  <p className="text-sm text-slate-500">{item.customer}</p>
-                  <div className="flex items-center gap-4 mt-2 text-xs text-slate-400">
+                  <p className="text-sm text-muted-foreground">{item.customer}</p>
+                  <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
                     <span>הצעה: {formatCurrency(item.quote)}</span>
                     <span>שולם: {formatCurrency(item.paid)}</span>
                   </div>
                 </div>
               ))}
               {clientDebts.length === 0 && (
-                <div className="p-8 text-center text-slate-500">
+                <div className="p-8 text-center text-muted-foreground">
                   אין חובות פתוחים
                 </div>
               )}
@@ -425,26 +425,26 @@ export default function Finance() {
           </div>
 
           {/* Supplier Debts */}
-          <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
-            <div className="p-6 border-b border-slate-100 flex items-center justify-between">
-              <h3 className="font-semibold text-slate-900">חובות לספקים</h3>
-              <span className="text-sm text-slate-500">{formatCurrency(outstandingToSuppliers)}</span>
+          <div className="bg-white rounded-2xl border border-border overflow-hidden">
+            <div className="p-6 border-b border-border flex items-center justify-between">
+              <h3 className="font-semibold text-foreground">חובות לספקים</h3>
+              <span className="text-sm text-muted-foreground">{formatCurrency(outstandingToSuppliers)}</span>
             </div>
-            <div className="divide-y divide-slate-100 max-h-[400px] overflow-y-auto">
+            <div className="divide-y divide-border max-h-[400px] overflow-y-auto">
               {supplierDebts.map((item, index) => (
-                <div key={index} className="p-4 hover:bg-slate-50">
+                <div key={index} className="p-4 hover:bg-background">
                   <div className="flex items-center justify-between mb-1">
-                    <span className="font-medium text-slate-900">{item.name}</span>
-                    <span className="font-semibold text-red-600">{formatCurrency(item.debt)}</span>
+                    <span className="font-medium text-foreground">{item.name}</span>
+                    <span className="font-semibold text-destructive">{formatCurrency(item.debt)}</span>
                   </div>
-                  <div className="flex items-center gap-4 mt-1 text-xs text-slate-400">
+                  <div className="flex items-center gap-4 mt-1 text-xs text-muted-foreground">
                     <span>סה״כ: {formatCurrency(item.total)}</span>
                     <span>שולם: {formatCurrency(item.paid)}</span>
                   </div>
                 </div>
               ))}
               {supplierDebts.length === 0 && (
-                <div className="p-8 text-center text-slate-500">
+                <div className="p-8 text-center text-muted-foreground">
                   אין חובות לספקים
                 </div>
               )}

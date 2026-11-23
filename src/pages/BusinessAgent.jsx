@@ -36,10 +36,10 @@ import { generateSmartFocusTasks, calculateDailySummary } from "@/components/lib
 import SmartFocusCard from "@/components/agent/SmartFocusCard";
 
 const severityConfig = {
-  critical: { icon: AlertCircle, color: "text-red-600", bg: "bg-red-50", border: "border-red-200" },
+  critical: { icon: AlertCircle, color: "text-destructive", bg: "bg-destructive-subtle", border: "border-red-200" },
   high: { icon: AlertTriangle, color: "text-orange-600", bg: "bg-orange-50", border: "border-orange-200" },
   medium: { icon: AlertCircle, color: "text-yellow-600", bg: "bg-yellow-50", border: "border-yellow-200" },
-  low: { icon: AlertCircle, color: "text-blue-600", bg: "bg-blue-50", border: "border-blue-200" }
+  low: { icon: AlertCircle, color: "text-primary", bg: "bg-secondary", border: "border-blue-200" }
 };
 
 const alertTypeLabels = {
@@ -237,21 +237,21 @@ export default function BusinessAgent() {
   if (loadingAlerts || loadingSettings) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </div>
     );
   }
 
   if (showSettings) {
     return (
-      <div className="min-h-screen bg-slate-50 p-6 lg:p-8">
+      <div className="min-h-screen bg-background p-6 lg:p-8">
         <div className="max-w-2xl mx-auto">
           <div className="flex items-center justify-between mb-6">
-            <h1 className="text-3xl font-bold text-slate-900">הגדרות סוכן</h1>
+            <h1 className="text-3xl font-bold text-foreground">הגדרות סוכן</h1>
             <Button variant="outline" onClick={() => setShowSettings(false)}>חזור</Button>
           </div>
 
-          <div className="bg-white rounded-2xl border border-slate-200 p-6 space-y-6">
+          <div className="bg-white rounded-2xl border border-border p-6 space-y-6">
             <div className="space-y-2">
               <Label>אחוז רווח מינימלי (%)</Label>
               <Input
@@ -299,7 +299,7 @@ export default function BusinessAgent() {
             </div>
 
             <div className="border-t pt-4 space-y-4">
-              <p className="text-sm font-semibold text-slate-700">🎯 Smart Focus</p>
+              <p className="text-sm font-semibold text-foreground">🎯 Smart Focus</p>
               <div className="flex items-center justify-between">
                 <Label>הפעל Smart Focus</Label>
                 <input
@@ -323,7 +323,7 @@ export default function BusinessAgent() {
 
             <Button 
               onClick={() => updateSettingsMutation.mutate(settingsData || currentSettings)}
-              className="w-full bg-blue-600 hover:bg-blue-700"
+              className="w-full bg-primary hover:bg-primary-hover"
               disabled={updateSettingsMutation.isPending}
             >
               {updateSettingsMutation.isPending && <Loader2 className="w-4 h-4 ml-2 animate-spin" />}
@@ -336,13 +336,13 @@ export default function BusinessAgent() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 p-6 lg:p-8">
+    <div className="min-h-screen bg-background p-6 lg:p-8">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900">🤖 ניהול חכם</h1>
-            <p className="text-slate-600">מערכת התראות וניתוח עסקי אוטומטי</p>
+            <h1 className="text-3xl font-bold text-foreground">🤖 ניהול חכם</h1>
+            <p className="text-muted-foreground">מערכת התראות וניתוח עסקי אוטומטי</p>
           </div>
           <div className="flex gap-3">
             <Button 
@@ -355,7 +355,7 @@ export default function BusinessAgent() {
             <Button 
               onClick={() => runAnalysisMutation.mutate()}
               disabled={runAnalysisMutation.isPending}
-              className="bg-blue-600 hover:bg-blue-700"
+              className="bg-primary hover:bg-primary-hover"
             >
               {runAnalysisMutation.isPending && <Loader2 className="w-4 h-4 ml-2 animate-spin" />}
               הרץ ניתוח
@@ -366,17 +366,17 @@ export default function BusinessAgent() {
         {/* Top Priority Projects */}
         {projectsWithScores.length > 0 && (
           <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl border border-blue-200 p-6">
-            <h2 className="text-xl font-bold text-slate-900 mb-4">🎯 פרויקטים בעדיפות</h2>
+            <h2 className="text-xl font-bold text-foreground mb-4">🎯 פרויקטים בעדיפות</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {projectsWithScores.map(({ project, score, financials }, idx) => (
-                <div key={project.id} className="bg-white rounded-xl p-4 border border-slate-200">
+                <div key={project.id} className="bg-white rounded-xl p-4 border border-border">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-2xl font-bold text-blue-600">#{idx + 1}</span>
-                    <span className="text-sm font-semibold text-slate-600">{score.toFixed(1)} נק'</span>
+                    <span className="text-2xl font-bold text-primary">#{idx + 1}</span>
+                    <span className="text-sm font-semibold text-muted-foreground">{score.toFixed(1)} נק'</span>
                   </div>
-                  <h3 className="font-semibold text-slate-900 mb-1">{project.name}</h3>
-                  <p className="text-sm text-slate-600 mb-2">{project.customer_name}</p>
-                  <div className="text-xs text-slate-500 space-y-1">
+                  <h3 className="font-semibold text-foreground mb-1">{project.name}</h3>
+                  <p className="text-sm text-muted-foreground mb-2">{project.customer_name}</p>
+                  <div className="text-xs text-muted-foreground space-y-1">
                     <div>רווחיות: {financials.profit_percent?.toFixed(1) || 0}%</div>
                     <div>יתרה: {formatCurrency(financials.balance_to_collect)}</div>
                   </div>
@@ -398,10 +398,10 @@ export default function BusinessAgent() {
         )}
 
         {/* Alerts Section */}
-        <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
-          <div className="p-6 border-b border-slate-100">
+        <div className="bg-white rounded-2xl border border-border overflow-hidden">
+          <div className="p-6 border-b border-border">
             <div className="flex items-center justify-between">
-              <h2 className="text-xl font-bold text-slate-900">התראות פעילות ({filteredAlerts.length})</h2>
+              <h2 className="text-xl font-bold text-foreground">התראות פעילות ({filteredAlerts.length})</h2>
               <Select value={filterType} onValueChange={setFilterType}>
                 <SelectTrigger className="w-48">
                   <SelectValue />
@@ -418,11 +418,11 @@ export default function BusinessAgent() {
             </div>
           </div>
 
-          <div className="divide-y divide-slate-100">
+          <div className="divide-y divide-border">
             {filteredAlerts.length === 0 && (
               <div className="p-12 text-center">
                 <CheckCircle2 className="w-12 h-12 text-emerald-500 mx-auto mb-3" />
-                <p className="text-slate-600">אין התראות פעילות</p>
+                <p className="text-muted-foreground">אין התראות פעילות</p>
               </div>
             )}
 
@@ -432,26 +432,26 @@ export default function BusinessAgent() {
               const TypeIcon = alertTypeIcons[alert.alert_type];
 
               return (
-                <div key={alert.id} className={cn("p-4 hover:bg-slate-50 transition-colors", config.bg, config.border, "border-r-4")}>
+                <div key={alert.id} className={cn("p-4 hover:bg-background transition-colors", config.bg, config.border, "border-r-4")}>
                   <div className="flex items-start gap-4">
                     <div className={cn("p-2 rounded-lg", config.bg)}>
                       <Icon className={cn("w-5 h-5", config.color)} />
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
-                        <TypeIcon className="w-4 h-4 text-slate-400" />
-                        <span className="text-xs font-medium text-slate-500">
+                        <TypeIcon className="w-4 h-4 text-muted-foreground" />
+                        <span className="text-xs font-medium text-muted-foreground">
                           {alertTypeLabels[alert.alert_type]}
                         </span>
                         {alert.project_name && (
                           <>
                             <span className="text-slate-300">•</span>
-                            <span className="text-xs text-slate-600">{alert.project_name}</span>
+                            <span className="text-xs text-muted-foreground">{alert.project_name}</span>
                           </>
                         )}
                       </div>
-                      <p className="font-medium text-slate-900 mb-2">{alert.message}</p>
-                      <p className="text-xs text-slate-500">
+                      <p className="font-medium text-foreground mb-2">{alert.message}</p>
+                      <p className="text-xs text-muted-foreground">
                         {new Date(alert.created_at).toLocaleDateString('he-IL')}
                       </p>
                     </div>

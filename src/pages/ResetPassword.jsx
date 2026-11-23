@@ -41,13 +41,13 @@ export default function ResetPassword() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 p-6" dir="rtl">
-      <div className="w-full max-w-sm bg-white rounded-2xl border border-slate-200 p-8">
-        <h1 className="text-2xl font-bold text-slate-900 mb-1">איפוס סיסמה</h1>
-        <p className="text-slate-500 text-sm mb-6">ProjectFlow Pro</p>
+    <div className="min-h-screen flex items-center justify-center bg-background p-6" dir="rtl">
+      <div className="w-full max-w-sm bg-white rounded-2xl border border-border p-8">
+        <h1 className="text-2xl font-bold text-foreground mb-1">איפוס סיסמה</h1>
+        <p className="text-muted-foreground text-sm mb-6">ProjectFlow Pro</p>
 
         {success ? (
-          <p className="text-sm text-green-700 bg-green-50 rounded-md px-3 py-2">
+          <p className="text-sm text-success bg-success-subtle rounded-md px-3 py-2">
             הסיסמה עודכנה בהצלחה, מעביר אותך למערכת...
           </p>
         ) : (
@@ -77,10 +77,10 @@ export default function ResetPassword() {
             </div>
 
             {error && (
-              <p className="text-sm text-red-600 bg-red-50 rounded-md px-3 py-2">{error}</p>
+              <p className="text-sm text-destructive bg-destructive-subtle rounded-md px-3 py-2">{error}</p>
             )}
 
-            <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700" disabled={isSubmitting}>
+            <Button type="submit" className="w-full bg-primary hover:bg-primary-hover" disabled={isSubmitting}>
               {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : "עדכן סיסמה"}
             </Button>
           </form>

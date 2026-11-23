@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { createPageUrl } from "@/utils";
@@ -15,7 +15,6 @@ import {
   Brain,
   Menu,
   X,
-  ChevronLeft,
   FileText,
   Tag,
   Stamp,
@@ -26,19 +25,67 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const navigation = [
-  { name: "דשבורד", href: "Dashboard", icon: LayoutDashboard },
-  { name: "לקוחות", href: "Customers", icon: Users },
-  { name: "פרויקטים", href: "Projects", icon: Building2 },
-  { name: "קטלוג דגמים", href: "ModelPricing", icon: Tag },
-  { name: "פיננסים", href: "Finance", icon: Wallet },
-  { name: "תזכורות", href: "Reminders", icon: Bell },
-  { name: "כותרות הדפסה", href: "CompanyHeaders", icon: Stamp },
-  { name: "🤖 ניהול חכם", href: "BusinessAgent", icon: Brain },
+// Sidebar groups (docs/DESIGN_SYSTEM_PROPOSAL.md section 8.1).
+// Deep pages highlight their parent item.
+const navGroups = [
+  {
+    title: "עבודה יומית",
+    items: [
+      { name: "דשבורד", href: "Dashboard", icon: LayoutDashboard },
+      { name: "לקוחות", href: "Customers", icon: Users },
+      { name: "פרויקטים", href: "Projects", icon: Building2 },
+      { name: "הצעות מחיר", href: "Quotes", icon: FileText },
+    ],
+  },
+  {
+    title: "קטלוג וכספים",
+    items: [
+      { name: "קטלוג דגמים", href: "ModelPricing", icon: Tag },
+      { name: "פיננסים", href: "Finance", icon: Wallet },
+      { name: "תזכורות", href: "Reminders", icon: Bell },
+    ],
+  },
+  {
+    title: "ניהול חכם",
+    items: [{ name: "ניהול חכם", href: "BusinessAgent", icon: Brain }],
+  },
+  {
+    title: "הגדרות",
+    items: [{ name: "כותרות הדפסה", href: "CompanyHeaders", icon: Stamp }],
+  },
 ];
+
+const PARENT_PAGE = { ProjectDetails: "Projects", QuoteEditor: "Quotes" };
+
+function NavItem({ to, icon: Icon, active, onClick, children }) {
+  return (
+    <Link
+      to={to}
+      onClick={onClick}
+      aria-current={active ? "page" : undefined}
+      className={cn(
+        "flex items-center gap-3 h-10 px-3 rounded-md text-sm font-medium border-s-2 transition-colors",
+        active
+          ? "bg-secondary text-primary border-primary"
+          : "border-transparent text-foreground hover:bg-secondary"
+      )}
+    >
+      <Icon className={cn("w-[18px] h-[18px] shrink-0", active ? "text-primary" : "text-primary/60")} aria-hidden="true" />
+      <span className="truncate">{children}</span>
+    </Link>
+  );
+}
 
 export default function Layout({ children, currentPageName }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const activePage = PARENT_PAGE[currentPageName] || currentPageName;
+
+  useEffect(() => {
+    if (!sidebarOpen) return;
+    const onKey = (e) => { if (e.key === "Escape") setSidebarOpen(false); };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [sidebarOpen]);
   const { logout, user } = useAuth();
   const navigate = useNavigate();
 
@@ -68,116 +115,89 @@ export default function Layout({ children, currentPageName }) {
   });
   const canManageTeam = tenantContext?.role === "owner" || tenantContext?.role === "admin";
   const hasBusinessAgent = planHasFeature(tenantContext?.plan, "businessAgent");
-  const visibleNavigation = navigation.filter(
-    (item) => item.href !== "BusinessAgent" || hasBusinessAgent
-  );
+  const visibleGroups = navGroups
+    .map((g) => ({ ...g, items: g.items.filter((item) => item.href !== "BusinessAgent" || hasBusinessAgent) }))
+    .filter((g) => g.items.length > 0);
+
+  const closeSidebar = () => setSidebarOpen(false);
 
   return (
-    <div className="min-h-screen bg-slate-50" dir="rtl">
+    <div className="min-h-screen bg-background" dir="rtl">
       {/* Mobile sidebar backdrop */}
       {sidebarOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/50 z-40 lg:hidden"
-          onClick={() => setSidebarOpen(false)}
+          onClick={closeSidebar}
+          aria-hidden="true"
         />
       )}
 
       {/* Sidebar */}
-      <aside className={cn(
-        "fixed top-0 right-0 z-50 h-full w-64 bg-white border-l border-slate-200 transform transition-transform duration-300 lg:translate-x-0 flex flex-col",
-        sidebarOpen ? "translate-x-0" : "translate-x-full lg:translate-x-0"
-      )}>
-        <div className="flex items-center justify-between h-16 px-6 border-b border-slate-100 shrink-0">
-          <h1 className="text-xl font-bold text-slate-900">ניהול פרויקטים</h1>
+      <aside
+        aria-label="ניווט ראשי"
+        className={cn(
+          "fixed top-0 right-0 z-50 h-full w-64 bg-sidebar border-l transform transition-transform duration-300 lg:translate-x-0 flex flex-col",
+          sidebarOpen ? "translate-x-0" : "translate-x-full lg:translate-x-0"
+        )}
+      >
+        <div className="flex items-center justify-between h-16 px-5 border-b shrink-0">
+          <div className="flex items-center gap-2.5">
+            <span className="grid h-7 w-7 place-items-center rounded-md bg-foreground" aria-hidden="true">
+              <span className="h-3 w-3 rounded-sm border-2 border-white" />
+            </span>
+            <span className="text-lg font-bold text-foreground">AluPro</span>
+          </div>
           <button
-            onClick={() => setSidebarOpen(false)}
-            className="lg:hidden p-2 rounded-lg hover:bg-slate-100"
+            onClick={closeSidebar}
+            aria-label="סגור תפריט"
+            className="lg:hidden p-2 rounded-md hover:bg-secondary"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        <nav className="p-4 space-y-1 flex-1 overflow-y-auto">
-          {visibleNavigation.map((item) => {
-            const isActive = currentPageName === item.href;
-            return (
-              <Link
-                key={item.name}
-                to={createPageUrl(item.href)}
-                onClick={() => setSidebarOpen(false)}
-                className={cn(
-                  "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all",
-                  isActive 
-                    ? "bg-blue-50 text-blue-700" 
-                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
-                )}
-              >
-                <item.icon className={cn(
-                  "w-5 h-5",
-                  isActive ? "text-blue-600" : "text-slate-400"
-                )} />
-                {item.name}
-                {isActive && <ChevronLeft className="w-4 h-4 mr-auto" />}
-              </Link>
-            );
-          })}
-
-          {canManageTeam && (
-            <Link
-              to={createPageUrl("Team")}
-              onClick={() => setSidebarOpen(false)}
-              className={cn(
-                "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all",
-                currentPageName === "Team"
-                  ? "bg-blue-50 text-blue-700"
-                  : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+        <nav className="p-3 flex-1 overflow-y-auto space-y-4">
+          {visibleGroups.map((group) => (
+            <div key={group.title} className="space-y-0.5">
+              <h2 className="px-3 pb-1 text-xs font-medium text-muted-foreground">{group.title}</h2>
+              {group.items.map((item) => (
+                <NavItem
+                  key={item.href}
+                  to={createPageUrl(item.href)}
+                  icon={item.icon}
+                  active={activePage === item.href}
+                  onClick={closeSidebar}
+                >
+                  {item.name}
+                </NavItem>
+              ))}
+              {group.title === "הגדרות" && canManageTeam && (
+                <NavItem to={createPageUrl("Team")} icon={UserPlus} active={activePage === "Team"} onClick={closeSidebar}>
+                  צוות
+                </NavItem>
               )}
-            >
-              <UserPlus className={cn("w-5 h-5", currentPageName === "Team" ? "text-blue-600" : "text-slate-400")} />
-              צוות
-              {currentPageName === "Team" && <ChevronLeft className="w-4 h-4 mr-auto" />}
-            </Link>
-          )}
+            </div>
+          ))}
 
           {isPlatformAdmin && (
-            <>
-              <div className="my-2 border-t border-slate-100" />
-              <Link
-                to="/admin/tenants"
-                onClick={() => setSidebarOpen(false)}
-                className={cn(
-                  "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all",
-                  currentPageName === "admin/tenants"
-                    ? "bg-blue-50 text-blue-700"
-                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
-                )}
-              >
-                <ShieldCheck className="w-5 h-5 text-slate-400" />
+            <div className="space-y-0.5">
+              <h2 className="px-3 pb-1 text-xs font-medium text-muted-foreground">פלטפורמה</h2>
+              <NavItem to="/admin/tenants" icon={ShieldCheck} active={activePage === "admin/tenants"} onClick={closeSidebar}>
                 מסוף ניהול פלטפורמה
-              </Link>
-            </>
+              </NavItem>
+            </div>
           )}
         </nav>
 
-        <div className="p-4 border-t border-slate-100 shrink-0 space-y-1">
-          <Link
-            to={createPageUrl("Profile")}
-            onClick={() => setSidebarOpen(false)}
-            className={cn(
-              "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all",
-              currentPageName === "Profile"
-                ? "bg-blue-50 text-blue-700"
-                : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
-            )}
-          >
-            <UserCircle className="w-5 h-5 text-slate-400" />
-            <span className="truncate">{user?.email ?? "אזור אישי"}</span>
-          </Link>
+        <div className="p-3 border-t shrink-0 space-y-0.5">
+          <NavItem to={createPageUrl("Profile")} icon={UserCircle} active={activePage === "Profile"} onClick={closeSidebar}>
+            {user?.email ?? "אזור אישי"}
+          </NavItem>
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-600 hover:bg-red-50 hover:text-red-600 transition-all"
+            className="w-full flex items-center gap-3 h-10 px-3 rounded-md border-s-2 border-transparent text-sm font-medium text-muted-foreground hover:bg-destructive-subtle hover:text-destructive transition-colors"
           >
-            <LogOut className="w-5 h-5" />
+            <LogOut className="w-[18px] h-[18px]" aria-hidden="true" />
             יציאה
           </button>
         </div>
@@ -186,15 +206,17 @@ export default function Layout({ children, currentPageName }) {
       {/* Main content */}
       <div className="lg:mr-64">
         {/* Mobile header */}
-        <header className="sticky top-0 z-30 bg-white border-b border-slate-200 lg:hidden">
-          <div className="flex items-center justify-between h-16 px-4">
-            <button 
+        <header className="sticky top-0 z-30 bg-card border-b lg:hidden">
+          <div className="flex items-center justify-between h-14 px-4">
+            <button
               onClick={() => setSidebarOpen(true)}
-              className="p-2 rounded-lg hover:bg-slate-100"
+              aria-label="פתח תפריט"
+              aria-expanded={sidebarOpen}
+              className="p-2 -mr-2 rounded-md hover:bg-secondary"
             >
               <Menu className="w-6 h-6" />
             </button>
-            <h1 className="text-lg font-bold text-slate-900">ניהול פרויקטים</h1>
+            <span className="text-lg font-bold text-foreground">AluPro</span>
             <div className="w-10" /> {/* Spacer */}
           </div>
         </header>

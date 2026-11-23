@@ -6,10 +6,10 @@ import { cn } from "@/lib/utils";
 const actionConfig = {
   collect: {
     icon: DollarSign,
-    color: "text-red-600",
-    bg: "bg-red-50",
+    color: "text-destructive",
+    bg: "bg-destructive-subtle",
     border: "border-red-200",
-    badge: "bg-red-100 text-red-700"
+    badge: "bg-destructive-subtle text-destructive"
   },
   fix_profit: {
     icon: TrendingDown,
@@ -27,24 +27,24 @@ const actionConfig = {
   },
   follow_up: {
     icon: Clock,
-    color: "text-blue-600",
-    bg: "bg-blue-50",
+    color: "text-primary",
+    bg: "bg-secondary",
     border: "border-blue-200",
-    badge: "bg-blue-100 text-blue-700"
+    badge: "bg-blue-100 text-primary"
   },
   general: {
     icon: RefreshCw,
-    color: "text-slate-600",
-    bg: "bg-slate-50",
-    border: "border-slate-200",
-    badge: "bg-slate-100 text-slate-700"
+    color: "text-muted-foreground",
+    bg: "bg-background",
+    border: "border-border",
+    badge: "bg-secondary text-foreground"
   }
 };
 
 const urgencyLabels = {
-  high: { label: "דחוף", cls: "bg-red-100 text-red-700" },
+  high: { label: "דחוף", cls: "bg-destructive-subtle text-destructive" },
   medium: { label: "בינוני", cls: "bg-yellow-100 text-yellow-700" },
-  low: { label: "נמוך", cls: "bg-slate-100 text-slate-500" }
+  low: { label: "נמוך", cls: "bg-secondary text-muted-foreground" }
 };
 
 export default function SmartFocusCard({ tasks, summary, isLoading, onRefresh, maxItems = 5 }) {
@@ -54,7 +54,7 @@ export default function SmartFocusCard({ tasks, summary, isLoading, onRefresh, m
     new Intl.NumberFormat('he-IL', { style: 'currency', currency: 'ILS', maximumFractionDigits: 0 }).format(amount || 0);
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+    <div className="bg-white rounded-2xl border border-border overflow-hidden">
       {/* Header */}
       <div className="bg-gradient-to-l from-indigo-600 to-blue-600 p-5">
         <div className="flex items-center justify-between mb-4">
@@ -93,16 +93,16 @@ export default function SmartFocusCard({ tasks, summary, isLoading, onRefresh, m
       </div>
 
       {/* Task List */}
-      <div className="divide-y divide-slate-100">
+      <div className="divide-y divide-border">
         {isLoading && (
-          <div className="p-8 text-center text-slate-500 text-sm">טוען...</div>
+          <div className="p-8 text-center text-muted-foreground text-sm">טוען...</div>
         )}
 
         {!isLoading && topTasks.length === 0 && (
           <div className="p-10 text-center">
             <div className="text-4xl mb-3">✅</div>
-            <p className="text-slate-600 font-medium">אין משימות דחופות כרגע</p>
-            <p className="text-slate-400 text-sm mt-1">כל הפרויקטים במצב תקין</p>
+            <p className="text-muted-foreground font-medium">אין משימות דחופות כרגע</p>
+            <p className="text-muted-foreground text-sm mt-1">כל הפרויקטים במצב תקין</p>
           </div>
         )}
 
@@ -112,10 +112,10 @@ export default function SmartFocusCard({ tasks, summary, isLoading, onRefresh, m
           const urgency = urgencyLabels[task.urgency_level] || urgencyLabels.low;
 
           return (
-            <div key={task.id} className="p-4 hover:bg-slate-50 transition-colors">
+            <div key={task.id} className="p-4 hover:bg-background transition-colors">
               <div className="flex items-start gap-4">
                 {/* Rank */}
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-sm font-bold text-slate-500">
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-sm font-bold text-muted-foreground">
                   {idx + 1}
                 </div>
 
@@ -127,13 +127,13 @@ export default function SmartFocusCard({ tasks, summary, isLoading, onRefresh, m
                 {/* Content */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap mb-1">
-                    <span className="font-semibold text-slate-900 text-sm">{task.project_name}</span>
+                    <span className="font-semibold text-foreground text-sm">{task.project_name}</span>
                     <span className={cn("text-xs px-2 py-0.5 rounded-full font-medium", urgency.cls)}>
                       {urgency.label}
                     </span>
                   </div>
-                  <p className="text-slate-700 text-sm">{task.message}</p>
-                  <p className="text-slate-400 text-xs mt-0.5">{task.reason}</p>
+                  <p className="text-foreground text-sm">{task.message}</p>
+                  <p className="text-muted-foreground text-xs mt-0.5">{task.reason}</p>
                   {task.impact_label && (
                     <span className={cn("inline-block mt-1.5 text-xs font-semibold px-2 py-0.5 rounded-full", cfg.badge)}>
                       {task.impact_label}
@@ -143,7 +143,7 @@ export default function SmartFocusCard({ tasks, summary, isLoading, onRefresh, m
 
                 {/* Score + Link */}
                 <div className="flex-shrink-0 flex flex-col items-end gap-2">
-                  <span className="text-xs font-bold text-slate-400">{task.priority_score} נק'</span>
+                  <span className="text-xs font-bold text-muted-foreground">{task.priority_score} נק'</span>
                   <Link to={`/ProjectDetails?id=${task.project_id}`}>
                     <Button size="sm" variant="outline" className="text-xs h-7 gap-1">
                       פתח

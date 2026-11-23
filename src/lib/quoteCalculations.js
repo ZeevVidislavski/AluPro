@@ -30,6 +30,22 @@ export function calcItemTotal(components, widthCm, heightCm, itemQty = 1) {
 }
 
 /**
+ * Calculate quote-level totals (moved verbatim from QuoteEditor.jsx so it can
+ * be unit-tested; the logic is unchanged, including the `|| 17` VAT fallback).
+ */
+export function calcQuoteTotals(items, itemComponentsMap, discountPercent, vatPercent) {
+  const linesTotal = items.reduce((sum, item) => {
+    const comps = itemComponentsMap[item.id || item._tempId] || [];
+    const itemQty = item.quantity || 1;
+    return sum + calcItemTotal(comps, item.width_cm, item.height_cm, itemQty);
+  }, 0);
+  const afterDiscount = linesTotal * (1 - (discountPercent || 0) / 100);
+  const vatAmount = afterDiscount * (vatPercent || 17) / 100;
+  const totalWithVat = afterDiscount + vatAmount;
+  return { linesTotal, subtotal: afterDiscount, vatAmount, totalWithVat };
+}
+
+/**
  * Generate auto-description from component names in order
  */
 export function generateDescription(components) {

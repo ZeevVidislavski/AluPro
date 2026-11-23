@@ -40,9 +40,9 @@ import {
 import { cn } from "@/lib/utils";
 
 const priorityConfig = {
-  high: { label: "גבוהה", color: "bg-red-100 text-red-700 border-red-200", icon: AlertTriangle },
-  medium: { label: "בינונית", color: "bg-amber-100 text-amber-700 border-amber-200", icon: Clock },
-  low: { label: "נמוכה", color: "bg-slate-100 text-slate-600 border-slate-200", icon: Bell }
+  high: { label: "גבוהה", color: "bg-destructive-subtle text-destructive border-red-200", icon: AlertTriangle },
+  medium: { label: "בינונית", color: "bg-warning-subtle text-warning border-amber-200", icon: Clock },
+  low: { label: "נמוכה", color: "bg-secondary text-muted-foreground border-border", icon: Bell }
 };
 
 export default function Reminders() {
@@ -142,26 +142,26 @@ export default function Reminders() {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 p-6 lg:p-8">
+    <div className="min-h-screen bg-background p-6 lg:p-8">
       <div className="max-w-5xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900">תזכורות</h1>
-            <p className="text-slate-500 mt-1">
+            <h1 className="text-3xl font-bold text-foreground">תזכורות</h1>
+            <p className="text-muted-foreground mt-1">
               {openCount} פתוחות
               {overdueCount > 0 && (
-                <span className="text-red-600 font-medium"> • {overdueCount} באיחור</span>
+                <span className="text-destructive font-medium"> • {overdueCount} באיחור</span>
               )}
             </p>
           </div>
-          <Button onClick={() => setDialogOpen(true)} className="bg-blue-600 hover:bg-blue-700">
+          <Button onClick={() => setDialogOpen(true)} className="bg-primary hover:bg-primary-hover">
             <Plus className="w-5 h-5 ml-2" />
             תזכורת חדשה
           </Button>
@@ -170,7 +170,7 @@ export default function Reminders() {
         {/* Filters */}
         <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full sm:w-auto">
-            <TabsList className="bg-white border border-slate-200">
+            <TabsList className="bg-white border border-border">
               <TabsTrigger value="open">פתוחות ({openCount})</TabsTrigger>
               <TabsTrigger value="done">בוצעו</TabsTrigger>
               <TabsTrigger value="postponed">נדחו</TabsTrigger>
@@ -179,7 +179,7 @@ export default function Reminders() {
           </Tabs>
           
           <div className="flex items-center gap-2">
-            <Filter className="w-4 h-4 text-slate-400" />
+            <Filter className="w-4 h-4 text-muted-foreground" />
             <Select value={priorityFilter} onValueChange={setPriorityFilter}>
               <SelectTrigger className="w-[140px]">
                 <SelectValue placeholder="דחיפות" />
@@ -209,7 +209,7 @@ export default function Reminders() {
                 className={cn(
                   "bg-white rounded-2xl border p-6 transition-all hover:shadow-lg",
                   reminder.status === 'done' && "opacity-60",
-                  isOverdue && reminder.status === 'open' && "border-red-300 bg-red-50"
+                  isOverdue && reminder.status === 'open' && "border-red-300 bg-destructive-subtle"
                 )}
               >
                 <div className="flex items-start gap-4">
@@ -223,7 +223,7 @@ export default function Reminders() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-2">
                       <h3 className={cn(
-                        "font-semibold text-slate-900",
+                        "font-semibold text-foreground",
                         reminder.status === 'done' && "line-through"
                       )}>
                         {reminder.title}
@@ -235,27 +235,27 @@ export default function Reminders() {
                         {config.label}
                       </span>
                       {isOverdue && reminder.status === 'open' && (
-                        <span className="text-xs px-2 py-0.5 rounded-full bg-red-100 text-red-700 font-medium">
+                        <span className="text-xs px-2 py-0.5 rounded-full bg-destructive-subtle text-destructive font-medium">
                           באיחור!
                         </span>
                       )}
                       {isDueToday && reminder.status === 'open' && (
-                        <span className="text-xs px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 font-medium">
+                        <span className="text-xs px-2 py-0.5 rounded-full bg-warning-subtle text-warning font-medium">
                           היום
                         </span>
                       )}
                       {isDueTomorrow && reminder.status === 'open' && (
-                        <span className="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 font-medium">
+                        <span className="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-primary font-medium">
                           מחר
                         </span>
                       )}
                     </div>
                     
                     {reminder.description && (
-                      <p className="text-slate-600 mb-3">{reminder.description}</p>
+                      <p className="text-muted-foreground mb-3">{reminder.description}</p>
                     )}
                     
-                    <div className="flex items-center gap-4 text-sm text-slate-500">
+                    <div className="flex items-center gap-4 text-sm text-muted-foreground">
                       <div className="flex items-center gap-1">
                         <Calendar className="w-4 h-4" />
                         <span>{format(new Date(reminder.due_date), 'dd/MM/yyyy', { locale: he })}</span>
@@ -288,10 +288,10 @@ export default function Reminders() {
           })}
 
           {sortedReminders.length === 0 && (
-            <div className="text-center py-12 bg-white rounded-2xl border border-slate-200">
+            <div className="text-center py-12 bg-white rounded-2xl border border-border">
               <Bell className="w-12 h-12 mx-auto text-slate-300 mb-4" />
-              <h3 className="text-lg font-medium text-slate-900 mb-1">אין תזכורות</h3>
-              <p className="text-slate-500">לא נמצאו תזכורות בקטגוריה זו</p>
+              <h3 className="text-lg font-medium text-foreground mb-1">אין תזכורות</h3>
+              <p className="text-muted-foreground">לא נמצאו תזכורות בקטגוריה זו</p>
             </div>
           )}
         </div>
@@ -373,7 +373,7 @@ export default function Reminders() {
             <div className="flex gap-3 pt-4">
               <Button 
                 type="submit" 
-                className="flex-1 bg-blue-600 hover:bg-blue-700"
+                className="flex-1 bg-primary hover:bg-primary-hover"
                 disabled={createMutation.isPending}
               >
                 {createMutation.isPending && <Loader2 className="w-4 h-4 ml-2 animate-spin" />}

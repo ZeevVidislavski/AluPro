@@ -101,14 +101,14 @@ export default function CompanyHeaders() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 p-6" dir="rtl">
+    <div className="min-h-screen bg-background p-6" dir="rtl">
       <div className="max-w-2xl mx-auto">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-slate-900">כותרות הדפסה</h1>
-            <p className="text-slate-500 text-sm">לוגו / שם חברה שיופיע בראש הצעות המחיר</p>
+            <h1 className="text-2xl font-bold text-foreground">כותרות הדפסה</h1>
+            <p className="text-muted-foreground text-sm">לוגו / שם חברה שיופיע בראש הצעות המחיר</p>
           </div>
-          <Button onClick={openNew} className="bg-blue-600 hover:bg-blue-700">
+          <Button onClick={openNew} className="bg-primary hover:bg-primary-hover">
             <Plus className="w-4 h-4 ml-1" /> כותרת חדשה
           </Button>
         </div>
@@ -116,29 +116,29 @@ export default function CompanyHeaders() {
         {isLoading ? (
           <div className="flex justify-center py-20"><Loader2 className="w-8 h-8 animate-spin text-blue-500" /></div>
         ) : headers.length === 0 ? (
-          <div className="bg-white rounded-2xl border border-dashed border-slate-300 p-12 text-center text-slate-400">
+          <div className="bg-white rounded-2xl border border-dashed border-input p-12 text-center text-muted-foreground">
             <p>אין כותרות עדיין</p>
             <p className="text-sm mt-1">הוסף כותרת חדשה עם שם חברה / לוגו</p>
           </div>
         ) : (
           <div className="space-y-3">
             {headers.map(h => (
-              <div key={h.id} className="bg-white rounded-2xl border border-slate-200 p-4 flex items-center gap-4">
-                <HeaderLogo path={h.logo_url} className="h-14 w-24 rounded border border-slate-100" />
+              <div key={h.id} className="bg-white rounded-2xl border border-border p-4 flex items-center gap-4">
+                <HeaderLogo path={h.logo_url} className="h-14 w-24 rounded border border-border" />
                 <div className="flex-1">
-                  <p className="font-semibold text-slate-800">{h.name}</p>
-                  {h.company_name && <p className="text-sm text-slate-600">{h.company_name}</p>}
-                  {h.subtitle && <p className="text-xs text-slate-400">{h.subtitle}</p>}
+                  <p className="font-semibold text-foreground">{h.name}</p>
+                  {h.company_name && <p className="text-sm text-muted-foreground">{h.company_name}</p>}
+                  {h.subtitle && <p className="text-xs text-muted-foreground">{h.subtitle}</p>}
                 </div>
                 <div className="flex items-center gap-2">
-                  {h.is_default && <span className="flex items-center gap-1 text-xs text-amber-600 bg-amber-50 px-2 py-1 rounded-full"><Star className="w-3 h-3" />ברירת מחדל</span>}
+                  {h.is_default && <span className="flex items-center gap-1 text-xs text-warning bg-warning-subtle px-2 py-1 rounded-full"><Star className="w-3 h-3" />ברירת מחדל</span>}
                   {!h.is_default && (
                     <Button size="sm" variant="ghost" onClick={() => setDefault.mutate(h.id)} title="הגדר כברירת מחדל">
-                      <Star className="w-4 h-4 text-slate-400" />
+                      <Star className="w-4 h-4 text-muted-foreground" />
                     </Button>
                   )}
                   <Button size="sm" variant="ghost" onClick={() => openEdit(h)}><Pencil className="w-4 h-4" /></Button>
-                  <Button size="sm" variant="ghost" onClick={() => remove.mutate(h.id)} className="text-red-500 hover:text-red-600"><Trash2 className="w-4 h-4" /></Button>
+                  <Button size="sm" variant="ghost" onClick={() => remove.mutate(h.id)} className="text-red-500 hover:text-destructive"><Trash2 className="w-4 h-4" /></Button>
                 </div>
               </div>
             ))}
@@ -167,9 +167,9 @@ export default function CompanyHeaders() {
             <div className="space-y-2">
               <Label>לוגו</Label>
               {form.logo_url && (
-                <HeaderLogo path={form.logo_url} className="h-16 rounded border border-slate-200" />
+                <HeaderLogo path={form.logo_url} className="h-16 rounded border border-border" />
               )}
-              <label className="flex items-center gap-2 cursor-pointer text-sm text-blue-600 hover:text-blue-700">
+              <label className="flex items-center gap-2 cursor-pointer text-sm text-primary hover:text-primary">
                 {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
                 {uploading ? "מעלה..." : "העלה תמונת לוגו"}
                 <input type="file" accept="image/*" className="hidden" onChange={handleUpload} />
@@ -184,7 +184,7 @@ export default function CompanyHeaders() {
             </div>
           </div>
           <div className="flex gap-2 pt-2">
-            <Button className="flex-1 bg-blue-600 hover:bg-blue-700" disabled={!form.name || save.isPending} onClick={() => save.mutate(form)}>
+            <Button className="flex-1 bg-primary hover:bg-primary-hover" disabled={!form.name || save.isPending} onClick={() => save.mutate(form)}>
               {save.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : "שמור"}
             </Button>
             <Button variant="outline" onClick={closeDialog}>ביטול</Button>

@@ -59,10 +59,10 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 p-6" dir="rtl">
-      <div className="w-full max-w-sm bg-white rounded-2xl border border-slate-200 p-8">
-        <h1 className="text-2xl font-bold text-slate-900 mb-1">התחברות</h1>
-        <p className="text-slate-500 text-sm mb-6">ProjectFlow Pro</p>
+    <div className="min-h-screen flex items-center justify-center bg-background p-6" dir="rtl">
+      <div className="w-full max-w-sm bg-white rounded-2xl border border-border p-8">
+        <h1 className="text-2xl font-bold text-foreground mb-1">התחברות</h1>
+        <p className="text-muted-foreground text-sm mb-6">ProjectFlow Pro</p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
@@ -94,7 +94,7 @@ export default function Login() {
                 onClick={() => setShowPassword((v) => !v)}
                 aria-label={showPassword ? "הסתר סיסמה" : "הצג סיסמה"}
                 tabIndex={-1}
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-muted-foreground"
               >
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
@@ -102,13 +102,13 @@ export default function Login() {
           </div>
 
           {error && (
-            <p className="text-sm text-red-600 bg-red-50 rounded-md px-3 py-2">{error}</p>
+            <p className="text-sm text-destructive bg-destructive-subtle rounded-md px-3 py-2">{error}</p>
           )}
           {resetMessage && (
-            <p className="text-sm text-green-700 bg-green-50 rounded-md px-3 py-2">{resetMessage}</p>
+            <p className="text-sm text-success bg-success-subtle rounded-md px-3 py-2">{resetMessage}</p>
           )}
 
-          <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700" disabled={isSubmitting}>
+          <Button type="submit" className="w-full bg-primary hover:bg-primary-hover" disabled={isSubmitting}>
             {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : "התחבר"}
           </Button>
 
@@ -116,7 +116,7 @@ export default function Login() {
             type="button"
             onClick={handleForgotPassword}
             disabled={isSendingReset}
-            className="w-full text-sm text-blue-600 hover:underline text-center"
+            className="w-full text-sm text-primary hover:underline text-center"
           >
             {isSendingReset ? "שולח..." : "שכחתי סיסמה"}
           </button>

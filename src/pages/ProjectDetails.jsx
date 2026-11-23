@@ -91,7 +91,7 @@ function QuoteFileLink({ path }) {
     return <span className="p-2"><Loader2 className="w-4 h-4 animate-spin text-slate-300" /></span>;
   }
   return (
-    <a href={url} target="_blank" rel="noopener noreferrer" className="p-2 hover:bg-slate-100 rounded-lg text-blue-600 hover:text-blue-700">
+    <a href={url} target="_blank" rel="noopener noreferrer" className="p-2 hover:bg-secondary rounded-lg text-primary hover:text-primary">
       <ExternalLink className="w-4 h-4" />
     </a>
   );
@@ -112,7 +112,7 @@ function DocumentFileLink({ path }) {
     return <span className="p-2"><Loader2 className="w-4 h-4 animate-spin text-slate-300" /></span>;
   }
   return (
-    <a href={url} target="_blank" rel="noopener noreferrer" className="p-2 hover:bg-slate-100 rounded-lg text-slate-600 hover:text-slate-900">
+    <a href={url} target="_blank" rel="noopener noreferrer" className="p-2 hover:bg-secondary rounded-lg text-muted-foreground hover:text-foreground">
       <Download className="w-4 h-4" />
     </a>
   );
@@ -249,7 +249,7 @@ export default function ProjectDetails() {
   if (isLoading || !project) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </div>
     );
   }
@@ -287,7 +287,7 @@ export default function ProjectDetails() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 p-6 lg:p-8">
+    <div className="min-h-screen bg-background p-6 lg:p-8">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-center gap-4 mb-6">
@@ -299,21 +299,21 @@ export default function ProjectDetails() {
           </Link>
           <div className="flex-1">
             <div className="flex items-center gap-3">
-              <h1 className="text-3xl font-bold text-slate-900">{project.name}</h1>
+              <h1 className="text-3xl font-bold text-foreground">{project.name}</h1>
               {project.start_date && (
-                <span className="text-xs text-slate-400">
+                <span className="text-xs text-muted-foreground">
                   (ת.פתיחה: {format(new Date(project.start_date), 'dd/MM/yyyy', { locale: he })})
                 </span>
               )}
               <ProjectStatusBadge status={project.status} />
             </div>
             {project.project_number && (
-              <p className="text-slate-500">#{project.project_number}</p>
+              <p className="text-muted-foreground">#{project.project_number}</p>
             )}
           </div>
           {project.settlement_status === "closed" ? (
             <div className="flex items-center gap-2">
-              <span className="flex items-center gap-1.5 text-sm font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-lg">
+              <span className="flex items-center gap-1.5 text-sm font-medium text-success bg-success-subtle border border-emerald-200 px-3 py-1.5 rounded-lg">
                 <Lock className="w-4 h-4" /> סגור להתחשבנות
               </span>
               <Button variant="outline" size="sm" onClick={() => { if (window.confirm("לפתוח פרויקט זה מחדש?")) reopenSettlementMutation.mutate(); }}>
@@ -321,7 +321,7 @@ export default function ProjectDetails() {
               </Button>
             </div>
           ) : (
-            <Button variant="outline" onClick={handleCloseSettlement} className="gap-2 border-emerald-300 text-emerald-700 hover:bg-emerald-50">
+            <Button variant="outline" onClick={handleCloseSettlement} className="gap-2 border-emerald-300 text-success hover:bg-success-subtle">
               {closeSettlementMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Lock className="w-4 h-4" />}
               סגור להתחשבנות
             </Button>
@@ -347,7 +347,7 @@ export default function ProjectDetails() {
           <Button
             variant="outline"
             onClick={() => setDeleteDialogOpen(true)}
-            className="border-red-200 text-red-600 hover:bg-red-50"
+            className="border-red-200 text-destructive hover:bg-destructive-subtle"
           >
             <Trash2 className="w-4 h-4 ml-2" />
             מחיקה
@@ -356,80 +356,80 @@ export default function ProjectDetails() {
 
         {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="bg-white rounded-2xl border border-slate-200 p-6">
-            <p className="text-sm text-slate-500 mb-1">סכום הצעה</p>
-            <p className="text-2xl font-bold text-slate-900">{formatCurrency(total_sale)}</p>
+          <div className="bg-white rounded-2xl border border-border p-6">
+            <p className="text-sm text-muted-foreground mb-1">סכום הצעה</p>
+            <p className="text-2xl font-bold text-foreground">{formatCurrency(total_sale)}</p>
           </div>
-          <div className="bg-white rounded-2xl border border-slate-200 p-6">
-            <p className="text-sm text-slate-500 mb-1">סה״כ התקבל</p>
-            <p className="text-2xl font-bold text-emerald-600">{formatCurrency(total_received)}</p>
+          <div className="bg-white rounded-2xl border border-border p-6">
+            <p className="text-sm text-muted-foreground mb-1">סה״כ התקבל</p>
+            <p className="text-2xl font-bold text-success">{formatCurrency(total_received)}</p>
           </div>
-          <div className="bg-white rounded-2xl border border-slate-200 p-6">
-            <p className="text-sm text-slate-500 mb-1">יתרה לגבייה</p>
+          <div className="bg-white rounded-2xl border border-border p-6">
+            <p className="text-sm text-muted-foreground mb-1">יתרה לגבייה</p>
             <p className={cn(
               "text-2xl font-bold",
-              balance_to_collect > 0 ? "text-amber-600" : "text-emerald-600"
+              balance_to_collect > 0 ? "text-warning" : "text-success"
             )}>
               {formatCurrency(balance_to_collect)}
             </p>
           </div>
-          <div className="bg-white rounded-2xl border border-slate-200 p-6">
-            <p className="text-sm text-slate-500 mb-1">רווח צפוי</p>
+          <div className="bg-white rounded-2xl border border-border p-6">
+            <p className="text-sm text-muted-foreground mb-1">רווח צפוי</p>
             <p className={cn(
               "text-2xl font-bold",
-              (gross_profit || 0) >= 0 ? "text-emerald-600" : "text-red-600"
+              (gross_profit || 0) >= 0 ? "text-success" : "text-destructive"
             )}>
               {formatCurrency(gross_profit || 0)}
               {profit_percent !== null && (
-                <span className="text-sm font-normal text-slate-500 mr-2">({profit_percent.toFixed(1)}%)</span>
+                <span className="text-sm font-normal text-muted-foreground mr-2">({profit_percent.toFixed(1)}%)</span>
               )}
             </p>
           </div>
         </div>
 
         {/* Project Info */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-6">
-          <h3 className="font-semibold text-slate-900 mb-4">פרטי פרויקט</h3>
+        <div className="bg-white rounded-2xl border border-border p-6">
+          <h3 className="font-semibold text-foreground mb-4">פרטי פרויקט</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="flex items-center gap-3">
-              <Building2 className="w-5 h-5 text-slate-400" />
+              <Building2 className="w-5 h-5 text-muted-foreground" />
               <div>
-                <p className="text-xs text-slate-500">לקוח</p>
+                <p className="text-xs text-muted-foreground">לקוח</p>
                 <p className="font-medium">{project.customer_name}</p>
               </div>
             </div>
             {project.address && (
               <div className="flex items-center gap-3">
-                <MapPin className="w-5 h-5 text-slate-400" />
+                <MapPin className="w-5 h-5 text-muted-foreground" />
                 <div>
-                  <p className="text-xs text-slate-500">כתובת</p>
+                  <p className="text-xs text-muted-foreground">כתובת</p>
                   <p className="font-medium">{project.address}</p>
                 </div>
               </div>
             )}
             {project.aluminum_color && (
               <div className="flex items-center gap-3">
-                <Palette className="w-5 h-5 text-slate-400" />
+                <Palette className="w-5 h-5 text-muted-foreground" />
                 <div>
-                  <p className="text-xs text-slate-500">צבע אלומיניום</p>
+                  <p className="text-xs text-muted-foreground">צבע אלומיניום</p>
                   <p className="font-medium">{project.aluminum_color}</p>
                 </div>
               </div>
             )}
             {project.target_date && (
               <div className="flex items-center gap-3">
-                <Calendar className="w-5 h-5 text-slate-400" />
+                <Calendar className="w-5 h-5 text-muted-foreground" />
                 <div>
-                  <p className="text-xs text-slate-500">תאריך יעד</p>
+                  <p className="text-xs text-muted-foreground">תאריך יעד</p>
                   <p className="font-medium">{format(new Date(project.target_date), 'dd/MM/yyyy', { locale: he })}</p>
                 </div>
               </div>
             )}
           </div>
           {project.notes && (
-            <div className="mt-4 pt-4 border-t border-slate-100">
-              <p className="text-xs text-slate-500 mb-1">הערות</p>
-              <p className="text-slate-600">{project.notes}</p>
+            <div className="mt-4 pt-4 border-t border-border">
+              <p className="text-xs text-muted-foreground mb-1">הערות</p>
+              <p className="text-muted-foreground">{project.notes}</p>
             </div>
           )}
         </div>
@@ -437,7 +437,7 @@ export default function ProjectDetails() {
         {/* Tabs */}
         <Tabs defaultValue="quotes" className="space-y-6">
           <div className="overflow-x-auto">
-          <TabsList className="bg-white border border-slate-200 p-1 min-w-max">
+          <TabsList className="bg-white border border-border p-1 min-w-max">
             <TabsTrigger value="quotes" className="gap-2">
               <FileText className="w-4 h-4" />
               הצעות מחיר ({quotes.length})
@@ -535,11 +535,11 @@ export default function ProjectDetails() {
       <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <DialogContent className="max-w-sm">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-red-600">
+            <DialogTitle className="flex items-center gap-2 text-destructive">
               <Trash2 className="w-5 h-5" /> מחיקת פרויקט
             </DialogTitle>
           </DialogHeader>
-          <p className="text-slate-600 text-sm py-2">
+          <p className="text-muted-foreground text-sm py-2">
             האם אתה בטוח שברצונך למחוק את הפרויקט <strong>"{project.name}"</strong>?
             <br />
             <span className="text-red-500 text-sm mt-1 block">פעולה זו אינה ניתנת לביטול.</span>
@@ -565,15 +565,15 @@ export default function ProjectDetails() {
       <Dialog open={closeBlockDialogOpen} onOpenChange={setCloseBlockDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-red-700">
+            <DialogTitle className="flex items-center gap-2 text-destructive">
               <AlertCircle className="w-5 h-5" /> לא ניתן לסגור פרויקט
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-3 py-2">
-            <p className="text-sm text-slate-600">נמצאו יתרות פתוחות – יש לסגור אותן לפני סגירת ההתחשבנות:</p>
+            <p className="text-sm text-muted-foreground">נמצאו יתרות פתוחות – יש לסגור אותן לפני סגירת ההתחשבנות:</p>
             <ul className="space-y-2">
               {closeBlockReasons.map((r, i) => (
-                <li key={i} className="flex items-center gap-2 text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg px-4 py-2">
+                <li key={i} className="flex items-center gap-2 text-sm text-destructive bg-destructive-subtle border border-red-200 rounded-lg px-4 py-2">
                   <AlertCircle className="w-4 h-4 shrink-0" /> {r}
                 </li>
               ))}
@@ -602,19 +602,19 @@ export default function ProjectDetails() {
             </div>
 
             {/* Financial summary — read-only, derived from approved quotes */}
-            <div className="grid grid-cols-3 gap-3 rounded-xl bg-slate-50 border border-slate-100 p-4">
+            <div className="grid grid-cols-3 gap-3 rounded-xl bg-background border border-border p-4">
               <div>
-                <p className="text-xs text-slate-500 mb-1">הצעה ראשונית מאושרת</p>
-                <p className="text-lg font-semibold text-slate-800">{formatCurrency(initial_quote)}</p>
+                <p className="text-xs text-muted-foreground mb-1">הצעה ראשונית מאושרת</p>
+                <p className="text-lg font-semibold text-foreground">{formatCurrency(initial_quote)}</p>
               </div>
               <div>
-                <p className="text-xs text-slate-500 mb-1">תוספות מאושרות</p>
-                <p className="text-lg font-semibold text-slate-800">{formatCurrency(additions_total)}</p>
-                <p className="text-xs text-slate-400">{additions_count} תוספות</p>
+                <p className="text-xs text-muted-foreground mb-1">תוספות מאושרות</p>
+                <p className="text-lg font-semibold text-foreground">{formatCurrency(additions_total)}</p>
+                <p className="text-xs text-muted-foreground">{additions_count} תוספות</p>
               </div>
               <div>
-                <p className="text-xs text-slate-500 mb-1">סה״כ מכירה</p>
-                <p className="text-lg font-bold text-blue-700">{formatCurrency(total_sale)}</p>
+                <p className="text-xs text-muted-foreground mb-1">סה״כ מכירה</p>
+                <p className="text-lg font-bold text-primary">{formatCurrency(total_sale)}</p>
               </div>
             </div>
 
@@ -651,11 +651,11 @@ export default function ProjectDetails() {
                 rows={3}
               />
             </div>
-            <div className="flex justify-end gap-3 pt-2 border-t border-slate-100">
+            <div className="flex justify-end gap-3 pt-2 border-t border-border">
               <Button type="button" variant="outline" onClick={() => setEditDialogOpen(false)}>
                 ביטול
               </Button>
-              <Button type="submit" className="min-w-32 bg-blue-600 hover:bg-blue-700">
+              <Button type="submit" className="min-w-32 bg-primary hover:bg-primary-hover">
                 {updateProjectMutation.isPending && <Loader2 className="w-4 h-4 ml-2 animate-spin" />}
                 עדכון
               </Button>
@@ -740,29 +740,29 @@ function PaymentsSection({ payments, projectId, projectName, dialogOpen, setDial
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
-      <div className="p-6 border-b border-slate-100 flex items-center justify-between">
-        <h3 className="font-semibold text-slate-900">תשלומים מלקוח</h3>
+    <div className="bg-white rounded-2xl border border-border overflow-hidden">
+      <div className="p-6 border-b border-border flex items-center justify-between">
+        <h3 className="font-semibold text-foreground">תשלומים מלקוח</h3>
         <Button onClick={() => setDialogOpen(true)} size="sm">
           <Plus className="w-4 h-4 ml-2" />
           תשלום חדש
         </Button>
       </div>
-      <div className="divide-y divide-slate-100">
+      <div className="divide-y divide-border">
         {payments.map(payment => (
-          <div key={payment.id} className="p-4 hover:bg-slate-50 flex items-center justify-between">
+          <div key={payment.id} className="p-4 hover:bg-background flex items-center justify-between">
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <span className="font-medium">{formatCurrency(payment.amount)}</span>
-                <span className="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-700">
+                <span className="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-primary">
                   {paymentTypeLabels[payment.payment_type]}
                 </span>
               </div>
-              <p className="text-sm text-slate-500">
+              <p className="text-sm text-muted-foreground">
                 {format(new Date(payment.payment_date), 'dd/MM/yyyy', { locale: he })} • {paymentMethodLabels[payment.payment_method]}
                 {payment.reference && ` • ${payment.reference}`}
                 {payment.received_by_partner_name && (
-                  <span className="mr-1 text-blue-600 font-medium"> • קיבל: {payment.received_by_partner_name}</span>
+                  <span className="mr-1 text-primary font-medium"> • קיבל: {payment.received_by_partner_name}</span>
                 )}
               </p>
             </div>
@@ -784,7 +784,7 @@ function PaymentsSection({ payments, projectId, projectName, dialogOpen, setDial
                   });
                   setDialogOpen(true);
                 }}
-                className="text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+                className="text-muted-foreground hover:text-foreground hover:bg-secondary"
               >
                 <Pencil className="w-4 h-4" />
               </Button>
@@ -796,7 +796,7 @@ function PaymentsSection({ payments, projectId, projectName, dialogOpen, setDial
                     deleteMutation.mutate(payment.id);
                   }
                 }}
-                className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                className="text-destructive hover:text-destructive hover:bg-destructive-subtle"
               >
                 <Trash2 className="w-4 h-4" />
               </Button>
@@ -804,7 +804,7 @@ function PaymentsSection({ payments, projectId, projectName, dialogOpen, setDial
           </div>
         ))}
         {payments.length === 0 && (
-          <div className="p-8 text-center text-slate-500">
+          <div className="p-8 text-center text-muted-foreground">
             אין תשלומים עדיין
           </div>
         )}
@@ -893,7 +893,7 @@ function PaymentsSection({ payments, projectId, projectName, dialogOpen, setDial
               </div>
             )}
             <div className="flex gap-3 pt-4">
-              <Button type="submit" className="flex-1 bg-blue-600 hover:bg-blue-700">
+              <Button type="submit" className="flex-1 bg-primary hover:bg-primary-hover">
                 {(createMutation.isPending || updateMutation.isPending) && <Loader2 className="w-4 h-4 ml-2 animate-spin" />}
                 {editingPayment ? 'עדכון' : 'הוספה'}
               </Button>
@@ -964,9 +964,9 @@ function OrdersSection({ orders, projectId, projectName, dialogOpen, setDialogOp
   const statusLabels = { ordered: 'הוזמן', partial: 'שולם חלקית', paid: 'שולם מלא', received: 'התקבל' };
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
-      <div className="p-6 border-b border-slate-100 flex items-center justify-between">
-        <h3 className="font-semibold text-slate-900">הזמנות ספקים</h3>
+    <div className="bg-white rounded-2xl border border-border overflow-hidden">
+      <div className="p-6 border-b border-border flex items-center justify-between">
+        <h3 className="font-semibold text-foreground">הזמנות ספקים</h3>
         <div className="flex gap-2">
           <SuppliersManagerButton />
           <Button onClick={() => setDialogOpen(true)} size="sm">
@@ -975,29 +975,29 @@ function OrdersSection({ orders, projectId, projectName, dialogOpen, setDialogOp
           </Button>
         </div>
       </div>
-      <div className="divide-y divide-slate-100">
+      <div className="divide-y divide-border">
         {orders.map(order => (
-          <div key={order.id} className="p-4 hover:bg-slate-50 flex items-center justify-between">
+          <div key={order.id} className="p-4 hover:bg-background flex items-center justify-between">
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <span className="font-medium">{order.supplier_name}</span>
                 <span className={cn(
                   "text-xs px-2 py-0.5 rounded-full",
-                  order.order_type === 'aluminum' ? "bg-blue-100 text-blue-700" :
+                  order.order_type === 'aluminum' ? "bg-blue-100 text-primary" :
                   order.order_type === 'hardware' ? "bg-purple-100 text-purple-700" :
                   order.order_type === 'glass' ? "bg-cyan-100 text-cyan-700" :
-                  "bg-slate-100 text-slate-700"
+                  "bg-secondary text-foreground"
                 )}>
                   {orderTypeLabels[order.order_type]}
                 </span>
               </div>
-              <p className="text-sm text-slate-600">
+              <p className="text-sm text-muted-foreground">
                 {formatCurrency(order.order_amount)} • שולם: {formatCurrency(order.paid_amount)}
                 {order.paid_by_partner_name && (
                   <span className="text-purple-600 font-medium"> • שילם: {order.paid_by_partner_name}</span>
                 )}
               </p>
-              {order.description && <p className="text-sm text-slate-500">{order.description}</p>}
+              {order.description && <p className="text-sm text-muted-foreground">{order.description}</p>}
             </div>
             <div className="flex items-center gap-2">
               <Button
@@ -1019,7 +1019,7 @@ function OrdersSection({ orders, projectId, projectName, dialogOpen, setDialogOp
                   });
                   setDialogOpen(true);
                 }}
-                className="text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+                className="text-muted-foreground hover:text-foreground hover:bg-secondary"
               >
                 <Pencil className="w-4 h-4" />
               </Button>
@@ -1031,7 +1031,7 @@ function OrdersSection({ orders, projectId, projectName, dialogOpen, setDialogOp
                     deleteMutation.mutate(order.id);
                   }
                 }}
-                className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                className="text-destructive hover:text-destructive hover:bg-destructive-subtle"
               >
                 <Trash2 className="w-4 h-4" />
               </Button>
@@ -1039,7 +1039,7 @@ function OrdersSection({ orders, projectId, projectName, dialogOpen, setDialogOp
           </div>
         ))}
         {orders.length === 0 && (
-          <div className="p-8 text-center text-slate-500">
+          <div className="p-8 text-center text-muted-foreground">
             אין הזמנות עדיין
           </div>
         )}
@@ -1133,7 +1133,7 @@ function OrdersSection({ orders, projectId, projectName, dialogOpen, setDialogOp
               </div>
             )}
             <div className="flex gap-3 pt-4">
-              <Button type="submit" className="flex-1 bg-blue-600 hover:bg-blue-700" disabled={!formData.supplier_name}>
+              <Button type="submit" className="flex-1 bg-primary hover:bg-primary-hover" disabled={!formData.supplier_name}>
                 {(createMutation.isPending || updateMutation.isPending) && <Loader2 className="w-4 h-4 ml-2 animate-spin" />}
                 {editingOrder ? 'עדכון' : 'הוספה'}
               </Button>
@@ -1270,17 +1270,17 @@ function QuotesSection({ quotes, projectId, projectName, customerName, projectSt
   const statusLabels = { draft: 'טיוטה', approved: 'אושר' };
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
-      <div className="p-6 border-b border-slate-100 flex items-center justify-between">
-        <h3 className="font-semibold text-slate-900">הצעות מחיר</h3>
+    <div className="bg-white rounded-2xl border border-border overflow-hidden">
+      <div className="p-6 border-b border-border flex items-center justify-between">
+        <h3 className="font-semibold text-foreground">הצעות מחיר</h3>
         <Button onClick={() => createDraftMutation.mutate()} disabled={createDraftMutation.isPending} size="sm">
           {createDraftMutation.isPending ? <Loader2 className="w-4 h-4 ml-2 animate-spin" /> : <Plus className="w-4 h-4 ml-2" />}
           הצעת מחיר חדשה
         </Button>
       </div>
-      <div className="divide-y divide-slate-100">
+      <div className="divide-y divide-border">
         {quotes.map(quote => (
-          <div key={quote.id} className="p-4 hover:bg-slate-50 flex items-center justify-between">
+          <div key={quote.id} className="p-4 hover:bg-background flex items-center justify-between">
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-1">
                 <span className="font-medium">
@@ -1288,13 +1288,13 @@ function QuotesSection({ quotes, projectId, projectName, customerName, projectSt
                 </span>
                 <span className={cn(
                   "text-xs px-2 py-0.5 rounded-full",
-                  quote.status === 'approved' ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-700"
+                  quote.status === 'approved' ? "bg-success-subtle text-success" : "bg-secondary text-foreground"
                 )}>
                   {statusLabels[quote.status]}
                 </span>
               </div>
-              <p className="text-sm text-slate-600">{formatCurrency(quote.amount)}</p>
-              {quote.changes_description && <p className="text-sm text-slate-500">{quote.changes_description}</p>}
+              <p className="text-sm text-muted-foreground">{formatCurrency(quote.amount)}</p>
+              {quote.changes_description && <p className="text-sm text-muted-foreground">{quote.changes_description}</p>}
             </div>
             <div className="flex items-center gap-2">
               {quote.status !== 'approved' && (
@@ -1320,7 +1320,7 @@ function QuotesSection({ quotes, projectId, projectName, customerName, projectSt
                   // the code only as a fallback.)
                   navigate(`/QuoteEditor?quote_id=${quote.id}`);
                 }}
-                className="text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+                className="text-muted-foreground hover:text-foreground hover:bg-secondary"
               >
                 <Pencil className="w-4 h-4" />
               </Button>
@@ -1332,7 +1332,7 @@ function QuotesSection({ quotes, projectId, projectName, customerName, projectSt
                     deleteMutation.mutate(quote.id);
                   }
                 }}
-                className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                className="text-destructive hover:text-destructive hover:bg-destructive-subtle"
               >
                 <Trash2 className="w-4 h-4" />
               </Button>
@@ -1340,7 +1340,7 @@ function QuotesSection({ quotes, projectId, projectName, customerName, projectSt
           </div>
         ))}
         {quotes.length === 0 && (
-          <div className="p-8 text-center text-slate-500">
+          <div className="p-8 text-center text-muted-foreground">
             אין הצעות מחיר עדיין
           </div>
         )}
@@ -1379,7 +1379,7 @@ function QuotesSection({ quotes, projectId, projectName, customerName, projectSt
                   value={formData.addition_number} 
                   onChange={(e) => setFormData({ ...formData, addition_number: parseInt(e.target.value) || 0 })} 
                 />
-                <p className="text-xs text-slate-500">0 = הצעה ראשונית, 1+ = תוספות</p>
+                <p className="text-xs text-muted-foreground">0 = הצעה ראשונית, 1+ = תוספות</p>
               </div>
               <div className="space-y-2">
                 <Label>תאריך</Label>
@@ -1397,10 +1397,10 @@ function QuotesSection({ quotes, projectId, projectName, customerName, projectSt
             <div className="space-y-2">
               <Label>קובץ PDF</Label>
               <Input type="file" accept=".pdf" onChange={handleFileUpload} disabled={uploading} />
-              {uploading && <p className="text-sm text-slate-500">מעלה...</p>}
+              {uploading && <p className="text-sm text-muted-foreground">מעלה...</p>}
             </div>
             <div className="flex gap-3 pt-4">
-              <Button type="submit" className="flex-1 bg-blue-600 hover:bg-blue-700">
+              <Button type="submit" className="flex-1 bg-primary hover:bg-primary-hover">
                 {(createMutation.isPending || updateMutation.isPending) && <Loader2 className="w-4 h-4 ml-2 animate-spin" />}
                 {editingQuote ? 'עדכון' : 'הוספה'}
               </Button>
@@ -1478,22 +1478,22 @@ function DocumentsSection({ documents, projectId, projectName, dialogOpen, setDi
   const docTypeLabels = { contract: 'חוזה', plan: 'תוכנית', invoice: 'חשבונית', photo: 'תמונה', delivery: 'תעודת משלוח' };
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
-      <div className="p-6 border-b border-slate-100 flex items-center justify-between">
-        <h3 className="font-semibold text-slate-900">מסמכים</h3>
+    <div className="bg-white rounded-2xl border border-border overflow-hidden">
+      <div className="p-6 border-b border-border flex items-center justify-between">
+        <h3 className="font-semibold text-foreground">מסמכים</h3>
         <Button onClick={() => setDialogOpen(true)} size="sm">
           <Plus className="w-4 h-4 ml-2" />
           מסמך חדש
         </Button>
       </div>
-      <div className="divide-y divide-slate-100">
+      <div className="divide-y divide-border">
         {documents.map(doc => (
-          <div key={doc.id} className="p-4 hover:bg-slate-50 flex items-center justify-between">
+          <div key={doc.id} className="p-4 hover:bg-background flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <FileText className="w-8 h-8 text-slate-400" />
+              <FileText className="w-8 h-8 text-muted-foreground" />
               <div>
                 <p className="font-medium">{doc.name}</p>
-                <p className="text-sm text-slate-500">{docTypeLabels[doc.document_type]}</p>
+                <p className="text-sm text-muted-foreground">{docTypeLabels[doc.document_type]}</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -1511,7 +1511,7 @@ function DocumentsSection({ documents, projectId, projectName, dialogOpen, setDi
                   });
                   setDialogOpen(true);
                 }}
-                className="text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+                className="text-muted-foreground hover:text-foreground hover:bg-secondary"
               >
                 <Pencil className="w-4 h-4" />
               </Button>
@@ -1523,7 +1523,7 @@ function DocumentsSection({ documents, projectId, projectName, dialogOpen, setDi
                     deleteMutation.mutate(doc.id);
                   }
                 }}
-                className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                className="text-destructive hover:text-destructive hover:bg-destructive-subtle"
               >
                 <Trash2 className="w-4 h-4" />
               </Button>
@@ -1531,7 +1531,7 @@ function DocumentsSection({ documents, projectId, projectName, dialogOpen, setDi
           </div>
         ))}
         {documents.length === 0 && (
-          <div className="p-8 text-center text-slate-500">
+          <div className="p-8 text-center text-muted-foreground">
             אין מסמכים עדיין
           </div>
         )}
@@ -1580,12 +1580,12 @@ function DocumentsSection({ documents, projectId, projectName, dialogOpen, setDi
             <div className="space-y-2">
               <Label>קובץ</Label>
               <Input type="file" onChange={handleFileUpload} disabled={uploading} />
-              {uploading && <p className="text-sm text-slate-500">מעלה...</p>}
-              {formData.file_url && !editingDocument && <p className="text-sm text-green-600">✓ קובץ הועלה</p>}
-              {editingDocument && <p className="text-sm text-slate-500">להשאיר ריק כדי לשמור את הקובץ הקיים</p>}
+              {uploading && <p className="text-sm text-muted-foreground">מעלה...</p>}
+              {formData.file_url && !editingDocument && <p className="text-sm text-success">✓ קובץ הועלה</p>}
+              {editingDocument && <p className="text-sm text-muted-foreground">להשאיר ריק כדי לשמור את הקובץ הקיים</p>}
             </div>
             <div className="flex gap-3 pt-4">
-              <Button type="submit" className="flex-1 bg-blue-600 hover:bg-blue-700" disabled={!editingDocument && !formData.file_url}>
+              <Button type="submit" className="flex-1 bg-primary hover:bg-primary-hover" disabled={!editingDocument && !formData.file_url}>
                 {(createMutation.isPending || updateMutation.isPending) && <Loader2 className="w-4 h-4 ml-2 animate-spin" />}
                 {editingDocument ? 'עדכון' : 'הוספה'}
               </Button>
@@ -1658,18 +1658,18 @@ function RemindersSection({ reminders, projectId, projectName, dialogOpen, setDi
   const statusLabels = { open: 'פתוח', done: 'בוצע', postponed: 'נדחה' };
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
-      <div className="p-6 border-b border-slate-100 flex items-center justify-between">
-        <h3 className="font-semibold text-slate-900">תזכורות</h3>
+    <div className="bg-white rounded-2xl border border-border overflow-hidden">
+      <div className="p-6 border-b border-border flex items-center justify-between">
+        <h3 className="font-semibold text-foreground">תזכורות</h3>
         <Button onClick={() => setDialogOpen(true)} size="sm">
           <Plus className="w-4 h-4 ml-2" />
           תזכורת חדשה
         </Button>
       </div>
-      <div className="divide-y divide-slate-100">
+      <div className="divide-y divide-border">
         {reminders.map(reminder => (
           <div key={reminder.id} className={cn(
-            "p-4 hover:bg-slate-50 flex items-center justify-between gap-4",
+            "p-4 hover:bg-background flex items-center justify-between gap-4",
             reminder.status === 'done' && "opacity-50"
           )}>
             <div className="flex-1">
@@ -1677,17 +1677,17 @@ function RemindersSection({ reminders, projectId, projectName, dialogOpen, setDi
                 <span className="font-medium">{reminder.title}</span>
                 <span className={cn(
                   "text-xs px-2 py-0.5 rounded-full",
-                  reminder.priority === 'high' ? "bg-red-100 text-red-700" :
-                  reminder.priority === 'medium' ? "bg-amber-100 text-amber-700" :
-                  "bg-slate-100 text-slate-700"
+                  reminder.priority === 'high' ? "bg-destructive-subtle text-destructive" :
+                  reminder.priority === 'medium' ? "bg-warning-subtle text-warning" :
+                  "bg-secondary text-foreground"
                 )}>
                   {priorityLabels[reminder.priority]}
                 </span>
               </div>
-              <p className="text-sm text-slate-500">
+              <p className="text-sm text-muted-foreground">
                 {format(new Date(reminder.due_date), 'dd/MM/yyyy', { locale: he })}
               </p>
-              {reminder.description && <p className="text-sm text-slate-600 mt-1">{reminder.description}</p>}
+              {reminder.description && <p className="text-sm text-muted-foreground mt-1">{reminder.description}</p>}
             </div>
             <div className="flex items-center gap-2">
               <Select 
@@ -1717,7 +1717,7 @@ function RemindersSection({ reminders, projectId, projectName, dialogOpen, setDi
                   });
                   setDialogOpen(true);
                 }}
-                className="text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+                className="text-muted-foreground hover:text-foreground hover:bg-secondary"
               >
                 <Pencil className="w-4 h-4" />
               </Button>
@@ -1729,7 +1729,7 @@ function RemindersSection({ reminders, projectId, projectName, dialogOpen, setDi
                     deleteMutation.mutate(reminder.id);
                   }
                 }}
-                className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                className="text-destructive hover:text-destructive hover:bg-destructive-subtle"
               >
                 <Trash2 className="w-4 h-4" />
               </Button>
@@ -1737,7 +1737,7 @@ function RemindersSection({ reminders, projectId, projectName, dialogOpen, setDi
           </div>
         ))}
         {reminders.length === 0 && (
-          <div className="p-8 text-center text-slate-500">
+          <div className="p-8 text-center text-muted-foreground">
             אין תזכורות עדיין
           </div>
         )}
@@ -1792,7 +1792,7 @@ function RemindersSection({ reminders, projectId, projectName, dialogOpen, setDi
               </Select>
             </div>
             <div className="flex gap-3 pt-4">
-              <Button type="submit" className="flex-1 bg-blue-600 hover:bg-blue-700">
+              <Button type="submit" className="flex-1 bg-primary hover:bg-primary-hover">
                 {(createMutation.isPending || updateReminder.isPending) && <Loader2 className="w-4 h-4 ml-2 animate-spin" />}
                 {editingReminder ? 'עדכון' : 'הוספה'}
               </Button>

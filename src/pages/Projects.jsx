@@ -185,21 +185,21 @@ export default function Projects() {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 p-6 lg:p-8">
+    <div className="min-h-screen bg-background p-6 lg:p-8">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900">פרויקטים</h1>
-            <p className="text-slate-500 mt-1">{projects.length} פרויקטים במערכת</p>
+            <h1 className="text-3xl font-bold text-foreground">פרויקטים</h1>
+            <p className="text-muted-foreground mt-1">{projects.length} פרויקטים במערכת</p>
           </div>
-          <Button onClick={openCreateDialog} className="bg-blue-600 hover:bg-blue-700">
+          <Button onClick={openCreateDialog} className="bg-primary hover:bg-primary-hover">
             <Plus className="w-5 h-5 ml-2" />
             פרויקט חדש
           </Button>
@@ -208,7 +208,7 @@ export default function Projects() {
         {/* Filters */}
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="relative flex-1">
-            <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+            <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
             <Input
               placeholder="חיפוש לפי שם פרויקט, לקוח או מספר..."
               value={search}
@@ -247,7 +247,7 @@ export default function Projects() {
             const financials = calculateProjectFinancials(project.id, { allQuotes, allPayments, allOrders });
             
             return (
-              <div key={project.id} className="relative bg-white rounded-2xl border border-slate-200 hover:shadow-lg transition-all hover:border-blue-200 group">
+              <div key={project.id} className="relative bg-white rounded-2xl border border-border hover:shadow-lg transition-all hover:border-blue-200 group">
               <Link
                 to={createPageUrl("ProjectDetails") + `?id=${project.id}`}
                 className="block p-6"
@@ -256,46 +256,46 @@ export default function Projects() {
                   <div>
                     <div className="flex items-center gap-2 mb-1">
                       {project.project_number && (
-                        <span className="text-xs text-slate-400">#{project.project_number}</span>
+                        <span className="text-xs text-muted-foreground">#{project.project_number}</span>
                       )}
                       <ProjectStatusBadge status={project.status} />
                     </div>
-                    <h3 className="font-semibold text-slate-900 group-hover:text-blue-600 transition-colors">
+                    <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">
                       {project.name}
                     </h3>
                   </div>
-                  <ChevronLeft className="w-5 h-5 text-slate-300 group-hover:text-blue-600 transition-colors" />
+                  <ChevronLeft className="w-5 h-5 text-slate-300 group-hover:text-primary transition-colors" />
                 </div>
 
-                <div className="space-y-2 text-sm text-slate-600 mb-4">
+                <div className="space-y-2 text-sm text-muted-foreground mb-4">
                   <div className="flex items-center gap-2">
-                    <Building2 className="w-4 h-4 text-slate-400" />
+                    <Building2 className="w-4 h-4 text-muted-foreground" />
                     <span>{project.customer_name}</span>
                   </div>
                   {project.target_date && (
                     <div className="flex items-center gap-2">
-                      <Calendar className="w-4 h-4 text-slate-400" />
+                      <Calendar className="w-4 h-4 text-muted-foreground" />
                       <span>{format(new Date(project.target_date), 'dd/MM/yyyy', { locale: he })}</span>
                     </div>
                   )}
                   {project.aluminum_color && (
                     <div className="flex items-center gap-2">
-                      <Palette className="w-4 h-4 text-slate-400" />
+                      <Palette className="w-4 h-4 text-muted-foreground" />
                       <span>{project.aluminum_color}</span>
                     </div>
                   )}
                 </div>
 
-                <div className="pt-4 border-t border-slate-100 grid grid-cols-2 gap-4">
+                <div className="pt-4 border-t border-border grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-xs text-slate-500 mb-1">סכום הצעה</p>
-                    <p className="font-semibold text-slate-900">{formatCurrency(financials.total_sale)}</p>
+                    <p className="text-xs text-muted-foreground mb-1">סכום הצעה</p>
+                    <p className="font-semibold text-foreground">{formatCurrency(financials.total_sale)}</p>
                   </div>
                   <div>
-                    <p className="text-xs text-slate-500 mb-1">יתרה לגבייה</p>
+                    <p className="text-xs text-muted-foreground mb-1">יתרה לגבייה</p>
                     <p className={cn(
                       "font-semibold",
-                      financials.balance_to_collect > 0 ? "text-amber-600" : "text-emerald-600"
+                      financials.balance_to_collect > 0 ? "text-warning" : "text-success"
                     )}>
                       {formatCurrency(financials.balance_to_collect)}
                     </p>
@@ -310,8 +310,8 @@ export default function Projects() {
         {filteredProjects.length === 0 && (
           <div className="text-center py-12">
             <Building2 className="w-12 h-12 mx-auto text-slate-300 mb-4" />
-            <h3 className="text-lg font-medium text-slate-900 mb-1">לא נמצאו פרויקטים</h3>
-            <p className="text-slate-500">נסה לשנות את פרמטרי החיפוש</p>
+            <h3 className="text-lg font-medium text-foreground mb-1">לא נמצאו פרויקטים</h3>
+            <p className="text-muted-foreground">נסה לשנות את פרמטרי החיפוש</p>
           </div>
         )}
       </div>
@@ -399,7 +399,7 @@ export default function Projects() {
             <div className="flex gap-3 pt-4">
               <Button 
                 type="submit" 
-                className="flex-1 bg-blue-600 hover:bg-blue-700"
+                className="flex-1 bg-primary hover:bg-primary-hover"
                 disabled={createMutation.isPending}
               >
                 {createMutation.isPending && (

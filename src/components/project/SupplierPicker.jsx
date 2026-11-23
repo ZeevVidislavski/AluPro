@@ -61,9 +61,9 @@ function SupplierFormDialog({ open, onClose, supplier, onSaved }) {
           {field("contact_name", "איש קשר")}
           {field("phone", "טלפון", { type: "tel", dir: "ltr" })}
           {field("email", "מייל", { type: "email", dir: "ltr" })}
-          {error && <p className="text-sm text-red-600 bg-red-50 rounded-md px-3 py-2">{error}</p>}
+          {error && <p className="text-sm text-destructive bg-destructive-subtle rounded-md px-3 py-2">{error}</p>}
           <div className="flex gap-2 pt-1">
-            <Button type="submit" className="flex-1 bg-blue-600 hover:bg-blue-700" disabled={mutation.isPending}>
+            <Button type="submit" className="flex-1 bg-primary hover:bg-primary-hover" disabled={mutation.isPending}>
               {mutation.isPending && <Loader2 className="w-4 h-4 ml-2 animate-spin" />}
               {supplier ? "עדכון" : "הוספה"}
             </Button>
@@ -107,7 +107,7 @@ export function SupplierPicker({ supplierId, supplierName, onChange }) {
         </Button>
       </div>
       {!supplierId && supplierName && (
-        <p className="text-xs text-slate-500">ספק נוכחי: {supplierName} (בחר מהרשימה כדי לקשר)</p>
+        <p className="text-xs text-muted-foreground">ספק נוכחי: {supplierName} (בחר מהרשימה כדי לקשר)</p>
       )}
       {adding && (
         <SupplierFormDialog open onClose={() => setAdding(false)} supplier={null} onSaved={select} />
@@ -146,22 +146,22 @@ export function SuppliersManagerButton() {
             </Button>
           </div>
           {suppliers.length === 0 ? (
-            <p className="text-center text-slate-400 py-6">אין ספקים עדיין</p>
+            <p className="text-center text-muted-foreground py-6">אין ספקים עדיין</p>
           ) : (
-            <div className="border border-slate-200 rounded-xl overflow-hidden">
+            <div className="border border-border rounded-xl overflow-hidden">
               <table className="w-full text-sm">
-                <thead className="bg-slate-50 border-b border-slate-200">
+                <thead className="bg-background border-b border-border">
                   <tr>
-                    <th className="text-right px-3 py-2 font-medium text-slate-600">שם</th>
-                    <th className="text-right px-3 py-2 font-medium text-slate-600">איש קשר</th>
-                    <th className="text-right px-3 py-2 font-medium text-slate-600">טלפון</th>
-                    <th className="text-right px-3 py-2 font-medium text-slate-600">מייל</th>
+                    <th className="text-right px-3 py-2 font-medium text-muted-foreground">שם</th>
+                    <th className="text-right px-3 py-2 font-medium text-muted-foreground">איש קשר</th>
+                    <th className="text-right px-3 py-2 font-medium text-muted-foreground">טלפון</th>
+                    <th className="text-right px-3 py-2 font-medium text-muted-foreground">מייל</th>
                     <th className="w-20" />
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-border">
                   {suppliers.map((s) => (
-                    <tr key={s.id} className="hover:bg-slate-50">
+                    <tr key={s.id} className="hover:bg-background">
                       <td className="px-3 py-2 font-medium">{s.name}</td>
                       <td className="px-3 py-2">{s.contact_name || "—"}</td>
                       <td className="px-3 py-2" dir="ltr">{s.phone || "—"}</td>
@@ -175,7 +175,7 @@ export function SuppliersManagerButton() {
                             type="button"
                             variant="ghost"
                             size="icon"
-                            className="text-red-600"
+                            className="text-destructive"
                             onClick={() => {
                               if (window.confirm(`למחוק את הספק ${s.name}?`)) deleteMutation.mutate(s.id);
                             }}

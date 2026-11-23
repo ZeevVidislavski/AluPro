@@ -27,12 +27,12 @@ export default function ProfitabilityChart({ projects, allOrders, allQuotes, all
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (
-        <div className="bg-white p-4 rounded-xl shadow-lg border border-slate-200">
-          <p className="font-medium text-slate-900 mb-2">{data.fullName}</p>
+        <div className="bg-white p-4 rounded-xl shadow-lg border border-border">
+          <p className="font-medium text-foreground mb-2">{data.fullName}</p>
           <div className="space-y-1 text-sm">
-            <p className="text-slate-600">הכנסה: {formatCurrency(data.revenue)}</p>
-            <p className="text-slate-600">עלות: {formatCurrency(data.costs)}</p>
-            <p className={data.profit >= 0 ? "text-emerald-600 font-medium" : "text-red-600 font-medium"}>
+            <p className="text-muted-foreground">הכנסה: {formatCurrency(data.revenue)}</p>
+            <p className="text-muted-foreground">עלות: {formatCurrency(data.costs)}</p>
+            <p className={data.profit >= 0 ? "text-success font-medium" : "text-destructive font-medium"}>
               רווח: {formatCurrency(data.profit)} ({data.profitPercent}%)
             </p>
           </div>
@@ -43,8 +43,8 @@ export default function ProfitabilityChart({ projects, allOrders, allQuotes, all
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 p-6">
-      <h3 className="text-lg font-semibold text-slate-900 mb-6">רווחיות פר פרויקט</h3>
+    <div className="bg-white rounded-2xl border border-border p-6">
+      <h3 className="text-lg font-semibold text-foreground mb-6">רווחיות פר פרויקט</h3>
       {data.length > 0 ? (
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={data} layout="vertical" margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
@@ -63,7 +63,7 @@ export default function ProfitabilityChart({ projects, allOrders, allQuotes, all
           </BarChart>
         </ResponsiveContainer>
       ) : (
-        <div className="h-[300px] flex items-center justify-center text-slate-500">
+        <div className="h-[300px] flex items-center justify-center text-muted-foreground">
           אין נתונים להצגה
         </div>
       )}

@@ -93,18 +93,18 @@ function AddModelsForm({ targetTenantId, onDone }) {
 
   return (
     <div className="space-y-4">
-      <p className="text-sm text-slate-500">
+      <p className="text-sm text-muted-foreground">
         בחר דגמים מהקטלוג הבסיסי (AluPro Demo). הדגמים, כולל רכיבי הייצור שלהם, יועתקו
         לחברה כעותק עצמאי. דגמים שכבר קיימים אצלה בשם זהה לא יופיעו ברשימה.
       </p>
 
       {loadingSource && (
-        <Loader2 className="w-5 h-5 animate-spin text-slate-400" />
+        <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
       )}
 
       {!loadingSource && (
         available.length === 0 ? (
-          <p className="text-sm text-slate-400">אין דגמים נוספים להוספה מהקטלוג הבסיסי.</p>
+          <p className="text-sm text-muted-foreground">אין דגמים נוספים להוספה מהקטלוג הבסיסי.</p>
         ) : (
           <div className="space-y-3">
             <div className="space-y-1">
@@ -119,17 +119,17 @@ function AddModelsForm({ targetTenantId, onDone }) {
                 </SelectContent>
               </Select>
             </div>
-          <div className="border border-slate-200 rounded-lg">
-            <label className="flex items-center gap-2 px-3 py-2 border-b border-slate-100 text-sm font-medium cursor-pointer">
+          <div className="border border-border rounded-lg">
+            <label className="flex items-center gap-2 px-3 py-2 border-b border-border text-sm font-medium cursor-pointer">
               <Checkbox checked={allSelected} onCheckedChange={toggleAll} />
               בחר הכל ({visible.length})
             </label>
-            <div className="max-h-72 overflow-y-auto divide-y divide-slate-100">
+            <div className="max-h-72 overflow-y-auto divide-y divide-border">
               {visible.map((m) => (
                 <label key={m.id} className="flex items-center gap-2 px-3 py-2 text-sm cursor-pointer">
                   <Checkbox checked={selected.has(m.id)} onCheckedChange={() => toggle(m.id)} />
                   <span className="flex-1">{m.model_name}</span>
-                  <span className="text-xs text-slate-400">
+                  <span className="text-xs text-muted-foreground">
                     {CATEGORY_LABELS[m.category] ?? m.category}
                   </span>
                 </label>
@@ -141,12 +141,12 @@ function AddModelsForm({ targetTenantId, onDone }) {
       )}
 
       {mutation.isError && (
-        <p className="text-sm text-red-600 bg-red-50 rounded-md px-3 py-2">
+        <p className="text-sm text-destructive bg-destructive-subtle rounded-md px-3 py-2">
           {mutation.error?.message || "שגיאה בהעתקת הדגמים"}
         </p>
       )}
       {result !== null && (
-        <p className="text-sm text-green-700 bg-green-50 rounded-md px-3 py-2">
+        <p className="text-sm text-success bg-success-subtle rounded-md px-3 py-2">
           הועתקו {result} דגמים
         </p>
       )}

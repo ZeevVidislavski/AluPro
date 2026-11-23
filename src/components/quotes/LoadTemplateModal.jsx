@@ -19,7 +19,7 @@ export default function LoadTemplateModal({ open, onClose, templates, onLoad }) 
       <DialogContent className="max-w-md" dir="rtl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <FileDown className="w-5 h-5 text-blue-600" />
+            <FileDown className="w-5 h-5 text-primary" />
             טען תבנית
           </DialogTitle>
         </DialogHeader>
@@ -27,7 +27,7 @@ export default function LoadTemplateModal({ open, onClose, templates, onLoad }) 
         {/* Template list */}
         <div className="space-y-1.5 max-h-64 overflow-y-auto">
           {templates.length === 0 && (
-            <p className="text-center text-slate-400 py-6">אין תבניות שמורות</p>
+            <p className="text-center text-muted-foreground py-6">אין תבניות שמורות</p>
           )}
           {templates.map(t => (
             <button
@@ -36,26 +36,26 @@ export default function LoadTemplateModal({ open, onClose, templates, onLoad }) 
               className={cn(
                 "w-full text-right px-4 py-3 rounded-xl border transition-colors",
                 selectedId === t.id
-                  ? "border-blue-300 bg-blue-50"
-                  : "border-slate-100 hover:bg-slate-50"
+                  ? "border-blue-300 bg-secondary"
+                  : "border-border hover:bg-background"
               )}
             >
-              <p className="font-medium text-slate-800">{t.name}</p>
-              {t.description && <p className="text-xs text-slate-400">{t.description}</p>}
+              <p className="font-medium text-foreground">{t.name}</p>
+              {t.description && <p className="text-xs text-muted-foreground">{t.description}</p>}
             </button>
           ))}
         </div>
 
         {/* Price mode */}
         {selectedId && (
-          <div className="pt-2 space-y-2 border-t border-slate-100">
-            <p className="text-sm font-medium text-slate-700">שיטת מחירים:</p>
+          <div className="pt-2 space-y-2 border-t border-border">
+            <p className="text-sm font-medium text-foreground">שיטת מחירים:</p>
             <div className="flex gap-2">
               <button
                 onClick={() => setPriceMode("snapshot")}
                 className={cn(
                   "flex-1 py-2 px-3 rounded-lg border text-sm transition-colors",
-                  priceMode === "snapshot" ? "border-blue-300 bg-blue-50 text-blue-700" : "border-slate-200 hover:bg-slate-50"
+                  priceMode === "snapshot" ? "border-blue-300 bg-secondary text-primary" : "border-border hover:bg-background"
                 )}
               >
                 מחירים שמורים
@@ -64,7 +64,7 @@ export default function LoadTemplateModal({ open, onClose, templates, onLoad }) 
                 onClick={() => setPriceMode("catalog")}
                 className={cn(
                   "flex-1 py-2 px-3 rounded-lg border text-sm transition-colors",
-                  priceMode === "catalog" ? "border-blue-300 bg-blue-50 text-blue-700" : "border-slate-200 hover:bg-slate-50"
+                  priceMode === "catalog" ? "border-blue-300 bg-secondary text-primary" : "border-border hover:bg-background"
                 )}
               >
                 מחירי קטלוג עדכניים
@@ -75,7 +75,7 @@ export default function LoadTemplateModal({ open, onClose, templates, onLoad }) 
 
         <div className="flex gap-2 pt-1">
           <Button
-            className="flex-1 bg-blue-600 hover:bg-blue-700"
+            className="flex-1 bg-primary hover:bg-primary-hover"
             disabled={!selectedId}
             onClick={handleLoad}
           >

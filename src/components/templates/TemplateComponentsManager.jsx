@@ -45,17 +45,17 @@ export default function TemplateComponentsManager({ templateId, comps, catalogIt
   };
 
   return (
-    <div className="border-t border-slate-100">
+    <div className="border-t border-border">
       <table className="w-full text-sm">
-        <thead className="bg-slate-50">
+        <thead className="bg-background">
           <tr>
-            <th className="text-right px-4 py-2 text-xs font-medium text-slate-500">רכיב</th>
-            <th className="text-right px-4 py-2 text-xs font-medium text-slate-500">שיטת חישוב</th>
-            <th className="text-right px-4 py-2 text-xs font-medium text-slate-500">מחיר שמור</th>
+            <th className="text-right px-4 py-2 text-xs font-medium text-muted-foreground">רכיב</th>
+            <th className="text-right px-4 py-2 text-xs font-medium text-muted-foreground">שיטת חישוב</th>
+            <th className="text-right px-4 py-2 text-xs font-medium text-muted-foreground">מחיר שמור</th>
             <th className="px-2 py-2 w-20 text-left">
               <button
                 onClick={() => setPickerOpen(true)}
-                className="text-blue-500 hover:text-blue-700 flex items-center gap-1 text-xs font-medium"
+                className="text-blue-500 hover:text-primary flex items-center gap-1 text-xs font-medium"
               >
                 <Plus className="w-3.5 h-3.5" /> הוסף
               </button>
@@ -65,8 +65,8 @@ export default function TemplateComponentsManager({ templateId, comps, catalogIt
         <tbody className="divide-y divide-slate-50">
           {comps.map(comp => (
             <tr key={comp.id} className="hover:bg-slate-50/50">
-              <td className="px-4 py-2 font-medium text-slate-700">{comp.name_snapshot}</td>
-              <td className="px-4 py-2 text-slate-500 text-xs">{PRICING_METHOD_LABELS[comp.pricing_method_snapshot]}</td>
+              <td className="px-4 py-2 font-medium text-foreground">{comp.name_snapshot}</td>
+              <td className="px-4 py-2 text-muted-foreground text-xs">{PRICING_METHOD_LABELS[comp.pricing_method_snapshot]}</td>
               <td className="px-4 py-2">
                 <Input
                   type="number"
@@ -83,7 +83,7 @@ export default function TemplateComponentsManager({ templateId, comps, catalogIt
               <td className="px-2 py-2">
                 <button
                   onClick={() => { if (window.confirm("למחוק רכיב מהתבנית?")) deleteCompMutation.mutate(comp.id); }}
-                  className="text-red-300 hover:text-red-600"
+                  className="text-red-300 hover:text-destructive"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
                 </button>
@@ -92,7 +92,7 @@ export default function TemplateComponentsManager({ templateId, comps, catalogIt
           ))}
           {comps.length === 0 && (
             <tr>
-              <td colSpan={4} className="px-4 py-4 text-center text-slate-400 text-xs">
+              <td colSpan={4} className="px-4 py-4 text-center text-muted-foreground text-xs">
                 אין רכיבים — לחץ "הוסף" להוספת רכיב ראשון
               </td>
             </tr>

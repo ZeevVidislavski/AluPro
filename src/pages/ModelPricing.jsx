@@ -196,18 +196,18 @@ export default function ModelPricing() {
 
   const filtered = filterCat === "all" ? items : items.filter(i => i.category === filterCat);
 
-  if (isLoading) return <div className="min-h-screen flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-blue-600" /></div>;
+  if (isLoading) return <div className="min-h-screen flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>;
 
   return (
-    <div className="min-h-screen bg-slate-50 p-6 lg:p-8" dir="rtl">
+    <div className="min-h-screen bg-background p-6 lg:p-8" dir="rtl">
       <div className="max-w-5xl mx-auto space-y-6">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900">קטלוג רכיבים ותבניות</h1>
-          <p className="text-slate-500">בסיס לבניית הצעות מחיר חופשית</p>
+          <h1 className="text-3xl font-bold text-foreground">קטלוג רכיבים ותבניות</h1>
+          <p className="text-muted-foreground">בסיס לבניית הצעות מחיר חופשית</p>
         </div>
 
         <Tabs defaultValue="catalog">
-          <TabsList className="bg-white border border-slate-200">
+          <TabsList className="bg-white border border-border">
             <TabsTrigger value="catalog">קטלוג רכיבים ({items.length})</TabsTrigger>
             <TabsTrigger value="templates">תבניות ({templates.length})</TabsTrigger>
           </TabsList>
@@ -218,7 +218,7 @@ export default function ModelPricing() {
               <div className="flex gap-2 flex-wrap">
                 <button
                   onClick={() => setFilterCat("all")}
-                  className={cn("text-sm px-3 py-1.5 rounded-full border transition-colors", filterCat === "all" ? "bg-blue-600 text-white border-blue-600" : "border-slate-200 hover:bg-slate-50")}
+                  className={cn("text-sm px-3 py-1.5 rounded-full border transition-colors", filterCat === "all" ? "bg-primary text-white border-primary" : "border-border hover:bg-background")}
                 >
                   הכל ({items.length})
                 </button>
@@ -229,49 +229,49 @@ export default function ModelPricing() {
                     <button
                       key={key}
                       onClick={() => setFilterCat(key)}
-                      className={cn("text-sm px-3 py-1.5 rounded-full border transition-colors", filterCat === key ? "bg-blue-600 text-white border-blue-600" : "border-slate-200 hover:bg-slate-50")}
+                      className={cn("text-sm px-3 py-1.5 rounded-full border transition-colors", filterCat === key ? "bg-primary text-white border-primary" : "border-border hover:bg-background")}
                     >
                       {label} ({count})
                     </button>
                   );
                 })}
               </div>
-              <Button onClick={() => { setFormData(emptyForm); setEditingId(null); setDialogOpen(true); }} className="bg-blue-600 hover:bg-blue-700">
+              <Button onClick={() => { setFormData(emptyForm); setEditingId(null); setDialogOpen(true); }} className="bg-primary hover:bg-primary-hover">
                 <Plus className="w-4 h-4 ml-2" /> רכיב חדש
               </Button>
             </div>
 
-            <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+            <div className="bg-white rounded-2xl border border-border overflow-hidden">
               <table className="w-full">
-                <thead className="bg-slate-50 border-b border-slate-200">
+                <thead className="bg-background border-b border-border">
                   <tr>
-                    <th className="text-right px-4 py-3 text-sm font-medium text-slate-600">שם רכיב</th>
-                    <th className="text-right px-4 py-3 text-sm font-medium text-slate-600">קטגוריה</th>
-                    <th className="text-right px-4 py-3 text-sm font-medium text-slate-600">שיטת חישוב</th>
-                    <th className="text-right px-4 py-3 text-sm font-medium text-slate-600">מחיר בסיס</th>
-                    <th className="text-right px-4 py-3 text-sm font-medium text-slate-600">סטטוס</th>
+                    <th className="text-right px-4 py-3 text-sm font-medium text-muted-foreground">שם רכיב</th>
+                    <th className="text-right px-4 py-3 text-sm font-medium text-muted-foreground">קטגוריה</th>
+                    <th className="text-right px-4 py-3 text-sm font-medium text-muted-foreground">שיטת חישוב</th>
+                    <th className="text-right px-4 py-3 text-sm font-medium text-muted-foreground">מחיר בסיס</th>
+                    <th className="text-right px-4 py-3 text-sm font-medium text-muted-foreground">סטטוס</th>
                     <th className="px-4 py-3 w-20"></th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-border">
                   {filtered.map(item => (
-                    <tr key={item.id} className={cn("hover:bg-slate-50", !item.is_active && "opacity-50")}>
-                      <td className="px-4 py-3 font-medium text-slate-800">
+                    <tr key={item.id} className={cn("hover:bg-background", !item.is_active && "opacity-50")}>
+                      <td className="px-4 py-3 font-medium text-foreground">
                         {item.model_name}
-                        {item.notes && <p className="text-xs text-slate-400 font-normal">{item.notes}</p>}
+                        {item.notes && <p className="text-xs text-muted-foreground font-normal">{item.notes}</p>}
                       </td>
                       <td className="px-4 py-3">
                         <span className={cn("text-xs px-2 py-1 rounded-full font-medium", CATEGORY_COLORS[item.category])}>
                           {CATEGORY_LABELS[item.category] || item.category}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-sm text-slate-600">{PRICING_METHOD_LABELS[item.pricing_method]}</td>
-                      <td className="px-4 py-3 font-semibold text-blue-700">
+                      <td className="px-4 py-3 text-sm text-muted-foreground">{PRICING_METHOD_LABELS[item.pricing_method]}</td>
+                      <td className="px-4 py-3 font-semibold text-primary">
                         {formatCurrency(item.base_price)}/{PRICING_METHOD_LABELS[item.pricing_method]}
                       </td>
                       <td className="px-4 py-3">
                         {modelComponentCountMap[item.id] > 0 && (
-                          <span className="text-xs px-2 py-1 rounded-full bg-green-100 text-green-700">פעיל</span>
+                          <span className="text-xs px-2 py-1 rounded-full bg-success-subtle text-success">פעיל</span>
                         )}
                       </td>
                       <td className="px-4 py-3">
@@ -279,7 +279,7 @@ export default function ModelPricing() {
                           <Button variant="ghost" size="icon" onClick={() => openEdit(item)}>
                             <Pencil className="w-4 h-4" />
                           </Button>
-                          <Button variant="ghost" size="icon" className="text-red-400 hover:text-red-600 hover:bg-red-50"
+                          <Button variant="ghost" size="icon" className="text-red-400 hover:text-destructive hover:bg-destructive-subtle"
                             onClick={() => { if (window.confirm("למחוק רכיב זה?")) deleteMutation.mutate(item.id); }}>
                             <Trash2 className="w-4 h-4" />
                           </Button>
@@ -288,7 +288,7 @@ export default function ModelPricing() {
                     </tr>
                   ))}
                   {filtered.length === 0 && (
-                    <tr><td colSpan={6} className="px-4 py-10 text-center text-slate-400">
+                    <tr><td colSpan={6} className="px-4 py-10 text-center text-muted-foreground">
                       {items.length === 0 ? "אין רכיבים — הוסף את הרכיב הראשון" : "אין רכיבים בקטגוריה זו"}
                     </td></tr>
                   )}
@@ -300,12 +300,12 @@ export default function ModelPricing() {
           {/* ── Templates tab ── */}
           <TabsContent value="templates" className="space-y-3 mt-4">
             <div className="flex justify-end">
-              <Button onClick={() => setNewTemplatePicker(true)} className="bg-blue-600 hover:bg-blue-700">
+              <Button onClick={() => setNewTemplatePicker(true)} className="bg-primary hover:bg-primary-hover">
                 <Plus className="w-4 h-4 ml-2" /> תבנית חדשה
               </Button>
             </div>
             {templates.length === 0 && (
-              <div className="bg-white rounded-2xl border border-dashed border-slate-300 p-10 text-center text-slate-400">
+              <div className="bg-white rounded-2xl border border-dashed border-input p-10 text-center text-muted-foreground">
                 <BookmarkPlus className="w-10 h-10 mx-auto mb-2 text-slate-300" />
                 <p>אין תבניות שמורות עדיין</p>
                 <p className="text-sm mt-1">לחץ "תבנית חדשה" כדי ליצור תבנית מהקטלוג</p>
@@ -315,19 +315,19 @@ export default function ModelPricing() {
               const comps = allTemplateComps.filter(c => c.template_id === t.id);
               const isExpanded = expandedTemplates[t.id];
               return (
-                <div key={t.id} className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+                <div key={t.id} className="bg-white rounded-2xl border border-border overflow-hidden">
                   {/* Template header */}
                   <div className="flex items-center gap-3 p-4">
                     <button
                       onClick={() => setExpandedTemplates(prev => ({ ...prev, [t.id]: !prev[t.id] }))}
-                      className="text-slate-400 hover:text-slate-600"
+                      className="text-muted-foreground hover:text-muted-foreground"
                     >
                       {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                     </button>
                     <div className="flex-1">
-                      <p className="font-semibold text-slate-800">{t.name}</p>
-                      {t.description && <p className="text-xs text-slate-400">{t.description}</p>}
-                      <p className="text-xs text-slate-400">{comps.length} רכיבים</p>
+                      <p className="font-semibold text-foreground">{t.name}</p>
+                      {t.description && <p className="text-xs text-muted-foreground">{t.description}</p>}
+                      <p className="text-xs text-muted-foreground">{comps.length} רכיבים</p>
                     </div>
                     <div className="flex gap-1">
                       <Button variant="ghost" size="icon" onClick={() => openEditTemplate(t)}>
@@ -336,7 +336,7 @@ export default function ModelPricing() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="text-red-400 hover:text-red-600 hover:bg-red-50"
+                        className="text-red-400 hover:text-destructive hover:bg-destructive-subtle"
                         onClick={() => {
                           if (window.confirm("למחוק תבנית זו?")) deleteTemplateMutation.mutate(t.id);
                         }}
@@ -366,10 +366,10 @@ export default function ModelPricing() {
         <DialogContent dir="rtl" className="max-w-lg">
           <DialogHeader><DialogTitle>{editingId ? "עריכת דגם" : "דגם חדש"}</DialogTitle></DialogHeader>
           <Tabs defaultValue="pricing">
-            <TabsList className="w-full bg-slate-100">
+            <TabsList className="w-full bg-secondary">
               <TabsTrigger value="pricing" className="flex-1">תמחור</TabsTrigger>
               <TabsTrigger value="components" className="flex-1" disabled={!editingId}>
-                <Settings2 className="w-3 h-3 ml-1" /> רכיבי ייצור {!editingId && <span className="text-xs text-slate-400 mr-1">(שמור תחילה)</span>}
+                <Settings2 className="w-3 h-3 ml-1" /> רכיבי ייצור {!editingId && <span className="text-xs text-muted-foreground mr-1">(שמור תחילה)</span>}
               </TabsTrigger>
             </TabsList>
 
@@ -414,7 +414,7 @@ export default function ModelPricing() {
                   <Label htmlFor="is_active">פעיל</Label>
                 </div>
                 <div className="flex gap-2 pt-2">
-                  <Button type="submit" className="flex-1 bg-blue-600 hover:bg-blue-700" disabled={createMutation.isPending || updateMutation.isPending}>
+                  <Button type="submit" className="flex-1 bg-primary hover:bg-primary-hover" disabled={createMutation.isPending || updateMutation.isPending}>
                     {(createMutation.isPending || updateMutation.isPending) && <Loader2 className="w-4 h-4 ml-2 animate-spin" />}
                     {editingId ? "עדכון" : "הוספה"}
                   </Button>
@@ -455,7 +455,7 @@ export default function ModelPricing() {
             </div>
             <div className="flex gap-2 pt-1">
               <Button
-                className="flex-1 bg-blue-600 hover:bg-blue-700"
+                className="flex-1 bg-primary hover:bg-primary-hover"
                 disabled={updateTemplateMutation.isPending}
                 onClick={() => updateTemplateMutation.mutate({ id: editingTemplate.id, data: { name: templateName, description: templateDesc } })}
               >
