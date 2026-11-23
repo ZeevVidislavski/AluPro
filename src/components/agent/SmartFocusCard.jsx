@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { formatCurrency } from "@/lib/format";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, TrendingDown, DollarSign, PackageCheck, Clock, RefreshCw, CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -49,9 +50,6 @@ const urgencyLabels = {
 
 export default function SmartFocusCard({ tasks, summary, isLoading, onRefresh, maxItems = 5 }) {
   const topTasks = tasks.slice(0, maxItems);
-
-  const formatCurrency = (amount) =>
-    new Intl.NumberFormat('he-IL', { style: 'currency', currency: 'ILS', maximumFractionDigits: 0 }).format(amount || 0);
 
   return (
     <div className="bg-card rounded-xl border border-border overflow-hidden">

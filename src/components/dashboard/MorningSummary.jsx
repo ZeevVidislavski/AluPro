@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { formatCurrency } from "@/lib/format";
 import { ProjectService, ClientPaymentService, SupplierOrderService, AgentSettingsService, AgentAlertService, ProjectQuoteService } from "@/services";
 import { TrendingUp, AlertTriangle, DollarSign, CheckCircle2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -90,9 +91,6 @@ export default function MorningSummary() {
     setDismissed(true);
   };
 
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('he-IL', { style: 'currency', currency: 'ILS', maximumFractionDigits: 0 }).format(amount || 0);
-  };
 
   return (
     <div className="bg-card rounded-xl border shadow-sm p-6">

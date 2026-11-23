@@ -1,10 +1,8 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { formatCurrency } from "@/lib/format";
 import { calculateProjectFinancials } from "@/components/lib/projectFinancials";
 
 export default function ProfitabilityChart({ projects, allOrders, allQuotes, allPayments = [] }) {
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('he-IL', { style: 'currency', currency: 'ILS', maximumFractionDigits: 0 }).format(amount || 0);
-  };
 
   const data = projects
     .map(project => {

@@ -1,3 +1,4 @@
+import { formatCurrency } from "@/lib/format";
 import { calculateProjectFinancials } from "./projectFinancials";
 
 /**
@@ -24,9 +25,6 @@ function scoreToUrgency(score) {
   if (score >= 40) return "medium";
   return "low";
 }
-
-const formatCurrency = (amount) =>
-  new Intl.NumberFormat('he-IL', { style: 'currency', currency: 'ILS', maximumFractionDigits: 0 }).format(amount || 0);
 
 /**
  * Generate Smart Focus tasks for all active projects

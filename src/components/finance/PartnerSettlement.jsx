@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { formatCurrency as fmt } from "@/lib/format";
 import { confirmAction } from "@/components/shared/confirm";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { PartnerService, GeneralExpenseService } from "@/services";
@@ -16,8 +17,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { calculateFullPartnerSettlement } from "@/components/lib/partnerSettlement";
-
-const fmt = (n) => new Intl.NumberFormat("he-IL", { style: "currency", currency: "ILS", maximumFractionDigits: 0 }).format(n || 0);
 
 const categoryLabels = { rent: "שכירות", salary: "שכר", equipment: "ציוד", marketing: "שיווק", other: "אחר" };
 

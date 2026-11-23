@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { formatCurrency } from "@/lib/format";
 import PageHeader from "@/components/shared/PageHeader";
 import { ProjectService, ClientPaymentService, SupplierOrderService, ReminderService, ProjectQuoteService } from "@/services";
 import {
@@ -82,13 +83,6 @@ export default function Dashboard() {
   const outstandingToSuppliers = projects.reduce((sum, p) =>
     sum + Math.max(0, projectFinancialsMap[p.id]?.balance_to_suppliers || 0), 0);
 
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('he-IL', { 
-      style: 'currency', 
-      currency: 'ILS', 
-      maximumFractionDigits: 0 
-    }).format(amount);
-  };
 
   if (isLoading) {
     return (

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { formatCurrency } from "@/lib/format";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ProjectService, ProjectQuoteService } from "@/services";
 import { Link } from "react-router-dom";
@@ -84,9 +85,6 @@ export default function Quotes() {
     const matchStatus = filterStatus === "all" || q.status === filterStatus;
     return matchSearch && matchStatus;
   });
-
-  const formatCurrency = (amount) =>
-    new Intl.NumberFormat("he-IL", { style: "currency", currency: "ILS", maximumFractionDigits: 0 }).format(amount || 0);
 
   const activeProjects = projects.filter(p => !["completed"].includes(p.status));
 

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { formatCurrency } from "@/lib/format";
 import PageHeader from "@/components/shared/PageHeader";
 import { useQuery } from "@tanstack/react-query";
 import { ProjectService, CustomerService, ClientPaymentService, SupplierOrderService, ProjectQuoteService } from "@/services";
@@ -171,13 +172,6 @@ export default function Finance() {
       .sort((a, b) => b.debt - a.debt);
   };
 
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('he-IL', { 
-      style: 'currency', 
-      currency: 'ILS', 
-      maximumFractionDigits: 0 
-    }).format(amount || 0);
-  };
 
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {

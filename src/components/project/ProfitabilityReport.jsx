@@ -1,4 +1,5 @@
 import { format } from "date-fns";
+import { formatCurrency as fmt } from "@/lib/format";
 import { he } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { calculateProjectFinancials } from "@/components/lib/projectFinancials";
@@ -19,10 +20,6 @@ export default function ProfitabilityReport({ project, payments, orders, quotes 
     total_received, balance_to_collect, total_costs, total_paid_to_suppliers,
     balance_to_suppliers, gross_profit, profit_percent, cash_flow
   } = financials;
-
-  const fmt = (amount) => new Intl.NumberFormat('he-IL', {
-    style: 'currency', currency: 'ILS', maximumFractionDigits: 0
-  }).format(amount || 0);
 
   const profitColor = (profit_percent || 0) >= 20
     ? 'text-success' : (profit_percent || 0) >= 10

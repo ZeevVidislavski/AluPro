@@ -1,4 +1,5 @@
 import { handleFormArrowNav } from "@/lib/formKeyboardNav";
+import { formatCurrency } from "@/lib/format";
 import EmptyState from "@/components/shared/EmptyState";
 import PageHeader from "@/components/shared/PageHeader";
 import { useState, useEffect } from "react";
@@ -166,13 +167,6 @@ export default function Projects() {
     });
   };
 
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('he-IL', { 
-      style: 'currency', 
-      currency: 'ILS', 
-      maximumFractionDigits: 0 
-    }).format(amount || 0);
-  };
 
   const filteredProjects = projects.filter(project => {
     const matchesSearch = project.name?.toLowerCase().includes(search.toLowerCase()) ||

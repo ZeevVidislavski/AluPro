@@ -1,4 +1,5 @@
 import { format } from "date-fns";
+import { formatCurrency } from "@/lib/format";
 import { he } from "date-fns/locale";
 import { AlertTriangle, ChevronLeft } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -8,9 +9,6 @@ import { calculateProjectFinancials } from "@/components/lib/projectFinancials";
 import { cn } from "@/lib/utils";
 
 export default function ActiveProjectsTable({ projects, allPayments, allQuotes, allOrders = [] }) {
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('he-IL', { style: 'currency', currency: 'ILS', maximumFractionDigits: 0 }).format(amount || 0);
-  };
 
   const isOverdue = (targetDate) => {
     if (!targetDate) return false;

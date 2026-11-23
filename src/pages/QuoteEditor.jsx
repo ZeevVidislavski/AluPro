@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { formatCurrency } from "@/lib/format";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   ProjectQuoteService,
@@ -539,9 +540,6 @@ export default function QuoteEditor() {
 
   // ─── Totals ───────────────────────────────────────────────────────────────────
   const totals = calcQuoteTotals(items, componentsMap, quoteForm.discount_percent, quoteForm.vat_percent);
-  const formatCurrency = (n) =>
-    new Intl.NumberFormat("he-IL", { style: "currency", currency: "ILS", maximumFractionDigits: 0 }).format(n || 0);
-
   // ─── Render ───────────────────────────────────────────────────────────────────
   if (loadingQuote || loadingItems) {
     return <div className="flex items-center justify-center py-24"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>;

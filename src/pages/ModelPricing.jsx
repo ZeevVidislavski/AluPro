@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { formatCurrency } from "@/lib/format";
 import PageHeader from "@/components/shared/PageHeader";
 import { confirmAction } from "@/components/shared/confirm";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -192,9 +193,6 @@ export default function ModelPricing() {
     setTemplateDesc(t.description || "");
     setEditTemplateDialog(true);
   };
-
-  const formatCurrency = (n) =>
-    new Intl.NumberFormat("he-IL", { style: "currency", currency: "ILS", maximumFractionDigits: 0 }).format(n || 0);
 
   const filtered = filterCat === "all" ? items : items.filter(i => i.category === filterCat);
 

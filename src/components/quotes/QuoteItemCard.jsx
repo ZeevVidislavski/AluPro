@@ -1,11 +1,9 @@
 import { useState } from "react";
+import { formatCurrency } from "@/lib/format";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Trash2, Plus, BookmarkPlus, ChevronDown, ChevronUp, Pencil } from "lucide-react";
 import { calcComponentValue } from "@/lib/quoteCalculations";
-
-const formatCurrency = (n) =>
-  new Intl.NumberFormat("he-IL", { style: "currency", currency: "ILS", maximumFractionDigits: 0 }).format(n || 0);
 
 export default function QuoteItemCard({
   item,

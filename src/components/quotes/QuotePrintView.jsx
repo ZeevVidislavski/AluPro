@@ -1,9 +1,7 @@
 import { format } from "date-fns";
+import { formatCurrency as fmt } from "@/lib/format";
 import { he } from "date-fns/locale";
 import { calcItemTotal } from "@/lib/quoteCalculations";
-
-const fmt = (n) =>
-  new Intl.NumberFormat("he-IL", { style: "currency", currency: "ILS", maximumFractionDigits: 0 }).format(n || 0);
 
 export default function QuotePrintView({ quote, items = [], componentsMap = {}, quoteForm, totals, project, companyHeader }) {
   const getKey = (item) => item.id || item._tempId;

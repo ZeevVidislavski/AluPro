@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { formatCurrency } from "@/lib/format";
 import PageHeader from "@/components/shared/PageHeader";
 import { Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -231,9 +232,6 @@ export default function BusinessAgent() {
       return severityOrder[a.severity] - severityOrder[b.severity];
     });
 
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('he-IL', { style: 'currency', currency: 'ILS', maximumFractionDigits: 0 }).format(amount || 0);
-  };
 
   if (loadingAlerts || loadingSettings) {
     return (

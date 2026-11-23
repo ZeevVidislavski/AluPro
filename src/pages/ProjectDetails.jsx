@@ -1,4 +1,5 @@
 import { handleFormArrowNav } from "@/lib/formKeyboardNav";
+import { formatCurrency } from "@/lib/format";
 import Breadcrumbs from "@/components/shared/Breadcrumbs";
 import { confirmAction } from "@/components/shared/confirm";
 import { useState, useEffect, useMemo } from "react";
@@ -231,13 +232,6 @@ export default function ProjectDetails() {
     }
   };
 
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('he-IL', { 
-      style: 'currency', 
-      currency: 'ILS', 
-      maximumFractionDigits: 0 
-    }).format(amount || 0);
-  };
 
   // Calculate financials using centralized function — memoized to avoid recalculation on every render
   // Must be before any early return (Rules of Hooks)
@@ -717,9 +711,6 @@ function PaymentsSection({ payments, projectId, projectName, dialogOpen, setDial
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['project-payments', projectId] })
   });
 
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('he-IL', { style: 'currency', currency: 'ILS', maximumFractionDigits: 0 }).format(amount || 0);
-  };
 
   const paymentTypeLabels = {
     advance: 'מקדמה',
@@ -951,9 +942,6 @@ function OrdersSection({ orders, projectId, projectName, dialogOpen, setDialogOp
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['project-orders', projectId] })
   });
 
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('he-IL', { style: 'currency', currency: 'ILS', maximumFractionDigits: 0 }).format(amount || 0);
-  };
 
   const orderTypeLabels = { aluminum: 'אלומיניום', hardware: 'פרזול', glass: 'זכוכית', extras: 'תוספות' };
   const statusLabels = { ordered: 'הוזמן', partial: 'שולם חלקית', paid: 'שולם מלא', received: 'התקבל' };
@@ -1258,9 +1246,6 @@ function QuotesSection({ quotes, projectId, projectName, customerName, projectSt
     }
   };
 
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('he-IL', { style: 'currency', currency: 'ILS', maximumFractionDigits: 0 }).format(amount || 0);
-  };
 
   const statusLabels = { draft: 'טיוטה', approved: 'אושר' };
 
