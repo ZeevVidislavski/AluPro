@@ -46,7 +46,7 @@ function SupplierFormDialog({ open, onClose, supplier, onSaved }) {
 
   return (
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
-      <DialogContent className="max-w-sm" dir="rtl">
+      <DialogContent className="max-w-sm">
         <DialogHeader>
           <DialogTitle>{supplier ? "עריכת ספק" : "ספק חדש"}</DialogTitle>
         </DialogHeader>
@@ -136,7 +136,7 @@ export function SuppliersManagerButton() {
         ספקים
       </Button>
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-2xl" dir="rtl">
+        <DialogContent className="max-w-2xl">
           <DialogHeader>
             <DialogTitle>ספקים</DialogTitle>
           </DialogHeader>

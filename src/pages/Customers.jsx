@@ -1,4 +1,5 @@
 import { handleFormArrowNav } from "@/lib/formKeyboardNav";
+import PageSkeleton from "@/components/shared/PageSkeleton";
 import { confirmAction } from "@/components/shared/confirm";
 import EmptyState from "@/components/shared/EmptyState";
 import PageHeader from "@/components/shared/PageHeader";
@@ -148,11 +149,7 @@ export default function Customers() {
   });
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center py-24">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
-      </div>
-    );
+    return <PageSkeleton />;
   }
 
   return (

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import PageSkeleton from "@/components/shared/PageSkeleton";
 import { formatCurrency } from "@/lib/format";
 import PageHeader from "@/components/shared/PageHeader";
 import { Link } from "react-router-dom";
@@ -234,11 +235,7 @@ export default function BusinessAgent() {
 
 
   if (loadingAlerts || loadingSettings) {
-    return (
-      <div className="flex items-center justify-center py-24">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
-      </div>
-    );
+    return <PageSkeleton />;
   }
 
   if (showSettings) {

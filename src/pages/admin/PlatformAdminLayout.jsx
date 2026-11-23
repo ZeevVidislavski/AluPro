@@ -7,7 +7,7 @@ import { ChevronLeft, ShieldCheck } from "lucide-react";
 // but also just kept out of the regular nav entirely).
 export default function PlatformAdminLayout({ children }) {
   return (
-    <div className="min-h-screen bg-background" dir="rtl">
+    <div className="min-h-screen bg-background">
       <header className="bg-slate-900 text-white px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <ShieldCheck className="w-5 h-5" />

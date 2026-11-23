@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef } from "react";
+import FormField from "@/components/shared/FormField";
+import NumberInput from "@/components/shared/NumberInput";
 import { formatCurrency } from "@/lib/format";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -582,18 +584,15 @@ export default function QuoteEditor() {
         <div className="bg-card rounded-xl border shadow-sm p-6">
           <h2 className="font-semibold text-foreground mb-4">פרטי הצעה</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            <div className="space-y-1">
-              <Label>תאריך הצעה</Label>
+            <FormField label="תאריך הצעה">
               <Input type="date" value={quoteForm.quote_date} onChange={e => editForm({ quote_date: e.target.value })} />
-            </div>
-            <div className="space-y-1">
-              <Label>בתוקף עד</Label>
+            </FormField>
+            <FormField label="בתוקף עד">
               <Input type="date" value={quoteForm.valid_until} onChange={e => editForm({ valid_until: e.target.value })} />
-            </div>
-            <div className="space-y-1">
-              <Label>מע"מ (%)</Label>
-              <Input type="number" value={quoteForm.vat_percent} onChange={e => editForm({ vat_percent: parseFloat(e.target.value) || 18 })} />
-            </div>
+            </FormField>
+            <FormField label="מע&quot;מ">
+              <NumberInput suffix="%" value={quoteForm.vat_percent} onChange={e => editForm({ vat_percent: parseFloat(e.target.value) || 18 })} />
+            </FormField>
           </div>
         </div>
 

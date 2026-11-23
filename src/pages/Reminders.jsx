@@ -1,4 +1,5 @@
 import { useState } from "react";
+import PageSkeleton from "@/components/shared/PageSkeleton";
 import PageHeader from "@/components/shared/PageHeader";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ReminderService, ProjectService } from "@/services";
@@ -139,11 +140,7 @@ export default function Reminders() {
   ).length;
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center py-24">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
-      </div>
-    );
+    return <PageSkeleton />;
   }
 
   return (

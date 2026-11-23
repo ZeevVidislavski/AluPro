@@ -18,7 +18,7 @@ export default function SaveTemplateModal({ open, onClose, onSave, isSaving }) {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-sm" dir="rtl">
+      <DialogContent className="max-w-sm">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <BookmarkPlus className="w-5 h-5 text-primary" />

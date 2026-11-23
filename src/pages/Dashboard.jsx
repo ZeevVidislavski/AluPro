@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import PageSkeleton from "@/components/shared/PageSkeleton";
 import { formatCurrency } from "@/lib/format";
 import PageHeader from "@/components/shared/PageHeader";
 import { ProjectService, ClientPaymentService, SupplierOrderService, ReminderService, ProjectQuoteService } from "@/services";
@@ -8,8 +9,7 @@ import {
   Wallet, 
   Building2, 
   Receipt, 
-  AlertTriangle,
-  Loader2
+  AlertTriangle
 } from "lucide-react";
 import StatsCard from "@/components/dashboard/StatsCard";
 import ActiveProjectsTable from "@/components/dashboard/ActiveProjectsTable";
@@ -85,11 +85,7 @@ export default function Dashboard() {
 
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center py-24">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
-      </div>
-    );
+    return <PageSkeleton />;
   }
 
   return (

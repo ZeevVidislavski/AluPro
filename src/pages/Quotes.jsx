@@ -1,4 +1,5 @@
 import { useState } from "react";
+import PageSkeleton from "@/components/shared/PageSkeleton";
 import { formatCurrency } from "@/lib/format";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ProjectService, ProjectQuoteService } from "@/services";
@@ -89,11 +90,7 @@ export default function Quotes() {
   const activeProjects = projects.filter(p => !["completed"].includes(p.status));
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center py-24" role="status" aria-label="טוען">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
-      </div>
-    );
+    return <PageSkeleton />;
   }
 
   const hasFilters = search !== "" || filterStatus !== "all";

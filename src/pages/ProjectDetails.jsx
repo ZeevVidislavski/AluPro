@@ -1,4 +1,6 @@
 import { handleFormArrowNav } from "@/lib/formKeyboardNav";
+import PageSkeleton from "@/components/shared/PageSkeleton";
+import { PAYMENT_TYPE_LABELS, PAYMENT_METHOD_LABELS, ORDER_TYPE_LABELS } from "@/lib/statuses";
 import { formatCurrency } from "@/lib/format";
 import Breadcrumbs from "@/components/shared/Breadcrumbs";
 import { confirmAction } from "@/components/shared/confirm";
@@ -241,11 +243,7 @@ export default function ProjectDetails() {
   );
 
   if (isLoading || !project) {
-    return (
-      <div className="flex items-center justify-center py-24">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
-      </div>
-    );
+    return <PageSkeleton />;
   }
   
   // Destructure for easier access
@@ -574,7 +572,7 @@ export default function ProjectDetails() {
 
       {/* Edit Project Dialog */}
       <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
-        <DialogContent dir="rtl" className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>עריכת פרויקט</DialogTitle>
           </DialogHeader>
@@ -712,18 +710,7 @@ function PaymentsSection({ payments, projectId, projectName, dialogOpen, setDial
   });
 
 
-  const paymentTypeLabels = {
-    advance: 'מקדמה',
-    interim: 'תשלום ביניים',
-    final: 'תשלום סופי'
-  };
 
-  const paymentMethodLabels = {
-    cash: 'מזומן',
-    check: "צ'ק",
-    transfer: 'העברה בנקאית',
-    credit: 'אשראי'
-  };
 
   return (
     <div className="bg-card rounded-xl border border-border overflow-hidden">
@@ -741,11 +728,11 @@ function PaymentsSection({ payments, projectId, projectName, dialogOpen, setDial
               <div className="flex items-center gap-2 mb-1">
                 <span className="font-medium">{formatCurrency(payment.amount)}</span>
                 <span className="text-xs px-2 py-0.5 rounded-full bg-secondary text-primary">
-                  {paymentTypeLabels[payment.payment_type]}
+                  {PAYMENT_TYPE_LABELS[payment.payment_type]}
                 </span>
               </div>
               <p className="text-sm text-muted-foreground">
-                {format(new Date(payment.payment_date), 'dd/MM/yyyy', { locale: he })} • {paymentMethodLabels[payment.payment_method]}
+                {format(new Date(payment.payment_date), 'dd/MM/yyyy', { locale: he })} • {PAYMENT_METHOD_LABELS[payment.payment_method]}
                 {payment.reference && ` • ${payment.reference}`}
                 {payment.received_by_partner_name && (
                   <span className="mr-1 text-primary font-medium"> • קיבל: {payment.received_by_partner_name}</span>
@@ -943,7 +930,6 @@ function OrdersSection({ orders, projectId, projectName, dialogOpen, setDialogOp
   });
 
 
-  const orderTypeLabels = { aluminum: 'אלומיניום', hardware: 'פרזול', glass: 'זכוכית', extras: 'תוספות' };
   const statusLabels = { ordered: 'הוזמן', partial: 'שולם חלקית', paid: 'שולם מלא', received: 'התקבל' };
 
   return (
@@ -971,7 +957,7 @@ function OrdersSection({ orders, projectId, projectName, dialogOpen, setDialogOp
                   order.order_type === 'glass' ? "bg-cyan-100 text-cyan-700" :
                   "bg-secondary text-foreground"
                 )}>
-                  {orderTypeLabels[order.order_type]}
+                  {ORDER_TYPE_LABELS[order.order_type]}
                 </span>
               </div>
               <p className="text-sm text-muted-foreground">

@@ -38,7 +38,7 @@ export default function SelectHeaderModal({ open, onClose, headers, onConfirm })
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-md" dir="rtl">
+      <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Printer className="w-5 h-5 text-primary" />

@@ -12,3 +12,8 @@ export const PROJECT_STATUS = {
   approved: { label: "מאושר", tone: "info" },
   completed: { label: "הושלם", tone: "success" },
 };
+
+// Shared label maps (previously duplicated in ProjectDetails, ProfitabilityReport and Finance).
+export const PAYMENT_TYPE_LABELS = { advance: "מקדמה", interim: "תשלום ביניים", final: "תשלום סופי" };
+export const PAYMENT_METHOD_LABELS = { cash: "מזומן", check: "צ'ק", transfer: "העברה בנקאית", credit: "אשראי" };
+export const ORDER_TYPE_LABELS = { aluminum: "אלומיניום", hardware: "פרזול", glass: "זכוכית", extras: "תוספות" };

@@ -102,7 +102,7 @@ export default function CompanyHeaders() {
   };
 
   return (
-    <div className="p-4 md:p-6" dir="rtl">
+    <div className="p-4 md:p-6">
       <div className="max-w-2xl mx-auto">
         <PageHeader
           className="mb-6"
@@ -149,7 +149,7 @@ export default function CompanyHeaders() {
       </div>
 
       <Dialog open={open} onOpenChange={closeDialog}>
-        <DialogContent className="max-w-md" dir="rtl">
+        <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle>{editId ? "עריכת כותרת" : "כותרת חדשה"}</DialogTitle>
           </DialogHeader>

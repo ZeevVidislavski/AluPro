@@ -1,12 +1,13 @@
 import { useState } from "react";
+import PageSkeleton from "@/components/shared/PageSkeleton";
+import { ORDER_TYPE_LABELS } from "@/lib/statuses";
 import { formatCurrency } from "@/lib/format";
 import PageHeader from "@/components/shared/PageHeader";
 import { useQuery } from "@tanstack/react-query";
 import { ProjectService, CustomerService, ClientPaymentService, SupplierOrderService, ProjectQuoteService } from "@/services";
 import { format, subMonths } from "date-fns";
 import { he } from "date-fns/locale";
-import { 
-  Loader2,
+import {
   TrendingUp,
   TrendingDown,
   Wallet,
@@ -126,11 +127,10 @@ export default function Finance() {
   // Expenses by type
   const getExpensesByType = () => {
     const types = {};
-    const typeLabels = { aluminum: 'אלומיניום', hardware: 'פרזול', glass: 'זכוכית', extras: 'תוספות' };
     
     filteredOrders.forEach(o => {
       const type = o.order_type || 'extras';
-      if (!types[type]) types[type] = { name: typeLabels[type] || type, value: 0 };
+      if (!types[type]) types[type] = { name: ORDER_TYPE_LABELS[type] || type, value: 0 };
       types[type].value += o.order_amount || 0;
     });
 
@@ -190,11 +190,7 @@ export default function Finance() {
   };
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center py-24">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
-      </div>
-    );
+    return <PageSkeleton />;
   }
 
   const monthlyData = getMonthlyData();

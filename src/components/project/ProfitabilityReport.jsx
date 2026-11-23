@@ -1,4 +1,5 @@
 import { format } from "date-fns";
+import { PAYMENT_TYPE_LABELS, PAYMENT_METHOD_LABELS, ORDER_TYPE_LABELS } from "@/lib/statuses";
 import { formatCurrency as fmt } from "@/lib/format";
 import { he } from "date-fns/locale";
 import { cn } from "@/lib/utils";
@@ -6,9 +7,6 @@ import { calculateProjectFinancials } from "@/components/lib/projectFinancials";
 
 const statusLabels = { draft: 'טיוטה', approved: 'מאושר', completed: 'הושלם' };
 
-const paymentTypeLabels = { advance: 'מקדמה', interim: 'תשלום ביניים', final: 'תשלום סופי' };
-const paymentMethodLabels = { cash: 'מזומן', check: "צ'ק", transfer: 'העברה בנקאית', credit: 'אשראי' };
-const orderTypeLabels = { aluminum: 'אלומיניום', hardware: 'פרזול', glass: 'זכוכית', extras: 'תוספות' };
 
 export default function ProfitabilityReport({ project, payments, orders, quotes }) {
   const financials = calculateProjectFinancials(project.id, {
@@ -156,8 +154,8 @@ export default function ProfitabilityReport({ project, payments, orders, quotes 
                   ) : (payments || []).map((payment, idx) => (
                     <tr key={idx} className={idx % 2 === 0 ? 'bg-card' : 'bg-background'}>
                       <td className="p-3 text-foreground">{format(new Date(payment.payment_date), 'dd/MM/yyyy', { locale: he })}</td>
-                      <td className="p-3"><span className="bg-secondary text-primary text-xs px-2 py-0.5 rounded-full">{paymentTypeLabels[payment.payment_type]}</span></td>
-                      <td className="p-3 text-muted-foreground">{paymentMethodLabels[payment.payment_method]}</td>
+                      <td className="p-3"><span className="bg-secondary text-primary text-xs px-2 py-0.5 rounded-full">{PAYMENT_TYPE_LABELS[payment.payment_type]}</span></td>
+                      <td className="p-3 text-muted-foreground">{PAYMENT_METHOD_LABELS[payment.payment_method]}</td>
                       <td className="p-3 text-left font-bold text-foreground">{fmt(payment.amount)}</td>
                     </tr>
                   ))}
@@ -199,7 +197,7 @@ export default function ProfitabilityReport({ project, payments, orders, quotes 
                   ) : (orders || []).map((order, idx) => (
                     <tr key={idx} className={idx % 2 === 0 ? 'bg-card' : 'bg-background'}>
                       <td className="p-3 text-muted-foreground">{order.order_date ? format(new Date(order.order_date), 'dd/MM/yyyy', { locale: he }) : '—'}</td>
-                      <td className="p-3"><span className="bg-purple-100 text-purple-700 text-xs px-2 py-0.5 rounded-full">{orderTypeLabels[order.order_type]}</span></td>
+                      <td className="p-3"><span className="bg-purple-100 text-purple-700 text-xs px-2 py-0.5 rounded-full">{ORDER_TYPE_LABELS[order.order_type]}</span></td>
                       <td className="p-3 text-foreground font-medium">{order.supplier_name}</td>
                       <td className="p-3 text-left font-bold text-foreground">{fmt(order.order_amount)}</td>
                       <td className="p-3 text-left text-success">{fmt(order.paid_amount)}</td>

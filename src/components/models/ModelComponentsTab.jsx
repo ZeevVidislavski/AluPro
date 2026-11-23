@@ -283,7 +283,7 @@ export default function ModelComponentsTab({ modelId }) {
 
       {/* Add/Edit Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent dir="rtl" className="max-w-md max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
           <DialogHeader><DialogTitle>{editingId ? "עריכת רכיב" : "רכיב חדש"}</DialogTitle></DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-2 gap-3">
@@ -331,7 +331,7 @@ export default function ModelComponentsTab({ modelId }) {
 
       {/* Calculate Dialog */}
       <Dialog open={calcOpen} onOpenChange={(o) => { setCalcOpen(o); if (!o) setCalcResults(null); }}>
-        <DialogContent dir="rtl" className="max-w-lg">
+        <DialogContent className="max-w-lg">
           <DialogHeader><DialogTitle>חישוב רכיבי ייצור</DialogTitle></DialogHeader>
           <div className="space-y-4">
             <div className="flex gap-4">

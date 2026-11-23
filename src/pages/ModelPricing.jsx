@@ -199,7 +199,7 @@ export default function ModelPricing() {
   if (isLoading) return <div className="flex items-center justify-center py-24"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>;
 
   return (
-    <div className="p-4 md:p-6 lg:p-8" dir="rtl">
+    <div className="p-4 md:p-6 lg:p-8">
       <div className="max-w-5xl mx-auto space-y-6">
         <PageHeader title="קטלוג רכיבים ותבניות" description="בסיס לבניית הצעות מחיר חופשית" />
 
@@ -360,7 +360,7 @@ export default function ModelPricing() {
 
       {/* Catalog item dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent dir="rtl" className="max-w-lg">
+        <DialogContent className="max-w-lg">
           <DialogHeader><DialogTitle>{editingId ? "עריכת דגם" : "דגם חדש"}</DialogTitle></DialogHeader>
           <Tabs defaultValue="pricing">
             <TabsList className="w-full bg-secondary">
@@ -439,7 +439,7 @@ export default function ModelPricing() {
 
       {/* Edit template name dialog */}
       <Dialog open={editTemplateDialog} onOpenChange={setEditTemplateDialog}>
-        <DialogContent dir="rtl" className="max-w-sm">
+        <DialogContent className="max-w-sm">
           <DialogHeader><DialogTitle>עריכת תבנית</DialogTitle></DialogHeader>
           <div className="space-y-4 py-2">
             <div className="space-y-1">

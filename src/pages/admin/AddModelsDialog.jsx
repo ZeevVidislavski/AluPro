@@ -180,7 +180,7 @@ export default function AddModelsDialog({ tenantId, tenantName, size = "sm" }) {
           הוסף דגמים
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-lg" dir="rtl">
+      <DialogContent className="max-w-lg">
         <DialogHeader>
           <DialogTitle>הוספת דגמים ל{tenantName}</DialogTitle>
         </DialogHeader>
