@@ -578,6 +578,8 @@ export default function QuoteEditor() {
           }
         />
 
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px] items-start">
+        <div className="space-y-6 min-w-0">
         {/* Quote meta */}
         <div className="bg-card rounded-xl border shadow-sm p-6">
           <h2 className="font-semibold text-foreground mb-4">פרטי הצעה</h2>
@@ -679,40 +681,6 @@ export default function QuoteEditor() {
           )}
         </div>
 
-        {/* Totals */}
-        {items.length > 0 && (
-          <div className="bg-card rounded-xl border shadow-sm p-6">
-            <div className="flex flex-col items-end gap-2 max-w-xs mr-0 ml-auto w-full tabular-nums">
-              <div className="flex justify-between w-full text-sm">
-                <span className="text-muted-foreground">סכום לפני הנחה</span>
-                <span>{formatCurrency(totals.linesTotal)}</span>
-              </div>
-              <div className="flex items-center justify-between w-full text-sm gap-2">
-                <span className="text-muted-foreground">הנחה (%)</span>
-                <Input
-                  type="number"
-                  value={quoteForm.discount_percent}
-                  onChange={e => editForm({ discount_percent: parseFloat(e.target.value) || 0 })}
-                  className="w-16 h-8 text-sm"
-                />
-                <span className="text-destructive">-{formatCurrency(totals.linesTotal - totals.subtotal)}</span>
-              </div>
-              <div className="flex justify-between w-full text-sm">
-                <span className="text-muted-foreground">לפני מע"מ</span>
-                <span>{formatCurrency(totals.subtotal)}</span>
-              </div>
-              <div className="flex justify-between w-full text-sm">
-                <span className="text-muted-foreground">מע"מ {quoteForm.vat_percent}%</span>
-                <span>{formatCurrency(totals.vatAmount)}</span>
-              </div>
-              <div className="flex justify-between items-baseline w-full text-2xl font-bold border-t border-border pt-3" aria-live="polite">
-                <span className="text-base">סה"כ כולל מע"מ</span>
-                <span className="text-foreground">{formatCurrency(totals.totalWithVat)}</span>
-              </div>
-            </div>
-          </div>
-        )}
-
         {/* Notes */}
         <div className="bg-card rounded-xl border shadow-sm p-6">
           <Label className="mb-2 block">הערות</Label>
@@ -722,6 +690,38 @@ export default function QuoteEditor() {
             rows={3}
             placeholder="הערות ותנאים..."
           />
+        </div>
+        </div>
+        {/* Totals: sticky side panel on desktop (left in RTL), below the form on mobile */}
+        <aside aria-label="סיכום הצעה" className="bg-card rounded-xl border shadow-sm p-5 space-y-2.5 tabular-nums lg:sticky lg:top-4">
+          <h2 className="font-semibold text-foreground">סיכום</h2>
+          <div className="flex justify-between w-full text-sm">
+            <span className="text-muted-foreground">סכום לפני הנחה</span>
+            <span>{formatCurrency(totals.linesTotal)}</span>
+          </div>
+          <div className="flex items-center justify-between w-full text-sm gap-2">
+            <span className="text-muted-foreground">הנחה (%)</span>
+            <Input
+              type="number"
+              value={quoteForm.discount_percent}
+              onChange={e => editForm({ discount_percent: parseFloat(e.target.value) || 0 })}
+              className="w-16 h-8 text-sm"
+            />
+            <span className="text-destructive">-{formatCurrency(totals.linesTotal - totals.subtotal)}</span>
+          </div>
+          <div className="flex justify-between w-full text-sm">
+            <span className="text-muted-foreground">לפני מע"מ</span>
+            <span>{formatCurrency(totals.subtotal)}</span>
+          </div>
+          <div className="flex justify-between w-full text-sm">
+            <span className="text-muted-foreground">מע"מ {quoteForm.vat_percent}%</span>
+            <span>{formatCurrency(totals.vatAmount)}</span>
+          </div>
+          <div className="flex justify-between items-baseline w-full text-2xl font-bold border-t border-border pt-3" aria-live="polite">
+            <span className="text-base">סה"כ כולל מע"מ</span>
+            <span className="text-foreground">{formatCurrency(totals.totalWithVat)}</span>
+          </div>
+        </aside>
         </div>
       </div>
 
