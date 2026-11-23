@@ -1,12 +1,12 @@
 import { useState } from "react";
+import PageHeader from "@/components/shared/PageHeader";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ReminderService, ProjectService } from "@/services";
 import { format, isPast, isToday, isTomorrow } from "date-fns";
 import { he } from "date-fns/locale";
 import { 
   Plus, 
-  Bell, 
-  CheckCircle,
+  Bell,
   Clock,
   AlertTriangle,
   Loader2,
@@ -33,7 +33,6 @@ import {
 } from "@/components/ui/select";
 import {
   Tabs,
-  TabsContent,
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs";
@@ -151,21 +150,23 @@ export default function Reminders() {
     <div className="p-4 md:p-6 lg:p-8">
       <div className="max-w-5xl mx-auto space-y-6">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
-            <h1 className="text-[28px] leading-9 font-bold text-foreground">תזכורות</h1>
-            <p className="text-muted-foreground mt-1">
+        <PageHeader
+          title="תזכורות"
+          description={
+            <>
               {openCount} פתוחות
               {overdueCount > 0 && (
                 <span className="text-destructive font-medium"> • {overdueCount} באיחור</span>
               )}
-            </p>
-          </div>
-          <Button onClick={() => setDialogOpen(true)} className="bg-primary hover:bg-primary-hover">
-            <Plus className="w-5 h-5 ml-2" />
-            תזכורת חדשה
-          </Button>
-        </div>
+            </>
+          }
+          actions={
+            <Button onClick={() => setDialogOpen(true)}>
+              <Plus className="w-4 h-4" />
+              תזכורת חדשה
+            </Button>
+          }
+        />
 
         {/* Filters */}
         <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">

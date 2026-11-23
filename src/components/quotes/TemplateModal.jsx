@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Loader2, BookmarkPlus, ChevronLeft } from "lucide-react";
+import { Loader2, BookmarkPlus } from "lucide-react";
 
 export default function SaveTemplateModal({ open, onClose, onSave, isSaving }) {
   const [name, setName] = useState("");

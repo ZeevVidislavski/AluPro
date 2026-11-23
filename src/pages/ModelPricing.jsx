@@ -1,4 +1,5 @@
 import { useState } from "react";
+import PageHeader from "@/components/shared/PageHeader";
 import { confirmAction } from "@/components/shared/confirm";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ModelPricingService, ModelComponentService, QuoteTemplateService, QuoteTemplateComponentService } from "@/services";
@@ -202,10 +203,7 @@ export default function ModelPricing() {
   return (
     <div className="p-4 md:p-6 lg:p-8" dir="rtl">
       <div className="max-w-5xl mx-auto space-y-6">
-        <div>
-          <h1 className="text-[28px] leading-9 font-bold text-foreground">קטלוג רכיבים ותבניות</h1>
-          <p className="text-muted-foreground">בסיס לבניית הצעות מחיר חופשית</p>
-        </div>
+        <PageHeader title="קטלוג רכיבים ותבניות" description="בסיס לבניית הצעות מחיר חופשית" />
 
         <Tabs defaultValue="catalog">
           <TabsList className="bg-card border border-border">

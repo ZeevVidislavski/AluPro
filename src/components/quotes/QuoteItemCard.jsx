@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Trash2, Plus, Save, BookmarkPlus, FileDown, ChevronDown, ChevronUp, Pencil } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { generateDescription, pricingMethodLabel, CATEGORY_LABELS, CATEGORY_COLORS, calcComponentValue } from "@/lib/quoteCalculations";
+import { Trash2, Plus, BookmarkPlus, ChevronDown, ChevronUp, Pencil } from "lucide-react";
+import { calcComponentValue } from "@/lib/quoteCalculations";
 
 const formatCurrency = (n) =>
   new Intl.NumberFormat("he-IL", { style: "currency", currency: "ILS", maximumFractionDigits: 0 }).format(n || 0);

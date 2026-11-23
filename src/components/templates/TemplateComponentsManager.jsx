@@ -3,7 +3,7 @@ import { confirmAction } from "@/components/shared/confirm";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { QuoteTemplateComponentService } from "@/services";
 import { Input } from "@/components/ui/input";
-import { Plus, Trash2, Pencil } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import CatalogPickerModal from "@/components/quotes/CatalogPickerModal";
 
 const PRICING_METHOD_LABELS = {

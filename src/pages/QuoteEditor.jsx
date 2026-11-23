@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   ProjectQuoteService,
   QuoteItemService,
@@ -551,7 +551,7 @@ export default function QuoteEditor() {
   }
 
   return (
-    <div className="p-4 md:p-6 lg:p-8">
+    <div className="p-4 pb-24 md:p-6 md:pb-24 lg:p-8">
       <div className="max-w-6xl mx-auto space-y-6">
         {/* Header */}
         <PageHeader
@@ -725,6 +725,12 @@ export default function QuoteEditor() {
         </div>
         </div>
         </div>
+      </div>
+
+      {/* Mobile: sticky total bar (the full summary is above the notes) */}
+      <div className="lg:hidden fixed bottom-0 inset-x-0 z-30 flex items-baseline justify-between gap-3 border-t bg-card px-4 py-3 shadow-[0_-2px_8px_rgba(39,52,68,0.08)] tabular-nums">
+        <span className="text-sm text-muted-foreground">סה"כ כולל מע"מ</span>
+        <span className="text-xl font-bold text-foreground">{formatCurrency(totals.totalWithVat)}</span>
       </div>
 
       {/* Catalog picker modal */}

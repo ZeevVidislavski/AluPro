@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import PageHeader from "@/components/shared/PageHeader";
 import { ProjectService, ClientPaymentService, SupplierOrderService, ReminderService, ProjectQuoteService } from "@/services";
 import {
   TrendingUp, 
@@ -101,10 +102,7 @@ export default function Dashboard() {
     <div className="p-4 md:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto space-y-8">
         {/* Header */}
-        <div>
-          <h1 className="text-[28px] leading-9 font-bold text-foreground">דשבורד</h1>
-          <p className="text-muted-foreground mt-1">סקירה כללית של העסק</p>
-        </div>
+        <PageHeader title="דשבורד" description="סקירה כללית של העסק" />
 
         {/* Morning Summary */}
         <MorningSummary />

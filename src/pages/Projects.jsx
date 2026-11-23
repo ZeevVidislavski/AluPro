@@ -1,4 +1,5 @@
 import { handleFormArrowNav } from "@/lib/formKeyboardNav";
+import PageHeader from "@/components/shared/PageHeader";
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ProjectService, CustomerService, ClientPaymentService, SupplierOrderService, ProjectQuoteService } from "@/services";
@@ -9,8 +10,7 @@ import { format } from "date-fns";
 import { he } from "date-fns/locale";
 import { 
   Plus, 
-  Search, 
-  Filter,
+  Search,
   Loader2,
   ChevronLeft,
   Building2,
@@ -194,16 +194,16 @@ export default function Projects() {
     <div className="p-4 md:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
-            <h1 className="text-[28px] leading-9 font-bold text-foreground">פרויקטים</h1>
-            <p className="text-muted-foreground mt-1">{projects.length} פרויקטים במערכת</p>
-          </div>
-          <Button onClick={openCreateDialog} className="bg-primary hover:bg-primary-hover">
-            <Plus className="w-5 h-5 ml-2" />
-            פרויקט חדש
-          </Button>
-        </div>
+        <PageHeader
+          title="פרויקטים"
+          description={`${projects.length} פרויקטים במערכת`}
+          actions={
+            <Button onClick={openCreateDialog}>
+              <Plus className="w-4 h-4" />
+              פרויקט חדש
+            </Button>
+          }
+        />
 
         {/* Filters */}
         <div className="flex flex-col sm:flex-row gap-4">

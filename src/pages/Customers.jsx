@@ -1,4 +1,5 @@
 import { handleFormArrowNav } from "@/lib/formKeyboardNav";
+import PageHeader from "@/components/shared/PageHeader";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { CustomerService, ProjectService } from "@/services";
@@ -156,16 +157,16 @@ export default function Customers() {
     <div className="p-4 md:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
-            <h1 className="text-[28px] leading-9 font-bold text-foreground">לקוחות</h1>
-            <p className="text-muted-foreground mt-1">{customers.length} לקוחות במערכת</p>
-          </div>
-          <Button onClick={openCreateDialog} className="bg-primary hover:bg-primary-hover">
-            <Plus className="w-5 h-5 ml-2" />
-            לקוח חדש
-          </Button>
-        </div>
+        <PageHeader
+          title="לקוחות"
+          description={`${customers.length} לקוחות במערכת`}
+          actions={
+            <Button onClick={openCreateDialog}>
+              <Plus className="w-4 h-4" />
+              לקוח חדש
+            </Button>
+          }
+        />
 
         {/* Filters */}
         <div className="flex flex-col sm:flex-row gap-4">

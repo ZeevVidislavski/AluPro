@@ -1,27 +1,19 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { ProjectService, CustomerService, ClientPaymentService, SupplierOrderService, ProjectQuoteService } from "@/services";
-import { format, startOfMonth, endOfMonth, subMonths } from "date-fns";
+import { format, subMonths } from "date-fns";
 import { he } from "date-fns/locale";
 import { 
   Loader2,
   TrendingUp,
   TrendingDown,
   Wallet,
-  ArrowUpRight,
-  ArrowDownRight,
   Filter,
   Users
 } from "lucide-react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+
+
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   BarChart,
   Bar,

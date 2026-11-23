@@ -1,4 +1,5 @@
 import { handleFormArrowNav } from "@/lib/formKeyboardNav";
+import Breadcrumbs from "@/components/shared/Breadcrumbs";
 import { confirmAction } from "@/components/shared/confirm";
 import { useState, useEffect, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -11,12 +12,11 @@ import {
   ReminderService,
   PartnerService,
 } from "@/services";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { format } from "date-fns";
 import { he } from "date-fns/locale";
-import { 
-  ArrowRight,
+import {
   Pencil,
   Loader2,
   Building2,
@@ -29,7 +29,6 @@ import {
   Bell,
   Plus,
   Trash2,
-  Upload,
   Download,
   ExternalLink,
   Printer,
@@ -291,14 +290,9 @@ export default function ProjectDetails() {
     <div className="p-4 md:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
-        <div className="flex items-center gap-4 mb-6">
-          <Link 
-            to={createPageUrl("Projects")}
-            className="p-2 rounded-lg hover:bg-slate-200 transition-colors"
-          >
-            <ArrowRight className="w-5 h-5" />
-          </Link>
-          <div className="flex-1">
+        <Breadcrumbs items={[{ label: "פרויקטים", to: createPageUrl("Projects") }, { label: project.name }]} />
+        <div className="flex flex-wrap items-center gap-3 mb-6">
+          <div className="flex-1 min-w-[240px]">
             <div className="flex items-center gap-3">
               <h1 className="text-[28px] leading-9 font-bold text-foreground">{project.name}</h1>
               {project.start_date && (

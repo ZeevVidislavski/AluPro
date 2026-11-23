@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import PageHeader from "@/components/shared/PageHeader";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { CompanyHeaderService } from "@/services";
 import { Button } from "@/components/ui/button";
@@ -103,15 +104,16 @@ export default function CompanyHeaders() {
   return (
     <div className="p-4 md:p-6" dir="rtl">
       <div className="max-w-2xl mx-auto">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-[28px] leading-9 font-bold text-foreground">כותרות הדפסה</h1>
-            <p className="text-muted-foreground text-sm">לוגו / שם חברה שיופיע בראש הצעות המחיר</p>
-          </div>
-          <Button onClick={openNew} className="bg-primary hover:bg-primary-hover">
-            <Plus className="w-4 h-4 ml-1" /> כותרת חדשה
-          </Button>
-        </div>
+        <PageHeader
+          className="mb-6"
+          title="כותרות הדפסה"
+          description="לוגו / שם חברה שיופיע בראש הצעות המחיר"
+          actions={
+            <Button onClick={openNew}>
+              <Plus className="w-4 h-4" /> כותרת חדשה
+            </Button>
+          }
+        />
 
         {isLoading ? (
           <div className="flex justify-center py-20"><Loader2 className="w-8 h-8 animate-spin text-blue-500" /></div>
