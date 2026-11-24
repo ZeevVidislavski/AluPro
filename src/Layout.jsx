@@ -35,7 +35,9 @@ const navGroups = [
       { name: "דשבורד", href: "Dashboard", icon: LayoutDashboard },
       { name: "לקוחות", href: "Customers", icon: Users },
       { name: "פרויקטים", href: "Projects", icon: Building2 },
-      { name: "הצעות מחיר", href: "Quotes", icon: FileText },
+      // הוסתר מהתפריט לפי בקשה: הצעות מחיר נגישות דרך פרויקטים בלבד.
+      // הדף והנתיב /Quotes נשארים קיימים; להחזרה מסירים את hidden.
+      { name: "הצעות מחיר", href: "Quotes", icon: FileText, hidden: true },
     ],
   },
   {
@@ -56,7 +58,8 @@ const navGroups = [
   },
 ];
 
-const PARENT_PAGE = { ProjectDetails: "Projects", QuoteEditor: "Quotes" };
+// QuoteEditor now belongs to Projects since the Quotes nav item is hidden.
+const PARENT_PAGE = { ProjectDetails: "Projects", QuoteEditor: "Projects", Quotes: "Projects" };
 
 function NavItem({ to, icon: Icon, active, onClick, children }) {
   return (
@@ -117,7 +120,7 @@ export default function Layout({ children, currentPageName }) {
   const canManageTeam = tenantContext?.role === "owner" || tenantContext?.role === "admin";
   const hasBusinessAgent = planHasFeature(tenantContext?.plan, "businessAgent");
   const visibleGroups = navGroups
-    .map((g) => ({ ...g, items: g.items.filter((item) => item.href !== "BusinessAgent" || hasBusinessAgent) }))
+    .map((g) => ({ ...g, items: g.items.filter((item) => !item.hidden && (item.href !== "BusinessAgent" || hasBusinessAgent)) }))
     .filter((g) => g.items.length > 0);
 
   const closeSidebar = () => setSidebarOpen(false);

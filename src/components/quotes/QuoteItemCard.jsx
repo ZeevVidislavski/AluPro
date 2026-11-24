@@ -4,6 +4,17 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Trash2, Plus, BookmarkPlus, ChevronDown, ChevronUp, Pencil } from "lucide-react";
 import { calcComponentValue } from "@/lib/quoteCalculations";
+import { OPENING_TYPES, defaultSystemType } from "@/lib/quoteSpec";
+import WindowSketch from "./WindowSketch";
+
+function SpecField({ label, children }) {
+  return (
+    <label className="block space-y-1">
+      <span className="text-[13px] text-muted-foreground">{label}</span>
+      {children}
+    </label>
+  );
+}
 
 export default function QuoteItemCard({
   item,
@@ -26,7 +37,9 @@ export default function QuoteItemCard({
 
   const itemTotal = components.reduce((sum, comp) => sum + calcCompLine(comp), 0);
 
-  const handleDimensionChange = (field, value) => {
+  const setSpec = (changes) => onUpdateItem(item.id || item._tempId, changes);
+
+  const handleDimensionChange =(field, value) => {
     onUpdateItem(item.id || item._tempId, { [field]: parseFloat(value) || 0 });
   };
 
@@ -149,6 +162,39 @@ export default function QuoteItemCard({
       {/* Components Table */}
       {isExpanded && (
         <div>
+          {/* Technical spec (feeds the contractor/customer spec PDFs) */}
+          <div className="flex items-start gap-4 p-4 border-b border-border">
+            <div className="shrink-0 rounded-md border border-border bg-background p-1">
+              <WindowSketch type={item.opening_type} widthCm={item.width_cm} heightCm={item.height_cm} maxW={110} maxH={80} />
+            </div>
+            <div className="grid flex-1 grid-cols-2 gap-3 md:grid-cols-3">
+              <SpecField label="מיקום">
+                <Input value={item.location || ""} onChange={e => setSpec({ location: e.target.value })} className="h-8 text-sm" placeholder="סלון" />
+              </SpecField>
+              <SpecField label="צורת פתיחה">
+                <select
+                  value={item.opening_type || ""}
+                  onChange={e => setSpec({ opening_type: e.target.value })}
+                  className="h-8 w-full rounded-md border border-input bg-background px-2 text-sm"
+                >
+                  <option value="">—</option>
+                  {OPENING_TYPES.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                </select>
+              </SpecField>
+              <SpecField label="סדרת פרופילים">
+                <Input value={item.profile_series || ""} onChange={e => setSpec({ profile_series: e.target.value })} className="h-8 text-sm" placeholder="9200 מחוזק" />
+              </SpecField>
+              <SpecField label="סוג מערכת">
+                <Input value={item.system_type || ""} onChange={e => setSpec({ system_type: e.target.value })} className="h-8 text-sm" placeholder={defaultSystemType(item.opening_type) || "חלון הזזה דו כנפי"} />
+              </SpecField>
+              <SpecField label="זיגוג">
+                <Input value={item.glazing || ""} onChange={e => setSpec({ glazing: e.target.value })} className="h-8 text-sm" placeholder="זכוכית בידודית שקוף" />
+              </SpecField>
+              <SpecField label="תריס / רשת">
+                <Input value={item.shading || ""} onChange={e => setSpec({ shading: e.target.value })} className="h-8 text-sm" placeholder="תריס חשמלי + רשת" />
+              </SpecField>
+            </div>
+          </div>
           {components.length === 0 ? (
             <div className="px-4 py-5 text-center text-muted-foreground text-sm">
               אין רכיבים — לחץ "+ רכיב" להוספה

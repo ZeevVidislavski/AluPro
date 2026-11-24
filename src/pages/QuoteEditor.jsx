@@ -27,6 +27,8 @@ import SaveTemplateModal from "@/components/quotes/TemplateModal";
 import LoadTemplateModal from "@/components/quotes/LoadTemplateModal";
 import SelectHeaderModal from "@/components/quotes/SelectHeaderModal";
 import QuotePrintView from "@/components/quotes/QuotePrintView";
+import QuoteSpecPrintView from "@/components/quotes/QuoteSpecPrintView";
+import { specPayload } from "@/lib/quoteSpec";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 
@@ -57,6 +59,8 @@ export default function QuoteEditor() {
   const [showLoadTemplate, setShowLoadTemplate] = useState(false);
   const [showSelectHeader, setShowSelectHeader] = useState(false);
   const [selectedHeader, setSelectedHeader] = useState(null);
+  // "quote" = regular price quote, "contractor" = spec PDF with prices, "customer" = spec PDF without prices
+  const [pdfMode, setPdfMode] = useState("quote");
 
   const [saving, setSaving] = useState(false);
   const [savedAt, setSavedAt] = useState(null);
@@ -301,7 +305,8 @@ export default function QuoteEditor() {
         quantity: item.quantity || 1,
         description: item.description || "",
         total_price: totalPrice,
-        sort_order: index
+        sort_order: index,
+        ...specPayload(item)
       };
 
       let itemId = item.id;
@@ -477,15 +482,17 @@ export default function QuoteEditor() {
   };
 
   // ─── PDF ──────────────────────────────────────────────────────────────────────
-  const handlePDFClick = () => {
+  const handlePDFClick = (mode = "quote") => {
+    setPdfMode(mode);
     if (companyHeaders.length > 0) {
       setShowSelectHeader(true);
     } else {
-      startPDF(null);
+      startPDF(null, mode);
     }
   };
 
-  const startPDF = async (header) => {
+  const startPDF = async (header, mode = pdfMode) => {
+    setPdfMode(mode);
     // company_headers.logo_url is a Storage path, not a displayable URL
     // (Phase 6) — resolve it to a signed URL BEFORE rendering
     // QuotePrintView, since html2canvas screenshots the DOM synchronously
@@ -535,7 +542,8 @@ export default function QuoteEditor() {
         start = end;
         pageIndex++;
       }
-      pdf.save(`הצעת-מחיר-${quote?.project_name || ""}.pdf`);
+      const fileLabel = mode === "contractor" ? "מפרט-קבלן" : mode === "customer" ? "מפרט-לקוח" : "הצעת-מחיר";
+      pdf.save(`${fileLabel}-${quote?.project_name || ""}.pdf`);
       setShowPrint(false);
     }, 500);
   };
@@ -567,8 +575,14 @@ export default function QuoteEditor() {
               <span className="text-[13px] text-muted-foreground min-w-24 text-end" role="status" aria-live="polite">
                 {saving ? "שומר..." : savedAt ? (<span className="inline-flex items-center gap-1 text-success font-medium"><Check className="w-3.5 h-3.5" /> נשמר אוטומטית</span>) : null}
               </span>
-              <Button variant="outline" onClick={handlePDFClick} disabled={saving}>
+              <Button variant="outline" onClick={() => handlePDFClick("quote")} disabled={saving}>
                 <Printer className="w-4 h-4" /> PDF
+              </Button>
+              <Button variant="outline" onClick={() => handlePDFClick("contractor")} disabled={saving}>
+                <Printer className="w-4 h-4" /> מפרט לקבלן
+              </Button>
+              <Button variant="outline" onClick={() => handlePDFClick("customer")} disabled={saving}>
+                <Printer className="w-4 h-4" /> מפרט ללקוח
               </Button>
               <Button onClick={handleSave} disabled={saving}>
                 {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
@@ -769,15 +783,27 @@ export default function QuoteEditor() {
       {showPrint && (
         <div className="fixed top-0 left-0 opacity-0 pointer-events-none z-[-1]">
           <div ref={printRef}>
-            <QuotePrintView
-              quote={quote}
-              items={items}
-              componentsMap={componentsMap}
-              quoteForm={quoteForm}
-              totals={totals}
-              project={project}
-              companyHeader={selectedHeader}
-            />
+            {pdfMode === "quote" ? (
+              <QuotePrintView
+                quote={quote}
+                items={items}
+                componentsMap={componentsMap}
+                quoteForm={quoteForm}
+                totals={totals}
+                project={project}
+                companyHeader={selectedHeader}
+              />
+            ) : (
+              <QuoteSpecPrintView
+                quote={quote}
+                items={items}
+                componentsMap={componentsMap}
+                quoteForm={quoteForm}
+                project={project}
+                companyHeader={selectedHeader}
+                showPrices={pdfMode === "contractor"}
+              />
+            )}
           </div>
         </div>
       )}
