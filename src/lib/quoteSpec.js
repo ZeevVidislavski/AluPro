@@ -35,3 +35,18 @@ export function specPayload(item) {
   if (!hasColumns && !used) return {};
   return Object.fromEntries(SPEC_FIELDS.map((f) => [f, item[f] || null]));
 }
+
+// Spec values for printing: explicit fields win; otherwise they are derived
+// from the catalog components on the item (category_snapshot series / glass /
+// shutter / mesh / structure), so a quote built from the catalog needs no
+// retyping.
+export function resolveSpec(item, components = []) {
+  const names = (cats) =>
+    components.filter((c) => cats.includes(c.category_snapshot)).map((c) => c.name_snapshot).filter(Boolean).join(" + ");
+  return {
+    profile_series: item.profile_series || names(["series"]),
+    system_type: item.system_type || defaultSystemType(item.opening_type) || names(["structure"]),
+    glazing: item.glazing || names(["glass"]),
+    shading: item.shading || names(["shutter", "mesh"]),
+  };
+}

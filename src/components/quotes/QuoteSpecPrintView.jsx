@@ -2,18 +2,17 @@ import { format } from "date-fns";
 import { he } from "date-fns/locale";
 import { formatCurrency as fmt } from "@/lib/format";
 import { calcItemTotal } from "@/lib/quoteCalculations";
-import { itemAreaSqm, openingLabel, defaultSystemType } from "@/lib/quoteSpec";
+import { itemAreaSqm, openingLabel, resolveSpec } from "@/lib/quoteSpec";
 import WindowSketch from "./WindowSketch";
 
 const cell = { border: "1px solid #cbd5e1", padding: "8px 10px", verticalAlign: "middle" };
 const lbl = { fontWeight: "bold" };
 
 function SpecLine({ label, value }) {
-  if (!value) return null;
   return (
     <div style={{ marginBottom: "2px" }}>
       <span style={lbl}>{label}: </span>
-      <span>{value}</span>
+      <span>{value || "—"}</span>
     </div>
   );
 }
@@ -26,7 +25,7 @@ export default function QuoteSpecPrintView({ quote, items = [], componentsMap = 
   const color = project?.aluminum_color;
 
   return (
-    <div dir="rtl" style={{ fontFamily: "Arial, sans-serif", width: "794px", background: "#fff", padding: "32px 28px", color: "#1e293b", fontSize: "12px", lineHeight: "1.5" }}>
+    <div dir="rtl" style={{ fontFamily: "Arial, sans-serif", width: "794px", boxSizing: "border-box", background: "#fff", padding: "32px 28px", color: "#1e293b", fontSize: "12px", lineHeight: "1.5" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "2px solid #1e293b", paddingBottom: "10px", marginBottom: "14px" }}>
         <div>
           <div style={{ fontSize: "18px", fontWeight: "bold" }}>מפרט טכני ודגמים משורטטים – פרויקט {quote?.project_name || ""}</div>
@@ -59,13 +58,14 @@ export default function QuoteSpecPrintView({ quote, items = [], componentsMap = 
             const qty = item.quantity || 1;
             const unit = calcItemTotal(comps, item.width_cm, item.height_cm, 1);
             const line = calcItemTotal(comps, item.width_cm, item.height_cm, qty);
-            const system = item.system_type || defaultSystemType(item.opening_type);
-            const caption = [system, item.profile_series ? `סדרה ${item.profile_series}` : ""].filter(Boolean).join(" • ") || item.description;
+            const spec = resolveSpec(item, comps);
+            const system = spec.system_type;
+            const caption = [system, spec.profile_series ? `סדרה ${spec.profile_series}` : ""].filter(Boolean).join(" • ") || item.description;
             return (
               <tr key={getKey(item) || idx}>
                 <td style={{ ...cell, textAlign: "center" }}>
                   <div style={{ fontSize: "22px", fontWeight: "bold" }}>{String(idx + 1).padStart(2, "0")}</div>
-                  <div style={{ display: "inline-block", background: "#0f172a", color: "#fff", borderRadius: "4px", padding: "1px 8px", fontWeight: "bold", margin: "4px 0" }}>{qty} יח'</div>
+                  <div style={{ display: "inline-block", background: "#0f172a", color: "#fff", borderRadius: "4px", padding: "0 10px", height: "22px", lineHeight: "20px", fontWeight: "bold", margin: "4px 0" }}>{qty} יח'</div>
                   {item.location && <div style={{ color: "#64748b", fontSize: "11px" }}>{item.location}</div>}
                 </td>
                 <td style={{ ...cell, textAlign: "center" }}>
@@ -76,16 +76,16 @@ export default function QuoteSpecPrintView({ quote, items = [], componentsMap = 
                   <div style={{ color: "#64748b", fontSize: "10px" }}>{caption}</div>
                 </td>
                 <td style={cell}>
-                  <div style={{ background: "#eef2f7", padding: "4px 8px", marginBottom: "6px", borderRadius: "3px" }}>
+                  <div style={{ background: "#eef2f7", padding: "0 8px", height: "24px", lineHeight: "22px", marginBottom: "8px", borderRadius: "3px" }}>
                     גובה: <b>{item.height_cm || 0}</b> ס"מ &nbsp;|&nbsp; רוחב: <b>{item.width_cm || 0}</b> ס"מ &nbsp;|&nbsp; שטח ליח': <b>{itemAreaSqm(item).toFixed(2)}</b> מ"ר
                   </div>
-                  <SpecLine label="סדרת פרופילים" value={item.profile_series} />
+                  <SpecLine label="סדרת פרופילים" value={spec.profile_series} />
                   <SpecLine label="צבע אלומיניום" value={color} />
                   <SpecLine label="סוג מערכת" value={system} />
-                  <SpecLine label="זיגוג" value={item.glazing} />
-                  <SpecLine label="תריס / רשת" value={item.shading} />
+                  <SpecLine label="זיגוג" value={spec.glazing} />
+                  <SpecLine label="תריס / רשת" value={spec.shading} />
                   {showPrices && (
-                    <div style={{ background: "#eef2f7", padding: "4px 8px", marginTop: "6px", borderRadius: "3px", fontWeight: "bold" }}>
+                    <div style={{ background: "#eef2f7", padding: "0 8px", height: "24px", lineHeight: "22px", marginTop: "8px", borderRadius: "3px", fontWeight: "bold" }}>
                       מחיר ליחידה: {fmt(unit)} &nbsp;|&nbsp; סה"כ שורה: {fmt(line)}
                     </div>
                   )}
